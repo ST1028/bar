@@ -1,0 +1,14 @@
+{
+  "name": "bar-migration-scripts",
+  "version": "1.0.0",
+  "description": "Migration scripts for Bar Order System",
+  "main": "migrate-menus.js",
+  "scripts": {
+    "migrate": "node migrate-menus.js",
+    "migrate:json-only": "SKIP_DYNAMODB=true node migrate-menus.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.400.0",
+    "@aws-sdk/lib-dynamodb": "^3.400.0"
+  }
+}

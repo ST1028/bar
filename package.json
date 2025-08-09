@@ -1,0 +1,17 @@
+{
+  "name": "bar-order-system",
+  "version": "1.0.0",
+  "description": "AWS Bar Order System with React + CDK",
+  "scripts": {
+    "build": "npm run build:infra && npm run build:frontend",
+    "build:infra": "cd infra && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "deploy:infra": "cd infra && npm run deploy",
+    "start:frontend": "cd frontend && npm run dev",
+    "migrate:menus": "node scripts/migrate-menus.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
