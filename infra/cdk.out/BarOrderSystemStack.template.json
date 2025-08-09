@@ -199,7 +199,7 @@
      "nodejs20.x"
     ],
     "Content": {
-     "S3Bucket": "cdk-hnb659fds-assets-611829065744-ap-northeast-1",
+     "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
      "S3Key": "f7edfbdde2e5ecf2dec5f5c1b53cf49f28ea14c6846dd576c65015dd8a78e6f4.zip"
     },
     "Description": "Shared utilities and AWS SDK v3"
@@ -297,7 +297,7 @@
             {
              "Ref": "AWS::Partition"
             },
-            ":ssm:ap-northeast-1:611829065744:parameter",
+            ":ssm:us-east-1:611829065744:parameter",
             {
              "Ref": "SlackWebhookUrl754D14AD"
             }
@@ -320,7 +320,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": "cdk-hnb659fds-assets-611829065744-ap-northeast-1",
+     "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
      "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
     },
     "Environment": {
@@ -363,7 +363,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": "cdk-hnb659fds-assets-611829065744-ap-northeast-1",
+     "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
      "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
     },
     "Environment": {
@@ -406,7 +406,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": "cdk-hnb659fds-assets-611829065744-ap-northeast-1",
+     "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
      "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
     },
     "Environment": {
@@ -452,7 +452,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": "cdk-hnb659fds-assets-611829065744-ap-northeast-1",
+     "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
      "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
     },
     "Environment": {
@@ -578,7 +578,7 @@
     "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Account"
    }
   },
-  "BarAppApiDeploymentFD172AA34f0d479be0ef2696fdeba390d4f30398": {
+  "BarAppApiDeploymentFD172AA3091bf632c99ad24adc0ff9b6fce5e3d0": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "Bar Order System API",
@@ -617,7 +617,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "BarAppApiDeploymentFD172AA34f0d479be0ef2696fdeba390d4f30398"
+     "Ref": "BarAppApiDeploymentFD172AA3091bf632c99ad24adc0ff9b6fce5e3d0"
     },
     "MethodSettings": [
      {
@@ -766,7 +766,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -802,7 +802,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -834,7 +834,7 @@
         {
          "Ref": "AWS::Partition"
         },
-        ":apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "MenusFunction81C253FF",
@@ -937,7 +937,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -973,7 +973,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1005,7 +1005,7 @@
         {
          "Ref": "AWS::Partition"
         },
-        ":apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "PatronsFunction8BBD52C7",
@@ -1047,7 +1047,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1083,7 +1083,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1115,7 +1115,7 @@
         {
          "Ref": "AWS::Partition"
         },
-        ":apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "PatronsFunction8BBD52C7",
@@ -1215,7 +1215,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1251,7 +1251,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1283,7 +1283,7 @@
         {
          "Ref": "AWS::Partition"
         },
-        ":apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "PatronsFunction8BBD52C7",
@@ -1386,7 +1386,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1422,7 +1422,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1454,7 +1454,7 @@
         {
          "Ref": "AWS::Partition"
         },
-        ":apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "OrdersFunctionC129706A",
@@ -1496,7 +1496,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1532,7 +1532,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1564,7 +1564,7 @@
         {
          "Ref": "AWS::Partition"
         },
-        ":apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "OrdersFunctionC129706A",
@@ -1725,7 +1725,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1761,7 +1761,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:ap-northeast-1:611829065744:",
+       ":execute-api:us-east-1:611829065744:",
        {
         "Ref": "BarAppApi23A69A24"
        },
@@ -1793,7 +1793,7 @@
         {
          "Ref": "AWS::Partition"
         },
-        ":apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "AdminFunction09BA95C5",
@@ -1819,7 +1819,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21QTU/DMAz9LbtnYRsXrt0QXEBM4+M6ealXsjZxFSdMpep/J2k7ViSkSH7Pduznt5Kr5UIuZnDmucrLeaUPsn31oEoRU/s2bywYymPyDQ4Vis3R9qATigqrPcn2ndFtiapU+w8/Ogq1uLBNpdH6aX3IdILZpNVO22ILDgx6dKnvl3SiAnPIQbZP0KD7QMeabGr5wx+CVX4sTPEWndGcWuKu2z0wo2eZpRC5XAdVol8Do9AQlexoODfFTkCtC/B4hka2m+Hyi37Ogv8kp78HuRO2Q/ZZrfspV5gpRSFacI91RY0Z3ZiwaH/Rrx5A/ErBKeylPWOcnqfiiC7VcUmPu+6a7u9Lg6Ktqecl+DpEty3lKE9887W8k/EtZifWeu6iMG1Q7ob4A9bHKsAeAgAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/22QT0/DMAzFPwv3LOwPF47dEFxATB1wndzUdNmapIodplLlu6O0HSsSJ/+e31NsZymXi7mc38CZZqo8zWpdyG7HoE4CzrTvytaCcWUhuzcoahSbT9tDFMpVVrOT3Tuh3zpXJ+8/fvIuNOKiNrVGy1N/6ERBZNJor221BQ8GGX3K/YooajBFCbJ7hhb9B3rSzqbIH/0YrOLRmPIWvdGUIlHQag9EyCSzVASt5DqoE/IaCIUGI7vcDeemGgU0ugLGM7Sy2wyXX/anLPDBef09rDtRORJnje5fuWKmlAuWxQM2tWvN+BsTtWOo+tED5EgueIX9ai/IB1cmc6SLOw7pOcZru78vPaRtlTKvgZvAUVhXojzS7ddyLhf38u7mSFrPfLCsDcp8qD9c4PLdHgIAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/CDKMetadata/Default"
@@ -1836,7 +1836,7 @@
       {
        "Ref": "BarAppApi23A69A24"
       },
-      ".execute-api.ap-northeast-1.",
+      ".execute-api.us-east-1.",
       {
        "Ref": "AWS::URLSuffix"
       },
@@ -1871,7 +1871,7 @@
       {
        "Ref": "BarAppApi23A69A24"
       },
-      ".execute-api.ap-northeast-1.",
+      ".execute-api.us-east-1.",
       {
        "Ref": "AWS::URLSuffix"
       },

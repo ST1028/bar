@@ -3,7 +3,7 @@ const path = require('path');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, BatchWriteCommand } = require('@aws-sdk/lib-dynamodb');
 
-const ddbClient = new DynamoDBClient({ region: 'ap-northeast-1' });
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_DEFAULT_REGION || 'us-east-1' });
 const docClient = DynamoDBDocumentClient.from(ddbClient);
 
 const TABLE_NAME = 'bar_app';
