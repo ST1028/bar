@@ -11,21 +11,21 @@
     },
     "BarOrderSystemStack": {
       "type": "aws:cloudformation:stack",
-      "environment": "aws://unknown-account/us-east-1",
+      "environment": "aws://611829065744/ap-northeast-1",
       "properties": {
         "templateFile": "BarOrderSystemStack.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1/742bba332ab61959a0c2d775a66f33a9bb91042726a01ab97790b295b143277a.json",
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::611829065744:role/cdk-hnb659fds-deploy-role-611829065744-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::611829065744:role/cdk-hnb659fds-cfn-exec-role-611829065744-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-611829065744-ap-northeast-1/48c12bdab9b23f5872bd419aabe8c754a7a6343ee9219517235353d5af67cc5b.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "BarOrderSystemStack.assets"
         ],
         "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-us-east-1",
+          "arn": "arn:${AWS::Partition}:iam::611829065744:role/cdk-hnb659fds-lookup-role-611829065744-ap-northeast-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         }
@@ -135,7 +135,7 @@
         "/BarOrderSystemStack/BarAppApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "BarAppApiDeploymentFD172AA3091bf632c99ad24adc0ff9b6fce5e3d0"
+            "data": "BarAppApiDeploymentFD172AA34f0d479be0ef2696fdeba390d4f30398"
           }
         ],
         "/BarOrderSystemStack/BarAppApi/DeploymentStage.prod/Resource": [
