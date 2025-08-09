@@ -16,7 +16,7 @@ export class BarOrderSystemStack extends cdk.Stack {
       tableName: 'bar_app',
       partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
-      billingMode: dynamodb.BillingMode.ON_DEMAND,
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
@@ -72,7 +72,6 @@ export class BarOrderSystemStack extends cdk.Stack {
       parameterName: '/bar-app/slack/webhook-url',
       stringValue: 'PLACEHOLDER_WEBHOOK_URL',
       description: 'Slack webhook URL for order notifications',
-      type: ssm.ParameterType.SECURE_STRING,
     });
 
     // Lambda Layer for shared code

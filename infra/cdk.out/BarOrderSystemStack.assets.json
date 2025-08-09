@@ -1,0 +1,51 @@
+{
+  "version": "48.0.0",
+  "files": {
+    "f7edfbdde2e5ecf2dec5f5c1b53cf49f28ea14c6846dd576c65015dd8a78e6f4": {
+      "displayName": "SharedLayer/Code",
+      "source": {
+        "path": "asset.f7edfbdde2e5ecf2dec5f5c1b53cf49f28ea14c6846dd576c65015dd8a78e6f4",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-us-east-1-65a1ae7a": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
+          "objectKey": "f7edfbdde2e5ecf2dec5f5c1b53cf49f28ea14c6846dd576c65015dd8a78e6f4.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+        }
+      }
+    },
+    "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a": {
+      "displayName": "MenusFunction/Code",
+      "source": {
+        "path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-us-east-1-c4bdf7e1": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
+          "objectKey": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+        }
+      }
+    },
+    "742bba332ab61959a0c2d775a66f33a9bb91042726a01ab97790b295b143277a": {
+      "displayName": "BarOrderSystemStack Template",
+      "source": {
+        "path": "BarOrderSystemStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-us-east-1-6ba0ed7f": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
+          "objectKey": "742bba332ab61959a0c2d775a66f33a9bb91042726a01ab97790b295b143277a.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

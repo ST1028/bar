@@ -1,0 +1,1998 @@
+{
+ "Resources": {
+  "BarAppTableC35CFE0C": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "pk",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "sk",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "gsi1pk",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "gsi1sk",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "gsi2pk",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "gsi2sk",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "gsi1",
+      "KeySchema": [
+       {
+        "AttributeName": "gsi1pk",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "gsi1sk",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "gsi2",
+      "KeySchema": [
+       {
+        "AttributeName": "gsi2pk",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "gsi2sk",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "pk",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "sk",
+      "KeyType": "RANGE"
+     }
+    ],
+    "TableName": "bar_app"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppTable/Resource"
+   }
+  },
+  "BarAppUserPoolA53E0798": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": true
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "Policies": {
+     "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireLowercase": true,
+      "RequireNumbers": true,
+      "RequireSymbols": false,
+      "RequireUppercase": true
+     }
+    },
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolName": "bar-app-user-pool",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppUserPool/Resource"
+   }
+  },
+  "AdminGroup": {
+   "Type": "AWS::Cognito::UserPoolGroup",
+   "Properties": {
+    "Description": "Administrator group",
+    "GroupName": "admin",
+    "UserPoolId": {
+     "Ref": "BarAppUserPoolA53E0798"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/AdminGroup"
+   }
+  },
+  "BarAppUserPoolClient54994EB1": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AllowedOAuthFlows": [
+     "implicit",
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_PASSWORD_AUTH",
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "GenerateSecret": false,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "UserPoolId": {
+     "Ref": "BarAppUserPoolA53E0798"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppUserPoolClient/Resource"
+   }
+  },
+  "SlackWebhookUrl754D14AD": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Slack webhook URL for order notifications",
+    "Name": "/bar-app/slack/webhook-url",
+    "Type": "String",
+    "Value": "PLACEHOLDER_WEBHOOK_URL"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/SlackWebhookUrl/Resource"
+   }
+  },
+  "SharedLayer27DFABF0": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "CompatibleRuntimes": [
+     "nodejs20.x"
+    ],
+    "Content": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "f7edfbdde2e5ecf2dec5f5c1b53cf49f28ea14c6846dd576c65015dd8a78e6f4.zip"
+    },
+    "Description": "Shared utilities and AWS SDK v3"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/SharedLayer/Resource",
+    "aws:asset:path": "asset.f7edfbdde2e5ecf2dec5f5c1b53cf49f28ea14c6846dd576c65015dd8a78e6f4",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "LambdaExecutionRoleD5C26073": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::GetAtt": [
+            "BarAppTableC35CFE0C",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::Join": [
+            "",
+            [
+             {
+              "Fn::GetAtt": [
+               "BarAppTableC35CFE0C",
+               "Arn"
+              ]
+             },
+             "/index/*"
+            ]
+           ]
+          }
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": "ssm:GetParameter",
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:",
+            {
+             "Ref": "AWS::Partition"
+            },
+            ":ssm:us-east-1:",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":parameter",
+            {
+             "Ref": "SlackWebhookUrl754D14AD"
+            }
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "SSMAccess"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/LambdaExecutionRole/Resource"
+   }
+  },
+  "MenusFunction81C253FF": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Ref": "BarAppTableC35CFE0C"
+      },
+      "USER_POOL_ID": {
+       "Ref": "BarAppUserPoolA53E0798"
+      }
+     }
+    },
+    "Handler": "menus.handler",
+    "Layers": [
+     {
+      "Ref": "SharedLayer27DFABF0"
+     }
+    ],
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/MenusFunction/Resource",
+    "aws:asset:path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "PatronsFunction8BBD52C7": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Ref": "BarAppTableC35CFE0C"
+      },
+      "USER_POOL_ID": {
+       "Ref": "BarAppUserPoolA53E0798"
+      }
+     }
+    },
+    "Handler": "patrons.handler",
+    "Layers": [
+     {
+      "Ref": "SharedLayer27DFABF0"
+     }
+    ],
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/PatronsFunction/Resource",
+    "aws:asset:path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "OrdersFunctionC129706A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Ref": "BarAppTableC35CFE0C"
+      },
+      "USER_POOL_ID": {
+       "Ref": "BarAppUserPoolA53E0798"
+      },
+      "SLACK_WEBHOOK_PARAM": {
+       "Ref": "SlackWebhookUrl754D14AD"
+      }
+     }
+    },
+    "Handler": "orders.handler",
+    "Layers": [
+     {
+      "Ref": "SharedLayer27DFABF0"
+     }
+    ],
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/OrdersFunction/Resource",
+    "aws:asset:path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AdminFunction09BA95C5": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Ref": "BarAppTableC35CFE0C"
+      },
+      "USER_POOL_ID": {
+       "Ref": "BarAppUserPoolA53E0798"
+      }
+     }
+    },
+    "Handler": "admin.handler",
+    "Layers": [
+     {
+      "Ref": "SharedLayer27DFABF0"
+     }
+    ],
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/AdminFunction/Resource",
+    "aws:asset:path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CognitoAuthorizerF3215DBC": {
+   "Type": "AWS::ApiGateway::Authorizer",
+   "Properties": {
+    "IdentitySource": "method.request.header.Authorization",
+    "Name": "BarOrderSystemStackCognitoAuthorizer4A342516",
+    "ProviderARNs": [
+     {
+      "Fn::GetAtt": [
+       "BarAppUserPoolA53E0798",
+       "Arn"
+      ]
+     }
+    ],
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    },
+    "Type": "COGNITO_USER_POOLS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/CognitoAuthorizer/Resource"
+   }
+  },
+  "BarAppApi23A69A24": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Bar Order System API",
+    "Name": "bar-app-api"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Resource"
+   }
+  },
+  "BarAppApiCloudWatchRoleE57BC76F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/CloudWatchRole/Resource"
+   }
+  },
+  "BarAppApiAccount2D1BBA95": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "BarAppApiCloudWatchRoleE57BC76F",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "BarAppApi23A69A24"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Account"
+   }
+  },
+  "BarAppApiDeploymentFD172AA3091bf632c99ad24adc0ff9b6fce5e3d0": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Bar Order System API",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "DependsOn": [
+    "BarAppApiadminOPTIONS72D88C25",
+    "BarAppApiadminresetOPTIONS0E23D7BF",
+    "BarAppApiadminresetPOST4B0AF6CA",
+    "BarAppApiadminreset8CDD8529",
+    "BarAppApiadmin10285DB4",
+    "BarAppApimenusGETD13DBC6D",
+    "BarAppApimenusOPTIONS4F54C956",
+    "BarAppApimenus1455A543",
+    "BarAppApiOPTIONS97BE68CD",
+    "BarAppApiordersGETC4E586CE",
+    "BarAppApiordersOPTIONS1EBE1CF9",
+    "BarAppApiordersPOST0785E5B3",
+    "BarAppApiordersAF48EFA7",
+    "BarAppApipatronspatronIdOPTIONS93F414BB",
+    "BarAppApipatronspatronIdPATCH43DA11F7",
+    "BarAppApipatronspatronId2EAE9B11",
+    "BarAppApipatronsGET6C7CF949",
+    "BarAppApipatronsOPTIONS00308281",
+    "BarAppApipatronsPOST2EF03B73",
+    "BarAppApipatrons5640BC03"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "BarAppApiDeploymentStageprod11C7F79C": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "BarAppApiDeploymentFD172AA3091bf632c99ad24adc0ff9b6fce5e3d0"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": false,
+      "HttpMethod": "*",
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 200,
+      "ThrottlingRateLimit": 100
+     }
+    ],
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "BarAppApiAccount2D1BBA95"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "BarAppApiOPTIONS97BE68CD": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "BarAppApi23A69A24",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/OPTIONS/Resource"
+   }
+  },
+  "BarAppApimenus1455A543": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "BarAppApi23A69A24",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "menus",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/menus/Resource"
+   }
+  },
+  "BarAppApimenusOPTIONS4F54C956": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApimenus1455A543"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/menus/OPTIONS/Resource"
+   }
+  },
+  "BarAppApimenusGETApiPermissionBarOrderSystemStackBarAppApi8C637A8BGETmenus1CCC3A55": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MenusFunction81C253FF",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/GET/menus"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/menus/GET/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.GET..menus"
+   }
+  },
+  "BarAppApimenusGETApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BGETmenusC9823266": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MenusFunction81C253FF",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/GET/menus"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/menus/GET/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.GET..menus"
+   }
+  },
+  "BarAppApimenusGETD13DBC6D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "MenusFunction81C253FF",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApimenus1455A543"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/menus/GET/Resource"
+   }
+  },
+  "BarAppApipatrons5640BC03": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "BarAppApi23A69A24",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "patrons",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/Resource"
+   }
+  },
+  "BarAppApipatronsOPTIONS00308281": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApipatrons5640BC03"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/OPTIONS/Resource"
+   }
+  },
+  "BarAppApipatronsGETApiPermissionBarOrderSystemStackBarAppApi8C637A8BGETpatrons6C9EF045": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PatronsFunction8BBD52C7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/GET/patrons"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/GET/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.GET..patrons"
+   }
+  },
+  "BarAppApipatronsGETApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BGETpatrons1937E11A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PatronsFunction8BBD52C7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/GET/patrons"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/GET/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.GET..patrons"
+   }
+  },
+  "BarAppApipatronsGET6C7CF949": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "PatronsFunction8BBD52C7",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApipatrons5640BC03"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/GET/Resource"
+   }
+  },
+  "BarAppApipatronsPOSTApiPermissionBarOrderSystemStackBarAppApi8C637A8BPOSTpatronsD7AFE6FA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PatronsFunction8BBD52C7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/POST/patrons"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/POST/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.POST..patrons"
+   }
+  },
+  "BarAppApipatronsPOSTApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPOSTpatrons21BDCEDA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PatronsFunction8BBD52C7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/POST/patrons"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/POST/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.POST..patrons"
+   }
+  },
+  "BarAppApipatronsPOST2EF03B73": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "PatronsFunction8BBD52C7",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApipatrons5640BC03"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/POST/Resource"
+   }
+  },
+  "BarAppApipatronspatronId2EAE9B11": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "BarAppApipatrons5640BC03"
+    },
+    "PathPart": "{patronId}",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/{patronId}/Resource"
+   }
+  },
+  "BarAppApipatronspatronIdOPTIONS93F414BB": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApipatronspatronId2EAE9B11"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/{patronId}/OPTIONS/Resource"
+   }
+  },
+  "BarAppApipatronspatronIdPATCHApiPermissionBarOrderSystemStackBarAppApi8C637A8BPATCHpatronspatronId7B63F6B5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PatronsFunction8BBD52C7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/PATCH/patrons/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/{patronId}/PATCH/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.PATCH..patrons.{patronId}"
+   }
+  },
+  "BarAppApipatronspatronIdPATCHApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPATCHpatronspatronId134BD018": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PatronsFunction8BBD52C7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/PATCH/patrons/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/{patronId}/PATCH/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.PATCH..patrons.{patronId}"
+   }
+  },
+  "BarAppApipatronspatronIdPATCH43DA11F7": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "PATCH",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "PatronsFunction8BBD52C7",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApipatronspatronId2EAE9B11"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/patrons/{patronId}/PATCH/Resource"
+   }
+  },
+  "BarAppApiordersAF48EFA7": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "BarAppApi23A69A24",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "orders",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/orders/Resource"
+   }
+  },
+  "BarAppApiordersOPTIONS1EBE1CF9": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApiordersAF48EFA7"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/orders/OPTIONS/Resource"
+   }
+  },
+  "BarAppApiordersGETApiPermissionBarOrderSystemStackBarAppApi8C637A8BGETorders66451046": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "OrdersFunctionC129706A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/GET/orders"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/orders/GET/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.GET..orders"
+   }
+  },
+  "BarAppApiordersGETApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BGETorders80B2989B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "OrdersFunctionC129706A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/GET/orders"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/orders/GET/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.GET..orders"
+   }
+  },
+  "BarAppApiordersGETC4E586CE": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "OrdersFunctionC129706A",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiordersAF48EFA7"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/orders/GET/Resource"
+   }
+  },
+  "BarAppApiordersPOSTApiPermissionBarOrderSystemStackBarAppApi8C637A8BPOSTordersCA8D29AC": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "OrdersFunctionC129706A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/POST/orders"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/orders/POST/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.POST..orders"
+   }
+  },
+  "BarAppApiordersPOSTApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPOSTorders79B8AB40": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "OrdersFunctionC129706A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/POST/orders"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/orders/POST/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.POST..orders"
+   }
+  },
+  "BarAppApiordersPOST0785E5B3": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "OrdersFunctionC129706A",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiordersAF48EFA7"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/orders/POST/Resource"
+   }
+  },
+  "BarAppApiadmin10285DB4": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "BarAppApi23A69A24",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "admin",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/Resource"
+   }
+  },
+  "BarAppApiadminOPTIONS72D88C25": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApiadmin10285DB4"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/OPTIONS/Resource"
+   }
+  },
+  "BarAppApiadminreset8CDD8529": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "BarAppApiadmin10285DB4"
+    },
+    "PathPart": "reset",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset/Resource"
+   }
+  },
+  "BarAppApiadminresetOPTIONS0E23D7BF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApiadminreset8CDD8529"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset/OPTIONS/Resource"
+   }
+  },
+  "BarAppApiadminresetPOSTApiPermissionBarOrderSystemStackBarAppApi8C637A8BPOSTadminreset71EE1A65": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/POST/admin/reset"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset/POST/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.reset"
+   }
+  },
+  "BarAppApiadminresetPOSTApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPOSTadminreset45ACC6FF": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/POST/admin/reset"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset/POST/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.reset"
+   }
+  },
+  "BarAppApiadminresetPOST4B0AF6CA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadminreset8CDD8529"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset/POST/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21QTU/DMAz9LbtnYRsXrt0QXEBM4+M6ealXsjZxFSdMpep/J2k7ViSkSH7Pduznt5Kr5UIuZnDmucrLeaUPsn31oEoRU/s2bywYymPyDQ4Vis3R9qATigqrPcn2ndFtiapU+w8/Ogq1uLBNpdH6aX3IdILZpNVO22ILDgx6dKnvl3SiAnPIQbZP0KD7QMeabGr5wx+CVX4sTPEWndGcWuKu2z0wo2eZpRC5XAdVol8Do9AQlexoODfFTkCtC/B4hka2m+Hyi37Ogv8kp78HuRO2Q/ZZrfspV5gpRSFacI91RY0Z3ZiwaH/Rrx5A/ErBKeylPWOcnqfiiC7VcUmPu+6a7u9Lg6Ktqecl+DpEty3lKE9887W8k/EtZifWeu6iMG1Q7ob4A9bHKsAeAgAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "BarAppApiEndpoint2688F7C1": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "BarAppApi23A69A24"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "UserPoolId": {
+   "Description": "Cognito User Pool ID",
+   "Value": {
+    "Ref": "BarAppUserPoolA53E0798"
+   }
+  },
+  "UserPoolClientId": {
+   "Description": "Cognito User Pool Client ID",
+   "Value": {
+    "Ref": "BarAppUserPoolClient54994EB1"
+   }
+  },
+  "ApiGatewayUrl": {
+   "Description": "API Gateway URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "BarAppApi23A69A24"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "TableName": {
+   "Description": "DynamoDB Table Name",
+   "Value": {
+    "Ref": "BarAppTableC35CFE0C"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
