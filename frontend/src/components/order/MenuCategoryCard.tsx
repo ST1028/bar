@@ -44,7 +44,7 @@ const MenuCategoryCard = ({ category }: MenuCategoryCardProps) => {
               {category.name}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {category.items.length}品目
+              {category.items?.length || 0}品目
             </Typography>
           </CardContent>
         </Card>
@@ -63,7 +63,7 @@ const MenuCategoryCard = ({ category }: MenuCategoryCardProps) => {
                 <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
                   {category.name}のメニュー
                 </Typography>
-                {category.items.map((item, index) => (
+                {category.items?.map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, x: -20 }}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import type { MenuCategory, Patron, Order, CartItem, MenuItem } from '../types';
+import type { MenuCategory, Patron, Order, CartItem, MenuItem, Blend } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_GATEWAY_URL;
 
@@ -105,6 +105,27 @@ export const menuAPI = {
   
   deleteCategory: async (id: string): Promise<void> => {
     await apiClient.delete(`/admin/categories/${id}`);
+  },
+};
+
+export const blendAPI = {
+  getBlends: async (): Promise<Blend[]> => {
+    const response = await apiClient.get<{ blends: Blend[] }>('/admin/blends');
+    return response.data.blends;
+  },
+  
+  createBlend: async (blend: Omit<Blend, 'id'>): Promise<Blend> => {
+    const response = await apiClient.post<{ blend: Blend }>('/admin/blends', blend);
+    return response.data.blend;
+  },
+  
+  updateBlend: async (id: string, blend: Partial<Blend>): Promise<Blend> => {
+    const response = await apiClient.patch<{ blend: Blend }>(`/admin/blends/${id}`, blend);
+    return response.data.blend;
+  },
+  
+  deleteBlend: async (id: string): Promise<void> => {
+    await apiClient.delete(`/admin/blends/${id}`);
   },
 };
 

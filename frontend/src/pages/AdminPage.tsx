@@ -46,8 +46,8 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
-import { adminAPI, menuAPI } from '../services/api';
-import type { MenuItem as MenuItemType, MenuCategory } from '../types';
+import { adminAPI, menuAPI, blendAPI } from '../services/api';
+import type { MenuItem as MenuItemType, MenuCategory, Blend } from '../types';
 import { useAuthStore } from '../stores/auth';
 
 const AdminPage = () => {
@@ -55,8 +55,10 @@ const AdminPage = () => {
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItemType | null>(null);
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
-  const [newItem, setNewItem] = useState({ name: '', description: '', price: 0, categoryId: '' });
+  const [editingBlend, setEditingBlend] = useState<Blend | null>(null);
+  const [newItem, setNewItem] = useState({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] as string[] });
   const [newCategory, setNewCategory] = useState({ name: '', description: '', visible: true });
+  const [newBlend, setNewBlend] = useState({ name: '', description: '', isActive: true });
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
 
@@ -69,6 +71,11 @@ const AdminPage = () => {
   const { data: categories } = useQuery({
     queryKey: ['categories'],
     queryFn: menuAPI.getCategories,
+  });
+
+  const { data: blends } = useQuery({
+    queryKey: ['blends'],
+    queryFn: blendAPI.getBlends,
   });
 
   // Mutations
@@ -88,7 +95,7 @@ const AdminPage = () => {
     mutationFn: (item: any) => menuAPI.createMenuItem(item),
     onSuccess: () => {
       toast.success('メニューアイテムを作成しました');
-      setNewItem({ name: '', description: '', price: 0, categoryId: '', imageUrl: '' });
+      setNewItem({ name: '', description: '', recipe: '', price: 0, categoryId: '' });
       queryClient.invalidateQueries({ queryKey: ['menu-items'] });
     },
     onError: () => toast.error('作成に失敗しました'),
@@ -142,6 +149,35 @@ const AdminPage = () => {
     onError: () => toast.error('削除に失敗しました'),
   });
 
+  const createBlendMutation = useMutation({
+    mutationFn: (blend: any) => blendAPI.createBlend(blend),
+    onSuccess: () => {
+      toast.success('ブレンドを作成しました');
+      setNewBlend({ name: '', description: '', isActive: true });
+      queryClient.invalidateQueries({ queryKey: ['blends'] });
+    },
+    onError: () => toast.error('作成に失敗しました'),
+  });
+
+  const updateBlendMutation = useMutation({
+    mutationFn: ({ id, ...blend }: any) => blendAPI.updateBlend(id, blend),
+    onSuccess: () => {
+      toast.success('ブレンドを更新しました');
+      setEditingBlend(null);
+      queryClient.invalidateQueries({ queryKey: ['blends'] });
+    },
+    onError: () => toast.error('更新に失敗しました'),
+  });
+
+  const deleteBlendMutation = useMutation({
+    mutationFn: (id: string) => blendAPI.deleteBlend(id),
+    onSuccess: () => {
+      toast.success('ブレンドを削除しました');
+      queryClient.invalidateQueries({ queryKey: ['blends'] });
+    },
+    onError: () => toast.error('削除に失敗しました'),
+  });
+
   // Handlers
   const handleResetAll = () => {
     resetAllMutation.mutate();
@@ -157,7 +193,15 @@ const AdminPage = () => {
 
   const handleUpdateItem = () => {
     if (!editingItem) return;
-    updateItemMutation.mutate(editingItem);
+    updateItemMutation.mutate({
+      id: editingItem.id,
+      name: editingItem.name,
+      price: editingItem.price,
+      description: editingItem.description,
+      recipe: editingItem.recipe,
+      categoryId: editingItem.categoryId,
+      isActive: editingItem.isActive
+    });
   };
 
   const handleCreateCategory = () => {
@@ -170,7 +214,32 @@ const AdminPage = () => {
 
   const handleUpdateCategory = () => {
     if (!editingCategory) return;
-    updateCategoryMutation.mutate(editingCategory);
+    updateCategoryMutation.mutate({
+      id: editingCategory.id,
+      name: editingCategory.name,
+      description: editingCategory.description,
+      visible: editingCategory.visible,
+      order: editingCategory.order
+    });
+  };
+
+  const handleCreateBlend = () => {
+    if (!newBlend.name) {
+      toast.error('ブレンド名を入力してください');
+      return;
+    }
+    createBlendMutation.mutate(newBlend);
+  };
+
+  const handleUpdateBlend = () => {
+    if (!editingBlend) return;
+    updateBlendMutation.mutate({
+      id: editingBlend.id,
+      name: editingBlend.name,
+      description: editingBlend.description,
+      isActive: editingBlend.isActive,
+      order: editingBlend.order
+    });
   };
 
   // Check if user is admin (basic check)
@@ -258,6 +327,18 @@ const AdminPage = () => {
                   rows={2}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="レシピ・作り方"
+                  value={newItem.recipe}
+                  onChange={(e) => setNewItem({...newItem, recipe: e.target.value})}
+                  fullWidth
+                  size="small"
+                  multiline
+                  rows={2}
+                  placeholder="例: ウイスキー30ml、炭酸水適量、レモン1切れ"
+                />
+              </Grid>
             </Grid>
             <Button
               variant="contained"
@@ -305,16 +386,6 @@ const AdminPage = () => {
                           </Select>
                         </FormControl>
                       </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <IconButton onClick={handleUpdateItem} color="primary">
-                            <Save />
-                          </IconButton>
-                          <IconButton onClick={() => setEditingItem(null)}>
-                            <Cancel />
-                          </IconButton>
-                        </Box>
-                      </Grid>
                     </Grid>
                     <TextField
                       value={editingItem.description || ''}
@@ -326,6 +397,24 @@ const AdminPage = () => {
                       sx={{ mb: 1 }}
                       placeholder="説明"
                     />
+                    <TextField
+                      value={editingItem.recipe || ''}
+                      onChange={(e) => setEditingItem({...editingItem, recipe: e.target.value})}
+                      fullWidth
+                      size="small"
+                      multiline
+                      rows={2}
+                      sx={{ mb: 2 }}
+                      placeholder="レシピ・作り方"
+                    />
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                      <IconButton onClick={handleUpdateItem} color="primary" size="large">
+                        <Save />
+                      </IconButton>
+                      <IconButton onClick={() => setEditingItem(null)} size="large">
+                        <Cancel />
+                      </IconButton>
+                    </Box>
                   </Box>
                 ) : (
                   <>
@@ -437,16 +526,6 @@ const AdminPage = () => {
                           label="表示"
                         />
                       </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <IconButton onClick={handleUpdateCategory} color="primary">
-                            <Save />
-                          </IconButton>
-                          <IconButton onClick={() => setEditingCategory(null)}>
-                            <Cancel />
-                          </IconButton>
-                        </Box>
-                      </Grid>
                     </Grid>
                     <TextField
                       value={editingCategory.description || ''}
@@ -455,8 +534,17 @@ const AdminPage = () => {
                       size="small"
                       multiline
                       rows={2}
+                      sx={{ mb: 2 }}
                       placeholder="説明"
                     />
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                      <IconButton onClick={handleUpdateCategory} color="primary" size="large">
+                        <Save />
+                      </IconButton>
+                      <IconButton onClick={() => setEditingCategory(null)} size="large">
+                        <Cancel />
+                      </IconButton>
+                    </Box>
                   </Box>
                 ) : (
                   <>
@@ -480,6 +568,145 @@ const AdminPage = () => {
                       </IconButton>
                       <IconButton 
                         onClick={() => deleteCategoryMutation.mutate(category.id)} 
+                        size="small" 
+                        color="error"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </>
+                )}
+              </ListItem>
+            ))}
+          </List>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+
+  const renderBlendManagement = () => (
+    <Box>
+      <Card elevation={2} sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+            🍯 ブレンド管理
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          
+          {/* Add new blend */}
+          <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+            <Typography variant="subtitle1" gutterBottom>新しいブレンドを追加</Typography>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="ブレンド名"
+                  value={newBlend.name}
+                  onChange={(e) => setNewBlend({...newBlend, name: e.target.value})}
+                  fullWidth
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={newBlend.isActive}
+                      onChange={(e) => setNewBlend({...newBlend, isActive: e.target.checked})}
+                    />
+                  }
+                  label="表示する"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="説明"
+                  value={newBlend.description}
+                  onChange={(e) => setNewBlend({...newBlend, description: e.target.value})}
+                  fullWidth
+                  size="small"
+                  multiline
+                  rows={2}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={handleCreateBlend}
+              disabled={createBlendMutation.isPending}
+            >
+              {createBlendMutation.isPending ? '作成中...' : 'ブレンド追加'}
+            </Button>
+          </Box>
+
+          {/* Blends list */}
+          <List>
+            {blends?.map((blend) => (
+              <ListItem key={blend.id} divider>
+                {editingBlend?.id === blend.id ? (
+                  <Box sx={{ width: '100%' }}>
+                    <Grid container spacing={2} sx={{ mb: 1 }}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          value={editingBlend.name}
+                          onChange={(e) => setEditingBlend({...editingBlend, name: e.target.value})}
+                          fullWidth
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={editingBlend.isActive}
+                              onChange={(e) => setEditingBlend({...editingBlend, isActive: e.target.checked})}
+                            />
+                          }
+                          label="表示"
+                        />
+                      </Grid>
+                    </Grid>
+                    <TextField
+                      value={editingBlend.description || ''}
+                      onChange={(e) => setEditingBlend({...editingBlend, description: e.target.value})}
+                      fullWidth
+                      size="small"
+                      multiline
+                      rows={2}
+                      sx={{ mb: 2 }}
+                      placeholder="説明"
+                    />
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                      <IconButton onClick={handleUpdateBlend} color="primary" size="large">
+                        <Save />
+                      </IconButton>
+                      <IconButton onClick={() => setEditingBlend(null)} size="large">
+                        <Cancel />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                ) : (
+                  <>
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {blend.name}
+                          <Chip
+                            icon={blend.isActive ? <Visibility /> : <VisibilityOff />}
+                            label={blend.isActive ? '表示' : '非表示'}
+                            size="small"
+                            color={blend.isActive ? 'success' : 'default'}
+                          />
+                        </Box>
+                      }
+                      secondary={blend.description || '説明なし'}
+                    />
+                    <ListItemSecondaryAction>
+                      <IconButton onClick={() => setEditingBlend(blend)} size="small">
+                        <Edit />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => deleteBlendMutation.mutate(blend.id)} 
                         size="small" 
                         color="error"
                       >
@@ -547,12 +774,14 @@ const AdminPage = () => {
           <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)} sx={{ mb: 3 }}>
             <Tab label="メニュー管理" />
             <Tab label="カテゴリー管理" />
+            <Tab label="ブレンド管理" />
             <Tab label="データ管理" />
           </Tabs>
 
           {tabValue === 0 && renderMenuManagement()}
           {tabValue === 1 && renderCategoryManagement()}
-          {tabValue === 2 && renderDataManagement()}
+          {tabValue === 2 && renderBlendManagement()}
+          {tabValue === 3 && renderDataManagement()}
         </Container>
       </Box>
 

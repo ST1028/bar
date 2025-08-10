@@ -75,7 +75,7 @@ const OrderPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              {category.items.length > 0 && (
+              {(category.items?.length || 0) > 0 && (
                 <>
                   <Box sx={{ mb: 3, mt: 4 }}>
                     <Chip
@@ -94,7 +94,7 @@ const OrderPage = () => {
                     />
                   </Box>
                   
-                  {category.items.map((item) => (
+                  {category.items?.map((item) => (
                     <MenuItemCard key={item.id} item={item} />
                   ))}
                   

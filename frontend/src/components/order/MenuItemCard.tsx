@@ -6,14 +6,13 @@ import {
   Typography,
   Button,
   Box,
-  IconButton,
   TextField,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import { Add, Remove, AddShoppingCart } from '@mui/icons-material';
+import { AddShoppingCart } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
@@ -25,7 +24,7 @@ interface MenuItemCardProps {
 }
 
 const MenuItemCard = ({ item }: MenuItemCardProps) => {
-  const [quantity, setQuantity] = useState(1);
+  const quantity = 1; // Fixed at 1
   const [remarks, setRemarks] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const { addItem } = useCartStore();
@@ -48,8 +47,8 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
       remarks: remarks.trim(),
     });
 
-    toast.success(`${item.name} を${quantity}個カートに追加しました`);
-    setQuantity(1);
+    toast.success(`${item.name} をカートに追加しました`);
+    // quantity is now fixed at 1
     setRemarks('');
     setDialogOpen(false);
   };
@@ -109,40 +108,13 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
               </Box>
             </Box>
             
-            {/* Quantity and Add button */}
+            {/* Add button - quantity fixed at 1 */}
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
-              justifyContent: 'space-between',
+              justifyContent: 'flex-end',
               gap: 1
             }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <IconButton
-                  size="small"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  disabled={quantity <= 1}
-                  sx={{ minWidth: 32, width: 32, height: 32 }}
-                >
-                  <Remove fontSize="small" />
-                </IconButton>
-                <Typography variant="body1" sx={{ 
-                  mx: 1.5, 
-                  minWidth: '24px', 
-                  textAlign: 'center',
-                  fontWeight: 600
-                }}>
-                  {quantity}
-                </Typography>
-                <IconButton
-                  size="small"
-                  onClick={() => setQuantity(quantity + 1)}
-                  disabled={quantity >= 10}
-                  sx={{ minWidth: 32, width: 32, height: 32 }}
-                >
-                  <Add fontSize="small" />
-                </IconButton>
-              </Box>
-              
               <Button
                 variant="contained"
                 size="medium"

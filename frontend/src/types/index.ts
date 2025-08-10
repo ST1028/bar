@@ -6,15 +6,28 @@ export interface MenuItem {
   recipe?: string;
   thumbnail?: string;
   isRemarksRequired: boolean;
+  categoryId: string;
+  isActive?: boolean;
+  availableBlends?: string[]; // Blend IDs that can be selected for this menu item
 }
 
 export interface MenuCategory {
   id: string;
   name: string;
   order: number;
-  thumbnail: string;
-  isActive: boolean;
-  items: MenuItem[];
+  thumbnail?: string;
+  isActive?: boolean;
+  visible?: boolean;
+  description?: string;
+  items?: MenuItem[];
+}
+
+export interface Blend {
+  id: string;
+  name: string;
+  description?: string;
+  isActive?: boolean;
+  order?: number;
 }
 
 export interface Patron {
@@ -30,6 +43,8 @@ export interface OrderItem {
   quantity: number;
   subtotal: number;
   remarks?: string;
+  blendId?: string;
+  blendName?: string;
 }
 
 export interface Order {
@@ -48,6 +63,8 @@ export interface CartItem {
   price: number;
   quantity: number;
   remarks?: string;
+  blendId?: string;
+  blendName?: string;
 }
 
 export interface User {

@@ -63,7 +63,6 @@ const getMenus = async () => {
           recipe: item.recipe,
           thumbnail: item.thumbnail,
           isRemarksRequired: item.isRemarksRequired,
-          availableBlends: item.availableBlends || [],
         }))
         .sort((a, b) => a.name.localeCompare(b.name)),
     }))

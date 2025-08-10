@@ -130,8 +130,6 @@ const createOrder = async (event, tenantId, user) => {
         subtotal: itemTotal,
         remarks: item.remarks || '',
         recipe: menuItem.recipe || '',
-        blendId: item.blendId || '',
-        blendName: item.blendName || '',
       });
     }
 
@@ -200,18 +198,11 @@ const sendSlackNotification = async (orderData) => {
     const itemsText = orderData.items
       .map(item => {
         let text = `• ${item.name} x${item.quantity} (¥${item.subtotal.toLocaleString()})`;
-        if (item.blendName && item.blendName.trim()) {
-          text += `\n  🍯 ブレンド: ${item.blendName}`;
-        }
         if (item.recipe && item.recipe.trim()) {
-          // Normalize line endings to \n only
-          const normalizedRecipe = item.recipe.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-          text += `\n  📋 レシピ: ${normalizedRecipe}`;
+          text += `\n  📋 レシピ: ${item.recipe}`;
         }
         if (item.remarks && item.remarks.trim()) {
-          // Normalize line endings to \n only
-          const normalizedRemarks = item.remarks.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-          text += `\n  💬 備考: ${normalizedRemarks}`;
+          text += `\n  💬 備考: ${item.remarks}`;
         }
         return text;
       })

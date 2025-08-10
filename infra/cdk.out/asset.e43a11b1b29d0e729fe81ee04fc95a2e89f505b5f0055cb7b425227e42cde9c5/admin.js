@@ -38,8 +38,6 @@ exports.handler = async (event) => {
           return await getMenuItems();
         } else if (resource === '/admin/categories') {
           return await getCategories();
-        } else if (resource === '/admin/blends') {
-          return await getBlends();
         }
         console.error(`GET route not found: ${resource}`);
         return errorResponse(404, 'Resource not found');
@@ -52,8 +50,6 @@ exports.handler = async (event) => {
           return await createMenuItem(event);
         } else if (resource === '/admin/categories') {
           return await createCategory(event);
-        } else if (resource === '/admin/blends') {
-          return await createBlend(event);
         }
         console.error(`POST route not found: ${resource}`);
         return errorResponse(404, 'Resource not found');
@@ -62,8 +58,6 @@ exports.handler = async (event) => {
           return await updateMenuItem(event);
         } else if (resource === '/admin/categories/{id}') {
           return await updateCategory(event);
-        } else if (resource === '/admin/blends/{id}') {
-          return await updateBlend(event);
         }
         console.error(`PATCH route not found: ${resource}`);
         return errorResponse(404, 'Resource not found');
@@ -72,8 +66,6 @@ exports.handler = async (event) => {
           return await deleteMenuItem(event);
         } else if (resource === '/admin/categories/{id}') {
           return await deleteCategory(event);
-        } else if (resource === '/admin/blends/{id}') {
-          return await deleteBlend(event);
         }
         console.error(`DELETE route not found: ${resource}`);
         return errorResponse(404, 'Resource not found');
@@ -190,7 +182,6 @@ const getMenuItems = async () => {
       description: item.description,
       recipe: item.recipe,
       categoryId: item.categoryId,
-      availableBlends: item.availableBlends || [],
       isActive: item.isActive,
     }));
 
@@ -204,7 +195,7 @@ const getMenuItems = async () => {
 const createMenuItem = async (event) => {
   try {
     const body = JSON.parse(event.body || '{}');
-    const { name, price, description, categoryId, recipe, availableBlends } = body;
+    const { name, price, description, categoryId, recipe } = body;
 
     if (!name || !price || !categoryId) {
       return errorResponse(400, 'Name, price, and categoryId are required');
@@ -222,7 +213,6 @@ const createMenuItem = async (event) => {
       description: description || '',
       recipe: recipe || '',
       categoryId,
-      availableBlends: availableBlends || [],
       isActive: true,
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -238,7 +228,6 @@ const createMenuItem = async (event) => {
         description: description || '',
         recipe: recipe || '',
         categoryId,
-        availableBlends: availableBlends || [],
         isActive: true,
       }
     });
@@ -257,7 +246,7 @@ const updateMenuItem = async (event) => {
 
     const body = JSON.parse(event.body || '{}');
     console.log('Update menu item request body:', JSON.stringify(body, null, 2));
-    const { name, price, description, categoryId, recipe, isActive, availableBlends } = body;
+    const { name, price, description, categoryId, recipe, isActive } = body;
 
     const updateExpression = [];
     const expressionAttributeNames = {};
@@ -299,26 +288,18 @@ const updateMenuItem = async (event) => {
       expressionAttributeValues[':isActive'] = isActive;
     }
 
-    if (availableBlends !== undefined) {
-      updateExpression.push('#availableBlends = :availableBlends');
-      expressionAttributeNames['#availableBlends'] = 'availableBlends';
-      expressionAttributeValues[':availableBlends'] = availableBlends || [];
-    }
-
     updateExpression.push('#updatedAt = :updatedAt');
     expressionAttributeNames['#updatedAt'] = 'updatedAt';
     expressionAttributeValues[':updatedAt'] = new Date().toISOString();
 
-    await updateItem(
-      TABLE_NAME,
-      {
-        pk: 'TENANT#PUBLIC',
-        sk: `MENU#${menuId}`
-      },
-      `SET ${updateExpression.join(', ')}`,
-      expressionAttributeValues,
-      expressionAttributeNames
-    );
+    await updateItem(TABLE_NAME, {
+      pk: 'TENANT#PUBLIC',
+      sk: `MENU#${menuId}`
+    }, {
+      UpdateExpression: `SET ${updateExpression.join(', ')}`,
+      ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues
+    });
 
     return response(200, {
       item: {
@@ -328,7 +309,6 @@ const updateMenuItem = async (event) => {
         description,
         recipe,
         categoryId,
-        availableBlends,
         isActive
       }
     });
@@ -482,16 +462,10 @@ const updateCategory = async (event) => {
     
     console.log('DynamoDB update parameters:', JSON.stringify(updateParams, null, 2));
 
-    await updateItem(
-      TABLE_NAME,
-      {
-        pk: 'TENANT#PUBLIC',
-        sk: `CATEGORY#${categoryId}`
-      },
-      updateParams.UpdateExpression,
-      updateParams.ExpressionAttributeValues,
-      updateParams.ExpressionAttributeNames
-    );
+    await updateItem(TABLE_NAME, {
+      pk: 'TENANT#PUBLIC',
+      sk: `CATEGORY#${categoryId}`
+    }, updateParams);
 
     return response(200, {
       category: {
@@ -536,191 +510,6 @@ const deleteCategory = async (event) => {
     return response(200, { message: 'Category deleted successfully' });
   } catch (error) {
     console.error('Error deleting category:', error);
-    throw error;
-  }
-};
-
-// Blends CRUD
-const getBlends = async () => {
-  try {
-    const blends = await queryItems(TABLE_NAME, {
-      expression: '#pk = :pk AND begins_with(#sk, :sk)',
-      names: { '#pk': 'pk', '#sk': 'sk' },
-      values: { ':pk': 'TENANT#PUBLIC', ':sk': 'BLEND#' },
-    });
-
-    const items = blends.map(blend => ({
-      id: blend.blendId,
-      name: blend.name,
-      description: blend.description,
-      isActive: blend.isActive !== false,
-      order: blend.order,
-    }));
-
-    return response(200, { blends: items });
-  } catch (error) {
-    console.error('Error getting blends:', error);
-    throw error;
-  }
-};
-
-const createBlend = async (event) => {
-  try {
-    const body = JSON.parse(event.body || '{}');
-    const { name, description, isActive } = body;
-
-    if (!name) {
-      return errorResponse(400, 'Name is required');
-    }
-
-    const blendId = uuidv4();
-    const timestamp = new Date().toISOString();
-
-    // Get max order for new blend
-    const blends = await queryItems(TABLE_NAME, {
-      expression: '#pk = :pk AND begins_with(#sk, :sk)',
-      names: { '#pk': 'pk', '#sk': 'sk' },
-      values: { ':pk': 'TENANT#PUBLIC', ':sk': 'BLEND#' },
-    });
-
-    const maxOrder = blends.length > 0 ? Math.max(...blends.map(b => b.order || 0)) : 0;
-
-    const item = {
-      pk: 'TENANT#PUBLIC',
-      sk: `BLEND#${blendId}`,
-      blendId,
-      name,
-      description: description || '',
-      isActive: isActive !== false,
-      order: maxOrder + 1,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    };
-
-    await putItem(TABLE_NAME, item);
-
-    return response(201, {
-      blend: {
-        id: blendId,
-        name,
-        description: description || '',
-        isActive: isActive !== false,
-        order: maxOrder + 1,
-      }
-    });
-  } catch (error) {
-    console.error('Error creating blend:', error);
-    throw error;
-  }
-};
-
-const updateBlend = async (event) => {
-  try {
-    const blendId = event.pathParameters?.id;
-    if (!blendId) {
-      return errorResponse(400, 'Blend ID is required');
-    }
-
-    const body = JSON.parse(event.body || '{}');
-    console.log('Update blend request body:', JSON.stringify(body, null, 2));
-    const { name, description, isActive, order } = body;
-
-    const updateExpression = [];
-    const expressionAttributeNames = {};
-    const expressionAttributeValues = {};
-
-    if (name !== undefined) {
-      updateExpression.push('#name = :name');
-      expressionAttributeNames['#name'] = 'name';
-      expressionAttributeValues[':name'] = name;
-    }
-
-    if (description !== undefined) {
-      updateExpression.push('#description = :description');
-      expressionAttributeNames['#description'] = 'description';
-      expressionAttributeValues[':description'] = description;
-    }
-
-    if (isActive !== undefined) {
-      updateExpression.push('#isActive = :isActive');
-      expressionAttributeNames['#isActive'] = 'isActive';
-      expressionAttributeValues[':isActive'] = isActive;
-    }
-
-    if (order !== undefined) {
-      updateExpression.push('#order = :order');
-      expressionAttributeNames['#order'] = 'order';
-      expressionAttributeValues[':order'] = Number(order);
-    }
-
-    updateExpression.push('#updatedAt = :updatedAt');
-    expressionAttributeNames['#updatedAt'] = 'updatedAt';
-    expressionAttributeValues[':updatedAt'] = new Date().toISOString();
-
-    const updateParams = {
-      UpdateExpression: `SET ${updateExpression.join(', ')}`,
-      ExpressionAttributeNames: expressionAttributeNames,
-      ExpressionAttributeValues: expressionAttributeValues
-    };
-    
-    console.log('DynamoDB update parameters:', JSON.stringify(updateParams, null, 2));
-
-    await updateItem(
-      TABLE_NAME,
-      {
-        pk: 'TENANT#PUBLIC',
-        sk: `BLEND#${blendId}`
-      },
-      updateParams.UpdateExpression,
-      updateParams.ExpressionAttributeValues,
-      updateParams.ExpressionAttributeNames
-    );
-
-    return response(200, {
-      blend: {
-        id: blendId,
-        name,
-        description,
-        isActive,
-        order
-      }
-    });
-  } catch (error) {
-    console.error('Error updating blend:', error);
-    throw error;
-  }
-};
-
-const deleteBlend = async (event) => {
-  try {
-    const blendId = event.pathParameters?.id;
-    if (!blendId) {
-      return errorResponse(400, 'Blend ID is required');
-    }
-
-    // Check if blend is used in menu items
-    const menuItems = await queryItems(TABLE_NAME, {
-      expression: '#pk = :pk AND begins_with(#sk, :sk)',
-      names: { '#pk': 'pk', '#sk': 'sk' },
-      values: { ':pk': 'TENANT#PUBLIC', ':sk': 'MENU#' },
-    });
-
-    const menuItemsUsingBlend = menuItems.filter(item => 
-      item.availableBlends && item.availableBlends.includes(blendId)
-    );
-    
-    if (menuItemsUsingBlend.length > 0) {
-      return errorResponse(400, 'Cannot delete blend that is used in menu items');
-    }
-
-    await deleteItem(TABLE_NAME, {
-      pk: 'TENANT#PUBLIC',
-      sk: `BLEND#${blendId}`
-    });
-
-    return response(200, { message: 'Blend deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting blend:', error);
     throw error;
   }
 };
