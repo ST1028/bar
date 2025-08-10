@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Box, Collapse } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MenuCategory } from '../../types';
+import type { MenuCategory } from '../../types';
 import MenuItemCard from './MenuItemCard';
 
 interface MenuCategoryCardProps {

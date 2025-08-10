@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { MenuCategory, Patron, Order, CartItem } from '../types';
+import type { MenuCategory, Patron, Order, CartItem } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_GATEWAY_URL;
 

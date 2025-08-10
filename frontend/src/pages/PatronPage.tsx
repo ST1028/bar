@@ -22,7 +22,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 import { patronAPI } from '../services/api';
-import { Patron } from '../types';
+import type { Patron } from '../types';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import ErrorMessage from '../components/ErrorMessage';
 

@@ -17,7 +17,7 @@ import { Add, Remove, AddShoppingCart } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
-import { MenuItem } from '../../types';
+import type { MenuItem } from '../../types';
 import { useCartStore } from '../../stores/cart';
 
 interface MenuItemCardProps {

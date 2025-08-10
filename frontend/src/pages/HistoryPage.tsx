@@ -13,17 +13,17 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  SelectChangeEvent,
   Accordion,
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 import { History, ExpandMore } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { orderAPI, patronAPI } from '../services/api';
-import { Order } from '../types';
+import type { Order } from '../types';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import ErrorMessage from '../components/ErrorMessage';
 

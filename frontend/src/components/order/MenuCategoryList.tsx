@@ -1,6 +1,6 @@
 import { Grid, Typography, Box } from '@mui/material';
 import { motion } from 'framer-motion';
-import { MenuCategory } from '../../types';
+import type { MenuCategory } from '../../types';
 import MenuCategoryCard from './MenuCategoryCard';
 
 interface MenuCategoryListProps {

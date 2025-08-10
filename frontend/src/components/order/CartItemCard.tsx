@@ -2,7 +2,7 @@ import { Box, Typography, IconButton, TextField } from '@mui/material';
 import { Add, Remove, Delete } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
-import { CartItem } from '../../types';
+import type { CartItem } from '../../types';
 import { useCartStore } from '../../stores/cart';
 
 interface CartItemCardProps {

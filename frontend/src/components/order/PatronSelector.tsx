@@ -13,7 +13,7 @@ import {
 import { Person, PersonAdd } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
-import { Patron } from '../../types';
+import type { Patron } from '../../types';
 import { useCartStore } from '../../stores/cart';
 
 interface PatronSelectorProps {

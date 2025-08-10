@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 import { useCartStore } from '../../stores/cart';
-import { orderAPI, patronAPI } from '../../services/api';
+import { orderAPI } from '../../services/api';
 import CartItemCard from './CartItemCard';
 
 interface CartDrawerProps {

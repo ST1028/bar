@@ -52,17 +52,6 @@ const LoginPage = () => {
             
             <Authenticator
               hideSignUp={true}
-              components={{
-                Header() {
-                  return null;
-                },
-                ResetPassword() {
-                  return <div style={{ display: 'none' }}></div>;
-                },
-                ForgotPassword() {
-                  return <div style={{ display: 'none' }}></div>;
-                },
-              }}
               formFields={{
                 signIn: {
                   username: {
