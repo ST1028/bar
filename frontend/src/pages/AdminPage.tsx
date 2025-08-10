@@ -95,7 +95,7 @@ const AdminPage = () => {
     mutationFn: (item: any) => menuAPI.createMenuItem(item),
     onSuccess: () => {
       toast.success('メニューアイテムを作成しました');
-      setNewItem({ name: '', description: '', recipe: '', price: 0, categoryId: '' });
+      setNewItem({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] });
       queryClient.invalidateQueries({ queryKey: ['menu-items'] });
     },
     onError: () => toast.error('作成に失敗しました'),
@@ -200,6 +200,7 @@ const AdminPage = () => {
       description: editingItem.description,
       recipe: editingItem.recipe,
       categoryId: editingItem.categoryId,
+      availableBlends: editingItem.availableBlends,
       isActive: editingItem.isActive
     });
   };
