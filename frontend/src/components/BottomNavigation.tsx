@@ -62,23 +62,19 @@ const BottomNavigation = () => {
         <BottomNavigationAction
           label="Order"
           icon={<Restaurant />}
-          sx={{ color: 'primary.main' }}
         />
         <BottomNavigationAction
           label="Patrons"
           icon={<People />}
-          sx={{ color: 'primary.main' }}
         />
         <BottomNavigationAction
           label="History"
           icon={<History />}
-          sx={{ color: 'primary.main' }}
         />
         {isAdmin && (
           <BottomNavigationAction
             label="Admin"
             icon={<AdminPanelSettings />}
-            sx={{ color: 'primary.main' }}
           />
         )}
       </MuiBottomNavigation>

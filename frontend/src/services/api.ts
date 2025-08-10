@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import type { MenuCategory, Patron, Order, CartItem } from '../types';
+import type { MenuCategory, Patron, Order, CartItem, MenuItem } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_GATEWAY_URL;
 
@@ -67,6 +67,54 @@ export const menuAPI = {
   getMenus: async (): Promise<MenuCategory[]> => {
     const response = await apiClient.get<{ categories: MenuCategory[] }>('/menus');
     return response.data.categories;
+  },
+  
+  getMenuItems: async (): Promise<MenuItem[]> => {
+    // Use existing /menus endpoint and extract menu items from categories
+    const response = await apiClient.get<{ categories: MenuCategory[] }>('/menus');
+    const allItems: MenuItem[] = [];
+    response.data.categories.forEach(category => {
+      category.items.forEach(item => {
+        allItems.push({
+          ...item,
+          categoryId: category.id
+        });
+      });
+    });
+    return allItems;
+  },
+  
+  getCategories: async (): Promise<MenuCategory[]> => {
+    const response = await apiClient.get<{ categories: MenuCategory[] }>('/menus');
+    return response.data.categories;
+  },
+  
+  createMenuItem: async (item: Omit<MenuItem, 'id'>): Promise<MenuItem> => {
+    const response = await apiClient.post<{ item: MenuItem }>('/menu-items', item);
+    return response.data.item;
+  },
+  
+  updateMenuItem: async (id: string, item: Partial<MenuItem>): Promise<MenuItem> => {
+    const response = await apiClient.patch<{ item: MenuItem }>(`/menu-items/${id}`, item);
+    return response.data.item;
+  },
+  
+  deleteMenuItem: async (id: string): Promise<void> => {
+    await apiClient.delete(`/menu-items/${id}`);
+  },
+  
+  createCategory: async (category: Omit<MenuCategory, 'id' | 'items'>): Promise<MenuCategory> => {
+    const response = await apiClient.post<{ category: MenuCategory }>('/categories', category);
+    return response.data.category;
+  },
+  
+  updateCategory: async (id: string, category: Partial<MenuCategory>): Promise<MenuCategory> => {
+    const response = await apiClient.patch<{ category: MenuCategory }>(`/categories/${id}`, category);
+    return response.data.category;
+  },
+  
+  deleteCategory: async (id: string): Promise<void> => {
+    await apiClient.delete(`/categories/${id}`);
   },
 };
 
