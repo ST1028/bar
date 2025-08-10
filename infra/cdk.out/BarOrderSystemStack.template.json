@@ -82,6 +82,75 @@
     "aws:cdk:path": "BarOrderSystemStack/BarAppTable/Resource"
    }
   },
+  "BarAppAssetsB5874F87": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketName": "bar-app-assets-611829065744-us-east-1",
+    "CorsConfiguration": {
+     "CorsRules": [
+      {
+       "AllowedHeaders": [
+        "*"
+       ],
+       "AllowedMethods": [
+        "GET",
+        "HEAD"
+       ],
+       "AllowedOrigins": [
+        "*"
+       ],
+       "MaxAge": 3000
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "IgnorePublicAcls": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppAssets/Resource"
+   }
+  },
+  "BarAppAssetsPolicy8A626E53": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "BarAppAssetsB5874F87"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "BarAppAssetsB5874F87",
+            "Arn"
+           ]
+          },
+          "/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppAssets/Policy/Resource"
+   }
+  },
   "BarAppUserPoolA53E0798": {
    "Type": "AWS::Cognito::UserPool",
    "Properties": {
@@ -165,6 +234,7 @@
     ],
     "ExplicitAuthFlows": [
      "ALLOW_USER_PASSWORD_AUTH",
+     "ALLOW_ADMIN_USER_PASSWORD_AUTH",
      "ALLOW_USER_SRP_AUTH",
      "ALLOW_REFRESH_TOKEN_AUTH"
     ],
@@ -200,13 +270,13 @@
     ],
     "Content": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "f7edfbdde2e5ecf2dec5f5c1b53cf49f28ea14c6846dd576c65015dd8a78e6f4.zip"
+     "S3Key": "a10777d6bf94f85624f2a5bd55f90b96387d112609c17acd2542ec58507c3415.zip"
     },
     "Description": "Shared utilities and AWS SDK v3"
    },
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/SharedLayer/Resource",
-    "aws:asset:path": "asset.f7edfbdde2e5ecf2dec5f5c1b53cf49f28ea14c6846dd576c65015dd8a78e6f4",
+    "aws:asset:path": "asset.a10777d6bf94f85624f2a5bd55f90b96387d112609c17acd2542ec58507c3415",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Content"
    }
@@ -321,7 +391,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
+     "S3Key": "e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f.zip"
     },
     "Environment": {
      "Variables": {
@@ -354,7 +424,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/MenusFunction/Resource",
-    "aws:asset:path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+    "aws:asset:path": "asset.e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -364,7 +434,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
+     "S3Key": "e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f.zip"
     },
     "Environment": {
      "Variables": {
@@ -397,7 +467,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/PatronsFunction/Resource",
-    "aws:asset:path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+    "aws:asset:path": "asset.e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -407,7 +477,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
+     "S3Key": "e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f.zip"
     },
     "Environment": {
      "Variables": {
@@ -443,7 +513,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/OrdersFunction/Resource",
-    "aws:asset:path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+    "aws:asset:path": "asset.e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -453,7 +523,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a.zip"
+     "S3Key": "e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f.zip"
     },
     "Environment": {
      "Variables": {
@@ -486,7 +556,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/AdminFunction/Resource",
-    "aws:asset:path": "asset.5b8e44a4f5473f7312d7e1278783717d1523e6a313cfd3927d3be64a5e48c14a",
+    "aws:asset:path": "asset.e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -578,7 +648,7 @@
     "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Account"
    }
   },
-  "BarAppApiDeploymentFD172AA3091bf632c99ad24adc0ff9b6fce5e3d0": {
+  "BarAppApiDeploymentFD172AA3bbc9c2923fdb6e67f49c7fa4e67f17a3": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "Bar Order System API",
@@ -588,6 +658,9 @@
    },
    "DependsOn": [
     "BarAppApiadminOPTIONS72D88C25",
+    "BarAppApiadminresetallOPTIONS3E5ED567",
+    "BarAppApiadminresetallPOSTE0477F08",
+    "BarAppApiadminresetall848A8219",
     "BarAppApiadminresetOPTIONS0E23D7BF",
     "BarAppApiadminresetPOST4B0AF6CA",
     "BarAppApiadminreset8CDD8529",
@@ -617,7 +690,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "BarAppApiDeploymentFD172AA3091bf632c99ad24adc0ff9b6fce5e3d0"
+     "Ref": "BarAppApiDeploymentFD172AA3bbc9c2923fdb6e67f49c7fa4e67f17a3"
     },
     "MethodSettings": [
      {
@@ -818,10 +891,7 @@
   "BarAppApimenusGETD13DBC6D": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
-    "AuthorizationType": "COGNITO_USER_POOLS",
-    "AuthorizerId": {
-     "Ref": "CognitoAuthorizerF3215DBC"
-    },
+    "AuthorizationType": "NONE",
     "HttpMethod": "GET",
     "Integration": {
      "IntegrationHttpMethod": "POST",
@@ -1816,10 +1886,178 @@
     "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset/POST/Resource"
    }
   },
+  "BarAppApiadminresetall848A8219": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "BarAppApiadmin10285DB4"
+    },
+    "PathPart": "reset-all",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset-all/Resource"
+   }
+  },
+  "BarAppApiadminresetallOPTIONS3E5ED567": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApiadminresetall848A8219"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset-all/OPTIONS/Resource"
+   }
+  },
+  "BarAppApiadminresetallPOSTApiPermissionBarOrderSystemStackBarAppApi8C637A8BPOSTadminresetallB42D039E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/POST/admin/reset-all"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset-all/POST/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.reset-all"
+   }
+  },
+  "BarAppApiadminresetallPOSTApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPOSTadminresetall3C5502C6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/POST/admin/reset-all"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset-all/POST/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.reset-all"
+   }
+  },
+  "BarAppApiadminresetallPOSTE0477F08": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadminresetall848A8219"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset-all/POST/Resource"
+   }
+  },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/22QT0/DMAzFPwv3LOwPF47dEFxATB1wndzUdNmapIodplLlu6O0HSsSJ/+e31NsZymXi7mc38CZZqo8zWpdyG7HoE4CzrTvytaCcWUhuzcoahSbT9tDFMpVVrOT3Tuh3zpXJ+8/fvIuNOKiNrVGy1N/6ERBZNJor221BQ8GGX3K/YooajBFCbJ7hhb9B3rSzqbIH/0YrOLRmPIWvdGUIlHQag9EyCSzVASt5DqoE/IaCIUGI7vcDeemGgU0ugLGM7Sy2wyXX/anLPDBef09rDtRORJnje5fuWKmlAuWxQM2tWvN+BsTtWOo+tED5EgueIX9ai/IB1cmc6SLOw7pOcZru78vPaRtlTKvgZvAUVhXojzS7ddyLhf38u7mSFrPfLCsDcp8qD9c4PLdHgIAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21Ry07DQAz8lt63S1suXNMiuICIyuNauRs3uN1HtA+qEOXf2c2mNEhIkTwz9toeZ8VXywVfzODs5qI6zSXteffqQZxYlHZd1WpQporiG+wlss1BD6Bn7pZ36yBO6JM4ohxKI0m0V3nkmazBxdfC1Jq84d27Q1saI1P1f/jRmtCwC9tIQu2n+azEdZxKi1vSdQkWFHq0qe6X9EyC2lfAuydo0X6gdWR0KvnDH4IWfkxMcYlWkUslyfoOnEPveJECI4iztyafJ8WeQUM1eDxDy7tN9nrZ2BXBfxpL33nBCdui80VDQ5crLIQwIZq+x0aaVo3+Jyz+rnoYnUF8aoIVmA7NnjF2r1JyRJfsOGTAfX+VB0epUTxkqnkJvgnxvtpUyI/u5mt5x+O3mB0d0dzGxUgh3+b4A4jvLq1OAgAA"
    },
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/CDKMetadata/Default"
@@ -1888,6 +2126,21 @@
    "Description": "DynamoDB Table Name",
    "Value": {
     "Ref": "BarAppTableC35CFE0C"
+   }
+  },
+  "AssetsBucketName": {
+   "Description": "S3 Assets Bucket Name",
+   "Value": {
+    "Ref": "BarAppAssetsB5874F87"
+   }
+  },
+  "AssetsBucketUrl": {
+   "Description": "S3 Assets Bucket URL",
+   "Value": {
+    "Fn::GetAtt": [
+     "BarAppAssetsB5874F87",
+     "WebsiteURL"
+    ]
    }
   }
  },

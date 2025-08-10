@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Avatar, Box } from '@mui/material';
 import { AccountCircle, ExitToApp } from '@mui/icons-material';
 import { useState } from 'react';
 import { signOut } from 'aws-amplify/auth';
@@ -32,9 +32,21 @@ const TopBar = () => {
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          🍺 Bar Order
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+          <Avatar 
+            src="https://bar-app-assets-611829065744-us-east-1.s3.amazonaws.com/sf-bar-logo.png"
+            alt="Bar Logo"
+            sx={{ 
+              width: 32, 
+              height: 32, 
+              mr: 1.5,
+              bgcolor: 'primary.light'
+            }}
+          />
+          <Typography variant="h6" component="div">
+            Bar
+          </Typography>
+        </Box>
         <div>
           <IconButton
             size="large"

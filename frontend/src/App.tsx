@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Toaster } from 'react-hot-toast';
 import { Amplify } from 'aws-amplify';
 import { getCurrentUser } from 'aws-amplify/auth';
+import { Hub } from 'aws-amplify/utils';
 
 import { amplifyConfig } from './config/amplify';
 import { useAuthStore } from './stores/auth';
@@ -28,18 +29,30 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#f57c00',
-      light: '#ffad42',
-      dark: '#bb4d00',
+      main: '#81C784',     // Soft green
+      light: '#A5D6A7',
+      dark: '#66BB6A',
     },
     secondary: {
-      main: '#1976d2',
-      light: '#42a5f5',
-      dark: '#1565c0',
+      main: '#90CAF9',     // Soft blue
+      light: '#BBDEFB',
+      dark: '#64B5F6',
     },
     background: {
-      default: '#fafafa',
-      paper: '#ffffff',
+      default: '#F8F9FA',  // Very light gray
+      paper: '#FFFFFF',
+    },
+    success: {
+      main: '#A5D6A7',     // Soft green
+    },
+    warning: {
+      main: '#FFCC80',     // Soft orange
+    },
+    error: {
+      main: '#FFAB91',     // Soft coral
+    },
+    info: {
+      main: '#90CAF9',     // Soft blue
     },
   },
   typography: {
@@ -61,18 +74,48 @@ function App() {
 
   useEffect(() => {
     checkAuthState();
+
+    // Listen to Amplify Hub events for authentication changes
+    const hubListenerCancelToken = Hub.listen('auth', (data) => {
+      const { payload } = data;
+      console.log('🎧 Amplify Hub event:', payload.event);
+      
+      switch (payload.event) {
+        case 'signedIn':
+          console.log('✅ User signed in via Hub');
+          checkAuthState();
+          break;
+        case 'signedOut':
+          console.log('👋 User signed out via Hub');
+          setUser(null);
+          break;
+        case 'tokenRefresh':
+          console.log('🔄 Token refreshed via Hub');
+          checkAuthState();
+          break;
+        default:
+          break;
+      }
+    });
+
+    return () => {
+      hubListenerCancelToken();
+    };
   }, []);
 
   const checkAuthState = async () => {
+    console.log('🔍 Checking authentication state...');
+    setLoading(true);
     try {
       const currentUser = await getCurrentUser();
+      console.log('✅ User authenticated:', currentUser);
       setUser({
         sub: currentUser.userId,
         email: currentUser.signInDetails?.loginId || '',
         groups: [], // Will be populated from token claims if needed
       });
     } catch (error) {
-      console.log('Not authenticated:', error);
+      console.log('❌ Not authenticated:', error);
       setUser(null);
     } finally {
       setLoading(false);

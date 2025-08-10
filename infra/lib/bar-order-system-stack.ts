@@ -5,6 +5,8 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as amplify from 'aws-cdk-lib/aws-amplify';
 import { Construct } from 'constructs';
 
 export class BarOrderSystemStack extends cdk.Stack {
@@ -32,6 +34,22 @@ export class BarOrderSystemStack extends cdk.Stack {
       indexName: 'gsi2',
       partitionKey: { name: 'gsi2pk', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'gsi2sk', type: dynamodb.AttributeType.STRING },
+    });
+
+    // S3 Bucket for static assets (logos, images)
+    const assetsBucket = new s3.Bucket(this, 'BarAppAssets', {
+      bucketName: `bar-app-assets-${this.account}-${this.region}`,
+      publicReadAccess: true,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS,
+      cors: [
+        {
+          allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.HEAD],
+          allowedOrigins: ['*'],
+          allowedHeaders: ['*'],
+          maxAge: 3000,
+        },
+      ],
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
     // Cognito User Pool
@@ -63,6 +81,7 @@ export class BarOrderSystemStack extends cdk.Stack {
       authFlows: {
         userPassword: true,
         userSrp: true,
+        adminUserPassword: true,
       },
       generateSecret: false,
     });
@@ -201,9 +220,7 @@ export class BarOrderSystemStack extends cdk.Stack {
 
     // API Routes
     const menusResource = api.root.addResource('menus');
-    menusResource.addMethod('GET', new apigateway.LambdaIntegration(menusFunction), {
-      authorizer,
-    });
+    menusResource.addMethod('GET', new apigateway.LambdaIntegration(menusFunction));
 
     const patronsResource = api.root.addResource('patrons');
     patronsResource.addMethod('GET', new apigateway.LambdaIntegration(patronsFunction), {
@@ -232,6 +249,15 @@ export class BarOrderSystemStack extends cdk.Stack {
       authorizer,
     });
 
+    const resetAllResource = adminResource.addResource('reset-all');
+    resetAllResource.addMethod('POST', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+
+    // Note: Amplify hosting setup requires GitHub token and manual configuration
+    // For now, commented out to avoid deployment issues
+    // Users can manually set up Amplify Hosting via AWS Console
+
     // Stack Outputs
     new cdk.CfnOutput(this, 'UserPoolId', {
       value: userPool.userPoolId,
@@ -252,5 +278,17 @@ export class BarOrderSystemStack extends cdk.Stack {
       value: table.tableName,
       description: 'DynamoDB Table Name',
     });
+
+    new cdk.CfnOutput(this, 'AssetsBucketName', {
+      value: assetsBucket.bucketName,
+      description: 'S3 Assets Bucket Name',
+    });
+
+    new cdk.CfnOutput(this, 'AssetsBucketUrl', {
+      value: assetsBucket.bucketWebsiteUrl,
+      description: 'S3 Assets Bucket URL',
+    });
+
+    // Note: Amplify App URL will be available after manual setup
   }
 }

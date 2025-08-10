@@ -10,7 +10,7 @@ export const amplifyConfig = {
     REST: {
       BarAPI: {
         endpoint: import.meta.env.VITE_API_GATEWAY_URL,
-        region: 'ap-northeast-1',
+        region: 'us-east-1',
       },
     },
   },

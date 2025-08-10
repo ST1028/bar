@@ -1,11 +1,15 @@
 import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
-import { Restaurant, People, History } from '@mui/icons-material';
+import { Restaurant, People, History, AdminPanelSettings } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuthStore } from '../stores/auth';
 
 const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuthStore();
+
+  const isAdmin = user?.groups?.includes('admin') || user?.email === 'admin@example.com';
 
   const getValueFromPath = (pathname: string): number => {
     switch (pathname) {
@@ -15,13 +19,16 @@ const BottomNavigation = () => {
         return 1;
       case '/history':
         return 2;
+      case '/admin':
+        return 3;
       default:
         return 0;
     }
   };
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-    const paths = ['/', '/patrons', '/history'];
+    const basePaths = ['/', '/patrons', '/history'];
+    const paths = isAdmin ? [...basePaths, '/admin'] : basePaths;
     navigate(paths[newValue]);
   };
 
@@ -53,20 +60,27 @@ const BottomNavigation = () => {
         }}
       >
         <BottomNavigationAction
-          label="注文"
+          label="Order"
           icon={<Restaurant />}
           sx={{ color: 'primary.main' }}
         />
         <BottomNavigationAction
-          label="注文者管理"
+          label="Patrons"
           icon={<People />}
           sx={{ color: 'primary.main' }}
         />
         <BottomNavigationAction
-          label="履歴"
+          label="History"
           icon={<History />}
           sx={{ color: 'primary.main' }}
         />
+        {isAdmin && (
+          <BottomNavigationAction
+            label="Admin"
+            icon={<AdminPanelSettings />}
+            sx={{ color: 'primary.main' }}
+          />
+        )}
       </MuiBottomNavigation>
     </Paper>
   );

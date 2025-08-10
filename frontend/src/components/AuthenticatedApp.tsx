@@ -6,6 +6,7 @@ import BottomNavigation from './BottomNavigation';
 import OrderPage from '../pages/OrderPage';
 import PatronPage from '../pages/PatronPage';
 import HistoryPage from '../pages/HistoryPage';
+import AdminPage from '../pages/AdminPage';
 import TopBar from './TopBar';
 
 const AuthenticatedApp = () => {
@@ -17,6 +18,7 @@ const AuthenticatedApp = () => {
           <Route path="/" element={<OrderPage />} />
           <Route path="/patrons" element={<PatronPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </AnimatePresence>
       <BottomNavigation />

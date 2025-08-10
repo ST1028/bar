@@ -1,9 +1,23 @@
+import { useEffect } from 'react';
 import { Box, Container, Paper, Typography } from '@mui/material';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../stores/auth';
 import '@aws-amplify/ui-react/styles.css';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    console.log('🔄 LoginPage: Authentication state changed:', isAuthenticated);
+    if (isAuthenticated) {
+      console.log('🎯 LoginPage: User is authenticated, redirecting to /');
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
     <Box
       sx={{
@@ -30,17 +44,23 @@ const LoginPage = () => {
             }}
           >
             <Typography variant="h4" component="h1" gutterBottom>
-              🍺 Bar Order System
+              Bar
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
               ログインしてご注文を開始してください
             </Typography>
             
             <Authenticator
-              hideSignUp={false}
+              hideSignUp={true}
               components={{
                 Header() {
                   return null;
+                },
+                ResetPassword() {
+                  return <div style={{ display: 'none' }}></div>;
+                },
+                ForgotPassword() {
+                  return <div style={{ display: 'none' }}></div>;
                 },
               }}
               formFields={{
@@ -50,17 +70,6 @@ const LoginPage = () => {
                   },
                   password: {
                     placeholder: 'パスワード',
-                  },
-                },
-                signUp: {
-                  email: {
-                    placeholder: 'メールアドレス',
-                  },
-                  password: {
-                    placeholder: 'パスワード（8文字以上）',
-                  },
-                  confirm_password: {
-                    placeholder: 'パスワード（確認用）',
                   },
                 },
               }}

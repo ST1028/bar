@@ -29,7 +29,8 @@ const CartDrawer = ({ open, onClose, onPatronSelect }: CartDrawerProps) => {
   const { items, selectedPatronId, getTotalAmount, clearCart } = useCartStore();
   const queryClient = useQueryClient();
 
-  const { data: patrons } = queryClient.getQueryData(['patrons']) as { patrons: any[] } || { patrons: [] };
+  const queryData = queryClient.getQueryData(['patrons']) as { patrons: any[] } | undefined;
+  const patrons = queryData?.patrons || [];
   const selectedPatron = patrons.find((p: any) => p.id === selectedPatronId);
 
   const createOrderMutation = useMutation({
@@ -105,9 +106,19 @@ const CartDrawer = ({ open, onClose, onPatronSelect }: CartDrawerProps) => {
                   <Typography variant="h6" color="text.secondary">
                     カートが空です
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                     メニューを選んで注文を開始してください
                   </Typography>
+                  <Button 
+                    variant="outlined" 
+                    onClick={onClose}
+                    sx={{ 
+                      minWidth: 120,
+                      minHeight: 44
+                    }}
+                  >
+                    閉じる
+                  </Button>
                 </Box>
               </motion.div>
             ) : (

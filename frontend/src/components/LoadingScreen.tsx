@@ -20,7 +20,7 @@ const LoadingScreen = () => {
       >
         <Box sx={{ mb: 3, textAlign: 'center' }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            🍺 Bar Order
+            🍺 Bar
           </Typography>
           <CircularProgress size={60} thickness={4} />
         </Box>

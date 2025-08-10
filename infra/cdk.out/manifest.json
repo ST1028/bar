@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::611829065744:role/cdk-hnb659fds-deploy-role-611829065744-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::611829065744:role/cdk-hnb659fds-cfn-exec-role-611829065744-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-611829065744-us-east-1/969ccdfbc4ff7bcb928185c680dc0872c97cd5c47f452aca35255b5f80678e00.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-611829065744-us-east-1/3ce836c6becc1cc776bddd8c4bed13d8c997a7b8b1c17264266c0187b0bae6a1.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -46,6 +46,18 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "BarAppTableC35CFE0C"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppAssets/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppAssetsB5874F87"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppAssets/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppAssetsPolicy8A626E53"
           }
         ],
         "/BarOrderSystemStack/BarAppUserPool/Resource": [
@@ -135,7 +147,7 @@
         "/BarOrderSystemStack/BarAppApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "BarAppApiDeploymentFD172AA3091bf632c99ad24adc0ff9b6fce5e3d0"
+            "data": "BarAppApiDeploymentFD172AA3bbc9c2923fdb6e67f49c7fa4e67f17a3"
           }
         ],
         "/BarOrderSystemStack/BarAppApi/DeploymentStage.prod/Resource": [
@@ -354,6 +366,36 @@
             "data": "BarAppApiadminresetPOST4B0AF6CA"
           }
         ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/reset-all/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminresetall848A8219"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/reset-all/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminresetallOPTIONS3E5ED567"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/reset-all/POST/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.reset-all": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminresetallPOSTApiPermissionBarOrderSystemStackBarAppApi8C637A8BPOSTadminresetallB42D039E"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/reset-all/POST/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.reset-all": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminresetallPOSTApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPOSTadminresetall3C5502C6"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/reset-all/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminresetallPOSTE0477F08"
+          }
+        ],
         "/BarOrderSystemStack/UserPoolId": [
           {
             "type": "aws:cdk:logicalId",
@@ -376,6 +418,18 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "TableName"
+          }
+        ],
+        "/BarOrderSystemStack/AssetsBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsBucketName"
+          }
+        ],
+        "/BarOrderSystemStack/AssetsBucketUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsBucketUrl"
           }
         ],
         "/BarOrderSystemStack/CDKMetadata/Default": [

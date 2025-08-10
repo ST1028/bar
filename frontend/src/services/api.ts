@@ -13,12 +13,42 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(async (config) => {
   try {
+    console.log('🔐 Getting auth session for API call...');
     const session = await fetchAuthSession();
-    if (session.tokens?.accessToken) {
-      config.headers.Authorization = `Bearer ${session.tokens.accessToken}`;
+    console.log('📋 Session details:', session);
+    
+    if (session.tokens?.idToken) {
+      console.log('✅ ID token found, adding to request');
+      const tokenString = session.tokens.idToken.toString();
+      const payload = JSON.parse(atob(tokenString.split('.')[1]));
+      
+      console.log('🎫 ID Token details:', {
+        token: tokenString.substring(0, 50) + '...',
+        payload,
+        aud: payload.aud,
+        iss: payload.iss,
+        token_use: payload.token_use,
+        exp: new Date(payload.exp * 1000).toISOString()
+      });
+      
+      // Check if token is expired
+      if (payload.exp * 1000 < Date.now()) {
+        console.error('❌ Token is expired!', {
+          expired_at: new Date(payload.exp * 1000).toISOString(),
+          current_time: new Date().toISOString()
+        });
+      }
+      
+      config.headers.Authorization = `Bearer ${tokenString}`;
+    } else if (session.tokens?.accessToken) {
+      console.log('✅ Access token found (fallback), adding to request');
+      const tokenString = session.tokens.accessToken.toString();
+      config.headers.Authorization = `Bearer ${tokenString}`;
+    } else {
+      console.warn('⚠️ No auth token found in session');
     }
   } catch (error) {
-    console.error('Failed to get auth session:', error);
+    console.error('❌ Failed to get auth session:', error);
   }
   return config;
 });
@@ -82,5 +112,10 @@ export const orderAPI = {
 export const adminAPI = {
   resetUserData: async (tenantId: string): Promise<void> => {
     await apiClient.post('/admin/reset', { tenantId });
+  },
+  
+  resetAllOrders: async (): Promise<{ message: string; deletedCount: number }> => {
+    const response = await apiClient.post('/admin/reset-all');
+    return response.data;
   },
 };

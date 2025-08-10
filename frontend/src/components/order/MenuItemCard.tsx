@@ -60,68 +60,104 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
       >
-        <Card sx={{ mb: 2, bgcolor: 'background.paper' }}>
-          <Box sx={{ display: 'flex' }}>
-            {item.thumbnail && (
-              <CardMedia
-                component="img"
-                sx={{ width: 80, height: 80, objectFit: 'cover' }}
-                image={item.thumbnail}
-                alt={item.name}
-              />
-            )}
-            <CardContent sx={{ flex: 1, p: 2, '&:last-child': { pb: 2 } }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Box sx={{ flex: 1 }}>
-                  <Typography variant="subtitle1" component="h4" noWrap>
-                    {item.name}
-                  </Typography>
-                  <Typography variant="h6" color="primary" fontWeight={600}>
-                    ¥{item.price.toLocaleString()}
-                  </Typography>
-                  {item.description && (
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {item.description}
-                    </Typography>
-                  )}
-                  {item.isRemarksRequired && (
-                    <Typography variant="caption" color="warning.main">
-                      ※要備考
-                    </Typography>
-                  )}
-                </Box>
-                
-                <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={quantity <= 1}
+        <Card sx={{ mb: 2, bgcolor: 'background.paper', overflow: 'hidden' }}>
+          <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+            {/* Header with image and title */}
+            <Box sx={{ display: 'flex', mb: 2 }}>
+              {item.thumbnail && item.thumbnail !== 'NULL' && (
+                <CardMedia
+                  component="img"
+                  sx={{ 
+                    width: 60, 
+                    height: 60, 
+                    objectFit: 'cover', 
+                    borderRadius: 1,
+                    mr: 2,
+                    flexShrink: 0
+                  }}
+                  image={item.thumbnail}
+                  alt={item.name}
+                />
+              )}
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography variant="subtitle1" component="h4" sx={{ fontWeight: 600, mb: 0.5 }}>
+                  {item.name}
+                </Typography>
+                <Typography variant="h6" color="primary" fontWeight={600}>
+                  ¥{item.price.toLocaleString()}
+                </Typography>
+                {item.description && item.description !== 'NULL' && item.description.trim() && (
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary" 
+                    sx={{ 
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      mt: 0.5
+                    }}
                   >
-                    <Remove />
-                  </IconButton>
-                  <Typography variant="body1" sx={{ mx: 1, minWidth: '20px', textAlign: 'center' }}>
-                    {quantity}
+                    {item.description}
                   </Typography>
-                  <IconButton
-                    size="small"
-                    onClick={() => setQuantity(quantity + 1)}
-                    disabled={quantity >= 10}
-                  >
-                    <Add />
-                  </IconButton>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={<AddShoppingCart />}
-                    onClick={handleAddToCart}
-                    sx={{ ml: 1 }}
-                  >
-                    追加
-                  </Button>
-                </Box>
+                )}
+                {item.isRemarksRequired && (
+                  <Typography variant="caption" color="warning.main" sx={{ display: 'block', mt: 0.5 }}>
+                    ※要備考
+                  </Typography>
+                )}
               </Box>
-            </CardContent>
-          </Box>
+            </Box>
+            
+            {/* Quantity and Add button */}
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between',
+              gap: 1
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <IconButton
+                  size="small"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={quantity <= 1}
+                  sx={{ minWidth: 32, width: 32, height: 32 }}
+                >
+                  <Remove fontSize="small" />
+                </IconButton>
+                <Typography variant="body1" sx={{ 
+                  mx: 1.5, 
+                  minWidth: '24px', 
+                  textAlign: 'center',
+                  fontWeight: 600
+                }}>
+                  {quantity}
+                </Typography>
+                <IconButton
+                  size="small"
+                  onClick={() => setQuantity(quantity + 1)}
+                  disabled={quantity >= 10}
+                  sx={{ minWidth: 32, width: 32, height: 32 }}
+                >
+                  <Add fontSize="small" />
+                </IconButton>
+              </Box>
+              
+              <Button
+                variant="contained"
+                size="medium"
+                onClick={handleAddToCart}
+                sx={{ 
+                  minWidth: 48,
+                  width: 48,
+                  height: 36,
+                  p: 0
+                }}
+              >
+                <AddShoppingCart />
+              </Button>
+            </Box>
+          </CardContent>
         </Card>
       </motion.div>
 
