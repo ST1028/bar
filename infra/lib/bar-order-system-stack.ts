@@ -254,6 +254,40 @@ export class BarOrderSystemStack extends cdk.Stack {
       authorizer,
     });
 
+    // Admin Menu Management Routes
+    const adminMenuItemsResource = adminResource.addResource('menu-items');
+    adminMenuItemsResource.addMethod('GET', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    adminMenuItemsResource.addMethod('POST', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    
+    const adminMenuItemResource = adminMenuItemsResource.addResource('{id}');
+    adminMenuItemResource.addMethod('PATCH', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    adminMenuItemResource.addMethod('DELETE', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+
+    // Admin Category Management Routes
+    const adminCategoriesResource = adminResource.addResource('categories');
+    adminCategoriesResource.addMethod('GET', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    adminCategoriesResource.addMethod('POST', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    
+    const adminCategoryResource = adminCategoriesResource.addResource('{id}');
+    adminCategoryResource.addMethod('PATCH', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    adminCategoryResource.addMethod('DELETE', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+
     // Note: Amplify hosting setup requires GitHub token and manual configuration
     // For now, commented out to avoid deployment issues
     // Users can manually set up Amplify Hosting via AWS Console

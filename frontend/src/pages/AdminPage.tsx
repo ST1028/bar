@@ -207,22 +207,146 @@ const AdminPage = () => {
         <CardContent>
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
             <Restaurant sx={{ mr: 1, verticalAlign: 'middle' }} />
-            メニューアイテム一覧（閲覧のみ）
+メニューアイテム管理
           </Typography>
           <Divider sx={{ mb: 2 }} />
           
-          <Typography variant="body2" color="warning.main" sx={{ mb: 2 }}>
-            ⚠️ メニューの追加・編集・削除機能は後で実装されます
-          </Typography>
-          
+          {/* Add new menu item */}
+          <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+            <Typography variant="subtitle1" gutterBottom>新しいメニューアイテムを追加</Typography>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="メニュー名"
+                  value={newItem.name}
+                  onChange={(e) => setNewItem({...newItem, name: e.target.value})}
+                  fullWidth
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  label="価格"
+                  type="number"
+                  value={newItem.price}
+                  onChange={(e) => setNewItem({...newItem, price: Number(e.target.value)})}
+                  fullWidth
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>カテゴリー</InputLabel>
+                  <Select
+                    value={newItem.categoryId}
+                    onChange={(e) => setNewItem({...newItem, categoryId: e.target.value})}
+                  >
+                    {categories?.map(cat => (
+                      <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="説明"
+                  value={newItem.description}
+                  onChange={(e) => setNewItem({...newItem, description: e.target.value})}
+                  fullWidth
+                  size="small"
+                  multiline
+                  rows={2}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={handleCreateItem}
+              disabled={createItemMutation.isPending}
+            >
+              {createItemMutation.isPending ? '作成中...' : 'メニュー追加'}
+            </Button>
+          </Box>
+
           {/* Menu items list */}
           <List>
             {menuItems?.map((item) => (
               <ListItem key={item.id} divider>
-                <ListItemText
-                  primary={item.name}
-                  secondary={`¥${item.price.toLocaleString()} - ${categories?.find(c => c.id === item.categoryId)?.name} ${item.description ? '- ' + item.description : ''}`}
-                />
+                {editingItem?.id === item.id ? (
+                  <Box sx={{ width: '100%' }}>
+                    <Grid container spacing={2} sx={{ mb: 1 }}>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          value={editingItem.name}
+                          onChange={(e) => setEditingItem({...editingItem, name: e.target.value})}
+                          fullWidth
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <TextField
+                          type="number"
+                          value={editingItem.price}
+                          onChange={(e) => setEditingItem({...editingItem, price: Number(e.target.value)})}
+                          fullWidth
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <FormControl fullWidth size="small">
+                          <Select
+                            value={editingItem.categoryId}
+                            onChange={(e) => setEditingItem({...editingItem, categoryId: e.target.value})}
+                          >
+                            {categories?.map(cat => (
+                              <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                          <IconButton onClick={handleUpdateItem} color="primary">
+                            <Save />
+                          </IconButton>
+                          <IconButton onClick={() => setEditingItem(null)}>
+                            <Cancel />
+                          </IconButton>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                    <TextField
+                      value={editingItem.description || ''}
+                      onChange={(e) => setEditingItem({...editingItem, description: e.target.value})}
+                      fullWidth
+                      size="small"
+                      multiline
+                      rows={2}
+                      sx={{ mb: 1 }}
+                      placeholder="説明"
+                    />
+                  </Box>
+                ) : (
+                  <>
+                    <ListItemText
+                      primary={item.name}
+                      secondary={`¥${item.price.toLocaleString()} - ${categories?.find(c => c.id === item.categoryId)?.name} ${item.description ? '- ' + item.description : ''}`}
+                    />
+                    <ListItemSecondaryAction>
+                      <IconButton onClick={() => setEditingItem(item)} size="small">
+                        <Edit />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => deleteItemMutation.mutate(item.id)} 
+                        size="small" 
+                        color="error"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </>
+                )}
               </ListItem>
             ))}
           </List>
@@ -237,32 +361,133 @@ const AdminPage = () => {
         <CardContent>
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
             <Category sx={{ mr: 1, verticalAlign: 'middle' }} />
-            カテゴリー一覧（閲覧のみ）
+カテゴリー管理
           </Typography>
           <Divider sx={{ mb: 2 }} />
           
-          <Typography variant="body2" color="warning.main" sx={{ mb: 2 }}>
-            ⚠️ カテゴリーの追加・編集・削除機能は後で実装されます
-          </Typography>
-          
+          {/* Add new category */}
+          <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+            <Typography variant="subtitle1" gutterBottom>新しいカテゴリーを追加</Typography>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="カテゴリー名"
+                  value={newCategory.name}
+                  onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
+                  fullWidth
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={newCategory.visible}
+                      onChange={(e) => setNewCategory({...newCategory, visible: e.target.checked})}
+                    />
+                  }
+                  label="表示する"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="説明"
+                  value={newCategory.description}
+                  onChange={(e) => setNewCategory({...newCategory, description: e.target.value})}
+                  fullWidth
+                  size="small"
+                  multiline
+                  rows={2}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={handleCreateCategory}
+              disabled={createCategoryMutation.isPending}
+            >
+              {createCategoryMutation.isPending ? '作成中...' : 'カテゴリー追加'}
+            </Button>
+          </Box>
+
           {/* Categories list */}
           <List>
             {categories?.map((category) => (
               <ListItem key={category.id} divider>
-                <ListItemText
-                  primary={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      {category.name}
-                      <Chip
-                        icon={category.visible !== false ? <Visibility /> : <VisibilityOff />}
-                        label={category.visible !== false ? '表示' : '非表示'}
-                        size="small"
-                        color={category.visible !== false ? 'success' : 'default'}
-                      />
-                    </Box>
-                  }
-                  secondary={category.description || '説明なし'}
-                />
+                {editingCategory?.id === category.id ? (
+                  <Box sx={{ width: '100%' }}>
+                    <Grid container spacing={2} sx={{ mb: 1 }}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          value={editingCategory.name}
+                          onChange={(e) => setEditingCategory({...editingCategory, name: e.target.value})}
+                          fullWidth
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={editingCategory.visible}
+                              onChange={(e) => setEditingCategory({...editingCategory, visible: e.target.checked})}
+                            />
+                          }
+                          label="表示"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                          <IconButton onClick={handleUpdateCategory} color="primary">
+                            <Save />
+                          </IconButton>
+                          <IconButton onClick={() => setEditingCategory(null)}>
+                            <Cancel />
+                          </IconButton>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                    <TextField
+                      value={editingCategory.description || ''}
+                      onChange={(e) => setEditingCategory({...editingCategory, description: e.target.value})}
+                      fullWidth
+                      size="small"
+                      multiline
+                      rows={2}
+                      placeholder="説明"
+                    />
+                  </Box>
+                ) : (
+                  <>
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {category.name}
+                          <Chip
+                            icon={category.visible !== false ? <Visibility /> : <VisibilityOff />}
+                            label={category.visible !== false ? '表示' : '非表示'}
+                            size="small"
+                            color={category.visible !== false ? 'success' : 'default'}
+                          />
+                        </Box>
+                      }
+                      secondary={category.description || '説明なし'}
+                    />
+                    <ListItemSecondaryAction>
+                      <IconButton onClick={() => setEditingCategory(category)} size="small">
+                        <Edit />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => deleteCategoryMutation.mutate(category.id)} 
+                        size="small" 
+                        color="error"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </>
+                )}
               </ListItem>
             ))}
           </List>

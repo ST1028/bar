@@ -70,51 +70,41 @@ export const menuAPI = {
   },
   
   getMenuItems: async (): Promise<MenuItem[]> => {
-    // Use existing /menus endpoint and extract menu items from categories
-    const response = await apiClient.get<{ categories: MenuCategory[] }>('/menus');
-    const allItems: MenuItem[] = [];
-    response.data.categories.forEach(category => {
-      category.items.forEach(item => {
-        allItems.push({
-          ...item,
-          categoryId: category.id
-        });
-      });
-    });
-    return allItems;
+    const response = await apiClient.get<{ items: MenuItem[] }>('/admin/menu-items');
+    return response.data.items;
   },
   
   getCategories: async (): Promise<MenuCategory[]> => {
-    const response = await apiClient.get<{ categories: MenuCategory[] }>('/menus');
+    const response = await apiClient.get<{ categories: MenuCategory[] }>('/admin/categories');
     return response.data.categories;
   },
   
   createMenuItem: async (item: Omit<MenuItem, 'id'>): Promise<MenuItem> => {
-    const response = await apiClient.post<{ item: MenuItem }>('/menu-items', item);
+    const response = await apiClient.post<{ item: MenuItem }>('/admin/menu-items', item);
     return response.data.item;
   },
   
   updateMenuItem: async (id: string, item: Partial<MenuItem>): Promise<MenuItem> => {
-    const response = await apiClient.patch<{ item: MenuItem }>(`/menu-items/${id}`, item);
+    const response = await apiClient.patch<{ item: MenuItem }>(`/admin/menu-items/${id}`, item);
     return response.data.item;
   },
   
   deleteMenuItem: async (id: string): Promise<void> => {
-    await apiClient.delete(`/menu-items/${id}`);
+    await apiClient.delete(`/admin/menu-items/${id}`);
   },
   
   createCategory: async (category: Omit<MenuCategory, 'id' | 'items'>): Promise<MenuCategory> => {
-    const response = await apiClient.post<{ category: MenuCategory }>('/categories', category);
+    const response = await apiClient.post<{ category: MenuCategory }>('/admin/categories', category);
     return response.data.category;
   },
   
   updateCategory: async (id: string, category: Partial<MenuCategory>): Promise<MenuCategory> => {
-    const response = await apiClient.patch<{ category: MenuCategory }>(`/categories/${id}`, category);
+    const response = await apiClient.patch<{ category: MenuCategory }>(`/admin/categories/${id}`, category);
     return response.data.category;
   },
   
   deleteCategory: async (id: string): Promise<void> => {
-    await apiClient.delete(`/categories/${id}`);
+    await apiClient.delete(`/admin/categories/${id}`);
   },
 };
 

@@ -391,7 +391,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f.zip"
+     "S3Key": "89c6769baf891b55800a6f00af8cc45784fbce0e0f8050819dfaa17f8d8c973c.zip"
     },
     "Environment": {
      "Variables": {
@@ -424,7 +424,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/MenusFunction/Resource",
-    "aws:asset:path": "asset.e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f",
+    "aws:asset:path": "asset.89c6769baf891b55800a6f00af8cc45784fbce0e0f8050819dfaa17f8d8c973c",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -434,7 +434,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f.zip"
+     "S3Key": "89c6769baf891b55800a6f00af8cc45784fbce0e0f8050819dfaa17f8d8c973c.zip"
     },
     "Environment": {
      "Variables": {
@@ -467,7 +467,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/PatronsFunction/Resource",
-    "aws:asset:path": "asset.e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f",
+    "aws:asset:path": "asset.89c6769baf891b55800a6f00af8cc45784fbce0e0f8050819dfaa17f8d8c973c",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -477,7 +477,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f.zip"
+     "S3Key": "89c6769baf891b55800a6f00af8cc45784fbce0e0f8050819dfaa17f8d8c973c.zip"
     },
     "Environment": {
      "Variables": {
@@ -513,7 +513,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/OrdersFunction/Resource",
-    "aws:asset:path": "asset.e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f",
+    "aws:asset:path": "asset.89c6769baf891b55800a6f00af8cc45784fbce0e0f8050819dfaa17f8d8c973c",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -523,7 +523,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-611829065744-us-east-1",
-     "S3Key": "e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f.zip"
+     "S3Key": "89c6769baf891b55800a6f00af8cc45784fbce0e0f8050819dfaa17f8d8c973c.zip"
     },
     "Environment": {
      "Variables": {
@@ -556,7 +556,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/AdminFunction/Resource",
-    "aws:asset:path": "asset.e2c0773a45270b4593822e223f6b5b9412593a5a86fdcc050cd115ee6acd7f7f",
+    "aws:asset:path": "asset.89c6769baf891b55800a6f00af8cc45784fbce0e0f8050819dfaa17f8d8c973c",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -648,7 +648,7 @@
     "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Account"
    }
   },
-  "BarAppApiDeploymentFD172AA3bbc9c2923fdb6e67f49c7fa4e67f17a3": {
+  "BarAppApiDeploymentFD172AA3373cbab6f208492295276d7f97424d78": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "Bar Order System API",
@@ -657,6 +657,22 @@
     }
    },
    "DependsOn": [
+    "BarAppApiadmincategoriesidDELETE80FEFB25",
+    "BarAppApiadmincategoriesidOPTIONSD521431F",
+    "BarAppApiadmincategoriesidPATCHEF9A7A0E",
+    "BarAppApiadmincategoriesid7E47B99A",
+    "BarAppApiadmincategoriesGET05F90E04",
+    "BarAppApiadmincategoriesOPTIONSE99B9D24",
+    "BarAppApiadmincategoriesPOSTC8CCE5E2",
+    "BarAppApiadmincategoriesF11DE563",
+    "BarAppApiadminmenuitemsidDELETE9BA01BD4",
+    "BarAppApiadminmenuitemsidOPTIONS49717A0C",
+    "BarAppApiadminmenuitemsidPATCH4D785BD8",
+    "BarAppApiadminmenuitemsid61F362E5",
+    "BarAppApiadminmenuitemsGET112804F9",
+    "BarAppApiadminmenuitemsOPTIONSC68D61F0",
+    "BarAppApiadminmenuitemsPOST8694A148",
+    "BarAppApiadminmenuitemsDE8C9526",
     "BarAppApiadminOPTIONS72D88C25",
     "BarAppApiadminresetallOPTIONS3E5ED567",
     "BarAppApiadminresetallPOSTE0477F08",
@@ -690,7 +706,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "BarAppApiDeploymentFD172AA3bbc9c2923fdb6e67f49c7fa4e67f17a3"
+     "Ref": "BarAppApiDeploymentFD172AA3373cbab6f208492295276d7f97424d78"
     },
     "MethodSettings": [
      {
@@ -2052,6 +2068,1118 @@
    },
    "Metadata": {
     "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/reset-all/POST/Resource"
+   }
+  },
+  "BarAppApiadminmenuitemsDE8C9526": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "BarAppApiadmin10285DB4"
+    },
+    "PathPart": "menu-items",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/Resource"
+   }
+  },
+  "BarAppApiadminmenuitemsOPTIONSC68D61F0": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApiadminmenuitemsDE8C9526"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/OPTIONS/Resource"
+   }
+  },
+  "BarAppApiadminmenuitemsGETApiPermissionBarOrderSystemStackBarAppApi8C637A8BGETadminmenuitemsD5E17528": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/GET/admin/menu-items"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/GET/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.GET..admin.menu-items"
+   }
+  },
+  "BarAppApiadminmenuitemsGETApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BGETadminmenuitemsE066F323": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/GET/admin/menu-items"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/GET/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.GET..admin.menu-items"
+   }
+  },
+  "BarAppApiadminmenuitemsGET112804F9": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadminmenuitemsDE8C9526"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/GET/Resource"
+   }
+  },
+  "BarAppApiadminmenuitemsPOSTApiPermissionBarOrderSystemStackBarAppApi8C637A8BPOSTadminmenuitemsD178BEC6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/POST/admin/menu-items"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/POST/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.menu-items"
+   }
+  },
+  "BarAppApiadminmenuitemsPOSTApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPOSTadminmenuitems83DC2C94": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/POST/admin/menu-items"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/POST/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.menu-items"
+   }
+  },
+  "BarAppApiadminmenuitemsPOST8694A148": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadminmenuitemsDE8C9526"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/POST/Resource"
+   }
+  },
+  "BarAppApiadminmenuitemsid61F362E5": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "BarAppApiadminmenuitemsDE8C9526"
+    },
+    "PathPart": "{id}",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/{id}/Resource"
+   }
+  },
+  "BarAppApiadminmenuitemsidOPTIONS49717A0C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApiadminmenuitemsid61F362E5"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/{id}/OPTIONS/Resource"
+   }
+  },
+  "BarAppApiadminmenuitemsidPATCHApiPermissionBarOrderSystemStackBarAppApi8C637A8BPATCHadminmenuitemsidAF2F13C9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/PATCH/admin/menu-items/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/{id}/PATCH/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.PATCH..admin.menu-items.{id}"
+   }
+  },
+  "BarAppApiadminmenuitemsidPATCHApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPATCHadminmenuitemsid702F262A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/PATCH/admin/menu-items/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/{id}/PATCH/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.PATCH..admin.menu-items.{id}"
+   }
+  },
+  "BarAppApiadminmenuitemsidPATCH4D785BD8": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "PATCH",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadminmenuitemsid61F362E5"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/{id}/PATCH/Resource"
+   }
+  },
+  "BarAppApiadminmenuitemsidDELETEApiPermissionBarOrderSystemStackBarAppApi8C637A8BDELETEadminmenuitemsidCAE59919": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/DELETE/admin/menu-items/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/{id}/DELETE/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.DELETE..admin.menu-items.{id}"
+   }
+  },
+  "BarAppApiadminmenuitemsidDELETEApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BDELETEadminmenuitemsidDF4988CE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/DELETE/admin/menu-items/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/{id}/DELETE/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.DELETE..admin.menu-items.{id}"
+   }
+  },
+  "BarAppApiadminmenuitemsidDELETE9BA01BD4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadminmenuitemsid61F362E5"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/menu-items/{id}/DELETE/Resource"
+   }
+  },
+  "BarAppApiadmincategoriesF11DE563": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "BarAppApiadmin10285DB4"
+    },
+    "PathPart": "categories",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/Resource"
+   }
+  },
+  "BarAppApiadmincategoriesOPTIONSE99B9D24": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApiadmincategoriesF11DE563"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/OPTIONS/Resource"
+   }
+  },
+  "BarAppApiadmincategoriesGETApiPermissionBarOrderSystemStackBarAppApi8C637A8BGETadmincategoriesFF5CA9F5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/GET/admin/categories"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/GET/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.GET..admin.categories"
+   }
+  },
+  "BarAppApiadmincategoriesGETApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BGETadmincategories59A08A91": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/GET/admin/categories"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/GET/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.GET..admin.categories"
+   }
+  },
+  "BarAppApiadmincategoriesGET05F90E04": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadmincategoriesF11DE563"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/GET/Resource"
+   }
+  },
+  "BarAppApiadmincategoriesPOSTApiPermissionBarOrderSystemStackBarAppApi8C637A8BPOSTadmincategories24227BA4": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/POST/admin/categories"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/POST/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.categories"
+   }
+  },
+  "BarAppApiadmincategoriesPOSTApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPOSTadmincategories9BA643F0": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/POST/admin/categories"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/POST/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.categories"
+   }
+  },
+  "BarAppApiadmincategoriesPOSTC8CCE5E2": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadmincategoriesF11DE563"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/POST/Resource"
+   }
+  },
+  "BarAppApiadmincategoriesid7E47B99A": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "BarAppApiadmincategoriesF11DE563"
+    },
+    "PathPart": "{id}",
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/{id}/Resource"
+   }
+  },
+  "BarAppApiadmincategoriesidOPTIONSD521431F": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "BarAppApiadmincategoriesid7E47B99A"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/{id}/OPTIONS/Resource"
+   }
+  },
+  "BarAppApiadmincategoriesidPATCHApiPermissionBarOrderSystemStackBarAppApi8C637A8BPATCHadmincategoriesidD29BFD09": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/PATCH/admin/categories/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/{id}/PATCH/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.PATCH..admin.categories.{id}"
+   }
+  },
+  "BarAppApiadmincategoriesidPATCHApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPATCHadmincategoriesid73EB984A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/PATCH/admin/categories/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/{id}/PATCH/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.PATCH..admin.categories.{id}"
+   }
+  },
+  "BarAppApiadmincategoriesidPATCHEF9A7A0E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "PATCH",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadmincategoriesid7E47B99A"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/{id}/PATCH/Resource"
+   }
+  },
+  "BarAppApiadmincategoriesidDELETEApiPermissionBarOrderSystemStackBarAppApi8C637A8BDELETEadmincategoriesidAE2CA0AE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/",
+       {
+        "Ref": "BarAppApiDeploymentStageprod11C7F79C"
+       },
+       "/DELETE/admin/categories/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/{id}/DELETE/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.DELETE..admin.categories.{id}"
+   }
+  },
+  "BarAppApiadmincategoriesidDELETEApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BDELETEadmincategoriesid6C8EEF96": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AdminFunction09BA95C5",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611829065744:",
+       {
+        "Ref": "BarAppApi23A69A24"
+       },
+       "/test-invoke-stage/DELETE/admin/categories/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/{id}/DELETE/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.DELETE..admin.categories.{id}"
+   }
+  },
+  "BarAppApiadmincategoriesidDELETE80FEFB25": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "AdminFunction09BA95C5",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "BarAppApiadmincategoriesid7E47B99A"
+    },
+    "RestApiId": {
+     "Ref": "BarAppApi23A69A24"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BarOrderSystemStack/BarAppApi/Default/admin/categories/{id}/DELETE/Resource"
    }
   },
   "CDKMetadata": {
