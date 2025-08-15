@@ -34,7 +34,6 @@ import {
   AdminPanelSettings,
   DeleteSweep,
   Warning,
-  Add,
   Edit,
   Delete,
   Save,
