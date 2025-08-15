@@ -7,8 +7,6 @@ import {
   Divider,
   Button,
   IconButton,
-  Chip,
-  Alert,
 } from '@mui/material';
 import { Close, Person, ShoppingCart } from '@mui/icons-material';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Box, Container, Fab, Badge, Typography, Divider, Chip, Card, CardContent, Button } from '@mui/material';
-import { ShoppingCart, LocalBar } from '@mui/icons-material';
+import { Box, Container, Fab, Badge, Typography, Divider, Chip } from '@mui/material';
+import { ShoppingCart } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,7 +15,7 @@ import ErrorMessage from '../components/ErrorMessage';
 const OrderPage = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [patronSelectorOpen, setPatronSelectorOpen] = useState(false);
-  const { getItemCount, selectedPatronId } = useCartStore();
+  const { getItemCount } = useCartStore();
 
   const { data: categories, isLoading: menusLoading, error: menusError } = useQuery({
     queryKey: ['menus'],
