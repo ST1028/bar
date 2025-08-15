@@ -16,6 +16,7 @@ export interface MenuCategory {
   name: string;
   order: number;
   thumbnail?: string;
+  imageUrl?: string;
   isActive?: boolean;
   visible?: boolean;
   description?: string;

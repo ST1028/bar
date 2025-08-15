@@ -117,6 +117,7 @@ export class BarOrderSystemStack extends cdk.Stack {
                 'dynamodb:UpdateItem',
                 'dynamodb:DeleteItem',
                 'dynamodb:Query',
+                'dynamodb:Scan',
                 'dynamodb:BatchGetItem',
                 'dynamodb:BatchWriteItem',
               ],
@@ -285,6 +286,23 @@ export class BarOrderSystemStack extends cdk.Stack {
       authorizer,
     });
     adminCategoryResource.addMethod('DELETE', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+
+    // Admin Blend Management Routes
+    const adminBlendsResource = adminResource.addResource('blends');
+    adminBlendsResource.addMethod('GET', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    adminBlendsResource.addMethod('POST', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    
+    const adminBlendResource = adminBlendsResource.addResource('{id}');
+    adminBlendResource.addMethod('PATCH', new apigateway.LambdaIntegration(adminFunction), {
+      authorizer,
+    });
+    adminBlendResource.addMethod('DELETE', new apigateway.LambdaIntegration(adminFunction), {
       authorizer,
     });
 

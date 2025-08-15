@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::611829065744:role/cdk-hnb659fds-deploy-role-611829065744-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::611829065744:role/cdk-hnb659fds-cfn-exec-role-611829065744-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-611829065744-us-east-1/e249a17a0e73c7a427e1f914917cceea5b5c6171190b76710995d8ecf28896aa.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-611829065744-us-east-1/d33ed2ff66d81f3d52ed4c1235eff137c25fe8f51e8ab31cabe1da533066d506.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -147,7 +147,7 @@
         "/BarOrderSystemStack/BarAppApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "BarAppApiDeploymentFD172AA3373cbab6f208492295276d7f97424d78"
+            "data": "BarAppApiDeploymentFD172AA36dbf9156c9edfb7fc7dcf1cd1bfc1697"
           }
         ],
         "/BarOrderSystemStack/BarAppApi/DeploymentStage.prod/Resource": [
@@ -586,6 +586,102 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "BarAppApiadmincategoriesidDELETE80FEFB25"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsF54EAE48"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsOPTIONS65D99F9F"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/GET/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.GET..admin.blends": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsGETApiPermissionBarOrderSystemStackBarAppApi8C637A8BGETadminblends7D7C09D9"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/GET/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.GET..admin.blends": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsGETApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BGETadminblends2E311A5C"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsGET3D4A7ECE"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/POST/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.blends": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsPOSTApiPermissionBarOrderSystemStackBarAppApi8C637A8BPOSTadminblendsD059C4FD"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/POST/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.POST..admin.blends": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsPOSTApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPOSTadminblendsB99CE67D"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsPOST9311A135"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/{id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsid9123016B"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/{id}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsidOPTIONS462FBAEA"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/{id}/PATCH/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.PATCH..admin.blends.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsidPATCHApiPermissionBarOrderSystemStackBarAppApi8C637A8BPATCHadminblendsidDB20314F"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/{id}/PATCH/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.PATCH..admin.blends.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsidPATCHApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BPATCHadminblendsid2CCF0926"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/{id}/PATCH/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsidPATCHC3E19016"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/{id}/DELETE/ApiPermission.BarOrderSystemStackBarAppApi8C637A8B.DELETE..admin.blends.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsidDELETEApiPermissionBarOrderSystemStackBarAppApi8C637A8BDELETEadminblendsidDAFD8DC5"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/{id}/DELETE/ApiPermission.Test.BarOrderSystemStackBarAppApi8C637A8B.DELETE..admin.blends.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsidDELETEApiPermissionTestBarOrderSystemStackBarAppApi8C637A8BDELETEadminblendsid44994F82"
+          }
+        ],
+        "/BarOrderSystemStack/BarAppApi/Default/admin/blends/{id}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BarAppApiadminblendsidDELETEB0BF7980"
           }
         ],
         "/BarOrderSystemStack/UserPoolId": [

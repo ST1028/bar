@@ -22,6 +22,16 @@ const OrderPage = () => {
     queryFn: menuAPI.getMenus,
   });
 
+  // Debug: Log category data
+  useEffect(() => {
+    if (categories) {
+      console.log('Categories data:', categories);
+      categories.forEach(category => {
+        console.log(`Category: ${category.name}, imageUrl: ${category.imageUrl}`);
+      });
+    }
+  }, [categories]);
+
   const { data: patrons, isLoading: patronsLoading } = useQuery({
     queryKey: ['patrons'],
     queryFn: patronAPI.getPatrons,
@@ -78,20 +88,116 @@ const OrderPage = () => {
               {(category.items?.length || 0) > 0 && (
                 <>
                   <Box sx={{ mb: 3, mt: 4 }}>
-                    <Chip
-                      label={category.name}
-                      sx={{
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        height: 40,
-                        px: 2,
-                        bgcolor: 'primary.main',
-                        color: 'white',
-                        '&:hover': {
-                          bgcolor: 'primary.dark',
-                        }
-                      }}
-                    />
+                    {category.imageUrl && category.imageUrl.trim() && (
+                      <Box 
+                        sx={{ 
+                          position: 'relative', 
+                          borderRadius: 3, 
+                          overflow: 'hidden', 
+                          mb: 3,
+                          height: 240,
+                          background: `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%), url(${category.imageUrl})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: '2px solid',
+                          borderColor: 'primary.main',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
+                            borderColor: 'primary.light',
+                          }
+                        }}
+                      >
+                        {/* Glass overlay effect */}
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.1) 100%)',
+                          }}
+                        />
+                        
+                        <Box sx={{ position: 'relative', textAlign: 'center', zIndex: 2 }}>
+                          <Typography
+                            variant="h3"
+                            sx={{
+                              color: 'white',
+                              fontWeight: 800,
+                              textAlign: 'center',
+                              textShadow: '3px 3px 6px rgba(0,0,0,0.8)',
+                              letterSpacing: '0.5px',
+                              mb: 1
+                            }}
+                          >
+                            {category.name}
+                          </Typography>
+                          {category.description && (
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                color: 'rgba(255,255,255,0.9)',
+                                textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+                                fontWeight: 500,
+                                maxWidth: 300,
+                                mx: 'auto'
+                              }}
+                            >
+                              {category.description}
+                            </Typography>
+                          )}
+                        </Box>
+                        
+                        {/* Decorative corner elements */}
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 16,
+                            right: 16,
+                            width: 32,
+                            height: 32,
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%)',
+                            backdropFilter: 'blur(10px)',
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            bottom: 16,
+                            left: 16,
+                            width: 24,
+                            height: 24,
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%)',
+                            backdropFilter: 'blur(10px)',
+                          }}
+                        />
+                      </Box>
+                    )}
+                    {!category.imageUrl && (
+                      <Chip
+                        label={category.name}
+                        sx={{
+                          fontSize: '1rem',
+                          fontWeight: 600,
+                          height: 40,
+                          px: 2,
+                          bgcolor: 'primary.main',
+                          color: 'white',
+                          '&:hover': {
+                            bgcolor: 'primary.dark',
+                          }
+                        }}
+                      />
+                    )}
                   </Box>
                   
                   {category.items?.map((item) => (

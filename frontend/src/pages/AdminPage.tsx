@@ -27,6 +27,8 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  Drawer,
+  Fab,
 } from '@mui/material';
 import {
   AdminPanelSettings,
@@ -41,6 +43,7 @@ import {
   Restaurant,
   Visibility,
   VisibilityOff,
+  LocalBar,
 } from '@mui/icons-material';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -56,8 +59,11 @@ const AdminPage = () => {
   const [editingItem, setEditingItem] = useState<MenuItemType | null>(null);
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
   const [editingBlend, setEditingBlend] = useState<Blend | null>(null);
+  const [addItemDrawerOpen, setAddItemDrawerOpen] = useState(false);
+  const [addCategoryDrawerOpen, setAddCategoryDrawerOpen] = useState(false);
+  const [addBlendDrawerOpen, setAddBlendDrawerOpen] = useState(false);
   const [newItem, setNewItem] = useState({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] as string[] });
-  const [newCategory, setNewCategory] = useState({ name: '', description: '', visible: true });
+  const [newCategory, setNewCategory] = useState({ name: '', description: '', imageUrl: '', visible: true });
   const [newBlend, setNewBlend] = useState({ name: '', description: '', isActive: true });
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
@@ -96,6 +102,7 @@ const AdminPage = () => {
     onSuccess: () => {
       toast.success('メニューアイテムを作成しました');
       setNewItem({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] });
+      setAddItemDrawerOpen(false);
       queryClient.invalidateQueries({ queryKey: ['menu-items'] });
     },
     onError: () => toast.error('作成に失敗しました'),
@@ -124,7 +131,8 @@ const AdminPage = () => {
     mutationFn: (category: any) => menuAPI.createCategory(category),
     onSuccess: () => {
       toast.success('カテゴリーを作成しました');
-      setNewCategory({ name: '', description: '', visible: true });
+      setNewCategory({ name: '', description: '', imageUrl: '', visible: true });
+      setAddCategoryDrawerOpen(false);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: () => toast.error('作成に失敗しました'),
@@ -154,6 +162,7 @@ const AdminPage = () => {
     onSuccess: () => {
       toast.success('ブレンドを作成しました');
       setNewBlend({ name: '', description: '', isActive: true });
+      setAddBlendDrawerOpen(false);
       queryClient.invalidateQueries({ queryKey: ['blends'] });
     },
     onError: () => toast.error('作成に失敗しました'),
@@ -219,6 +228,7 @@ const AdminPage = () => {
       id: editingCategory.id,
       name: editingCategory.name,
       description: editingCategory.description,
+      imageUrl: editingCategory.imageUrl,
       visible: editingCategory.visible,
       order: editingCategory.order
     });
@@ -281,75 +291,6 @@ const AdminPage = () => {
           </Typography>
           <Divider sx={{ mb: 2 }} />
           
-          {/* Add new menu item */}
-          <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-            <Typography variant="subtitle1" gutterBottom>新しいメニューアイテムを追加</Typography>
-            <Grid container spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="メニュー名"
-                  value={newItem.name}
-                  onChange={(e) => setNewItem({...newItem, name: e.target.value})}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <TextField
-                  label="価格"
-                  type="number"
-                  value={newItem.price}
-                  onChange={(e) => setNewItem({...newItem, price: Number(e.target.value)})}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <FormControl fullWidth size="small">
-                  <InputLabel>カテゴリー</InputLabel>
-                  <Select
-                    value={newItem.categoryId}
-                    onChange={(e) => setNewItem({...newItem, categoryId: e.target.value})}
-                  >
-                    {categories?.map(cat => (
-                      <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="説明"
-                  value={newItem.description}
-                  onChange={(e) => setNewItem({...newItem, description: e.target.value})}
-                  fullWidth
-                  size="small"
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="レシピ・作り方"
-                  value={newItem.recipe}
-                  onChange={(e) => setNewItem({...newItem, recipe: e.target.value})}
-                  fullWidth
-                  size="small"
-                  multiline
-                  rows={2}
-                  placeholder="例: ウイスキー30ml、炭酸水適量、レモン1切れ"
-                />
-              </Grid>
-            </Grid>
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={handleCreateItem}
-              disabled={createItemMutation.isPending}
-            >
-              {createItemMutation.isPending ? '作成中...' : 'メニュー追加'}
-            </Button>
-          </Box>
 
           {/* Menu items list */}
           <List>
@@ -389,7 +330,7 @@ const AdminPage = () => {
                       </Grid>
                     </Grid>
                     <TextField
-                      value={editingItem.description || ''}
+                      value={(editingItem.description || '').replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
                       onChange={(e) => setEditingItem({...editingItem, description: e.target.value})}
                       fullWidth
                       size="small"
@@ -399,15 +340,42 @@ const AdminPage = () => {
                       placeholder="説明"
                     />
                     <TextField
-                      value={editingItem.recipe || ''}
+                      value={(editingItem.recipe || '').replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
                       onChange={(e) => setEditingItem({...editingItem, recipe: e.target.value})}
                       fullWidth
                       size="small"
                       multiline
                       rows={2}
-                      sx={{ mb: 2 }}
+                      sx={{ mb: 1 }}
                       placeholder="レシピ・作り方"
                     />
+                    <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+                      <InputLabel>ブレンド（任意）</InputLabel>
+                      <Select
+                        multiple
+                        value={editingItem.availableBlends || []}
+                        onChange={(e) => setEditingItem({
+                          ...editingItem, 
+                          availableBlends: typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value
+                        })}
+                        renderValue={(selected) => (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {selected.map((value) => {
+                              const blend = blends?.find(b => b.id === value);
+                              return (
+                                <Chip key={value} label={blend?.name || value} size="small" />
+                              );
+                            })}
+                          </Box>
+                        )}
+                      >
+                        {blends?.filter(blend => blend.isActive).map((blend) => (
+                          <MenuItem key={blend.id} value={blend.id}>
+                            {blend.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                       <IconButton onClick={handleUpdateItem} color="primary" size="large">
                         <Save />
@@ -421,7 +389,40 @@ const AdminPage = () => {
                   <>
                     <ListItemText
                       primary={item.name}
-                      secondary={`¥${item.price.toLocaleString()} - ${categories?.find(c => c.id === item.categoryId)?.name} ${item.description ? '- ' + item.description : ''}`}
+                      secondary={
+                        <Box>
+                          <Typography variant="body2" color="text.secondary">
+                            ¥{item.price.toLocaleString()} - {categories?.find(c => c.id === item.categoryId)?.name}
+                          </Typography>
+                          {item.description && (
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, whiteSpace: 'pre-line' }}>
+                              説明: {item.description.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
+                            </Typography>
+                          )}
+                          {item.recipe && (
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, whiteSpace: 'pre-line' }}>
+                              レシピ: {item.recipe.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
+                            </Typography>
+                          )}
+                          {item.availableBlends && item.availableBlends.length > 0 && (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                              <Typography variant="caption" color="text.secondary">ブレンド: </Typography>
+                              {item.availableBlends.map((blendId) => {
+                                const blend = blends?.find(b => b.id === blendId);
+                                return (
+                                  <Chip 
+                                    key={blendId} 
+                                    label={blend?.name || 'Unknown'} 
+                                    size="small" 
+                                    variant="outlined"
+                                    sx={{ fontSize: '0.7rem', height: '18px' }}
+                                  />
+                                );
+                              })}
+                            </Box>
+                          )}
+                        </Box>
+                      }
                     />
                     <ListItemSecondaryAction>
                       <IconButton onClick={() => setEditingItem(item)} size="small">
@@ -455,51 +456,6 @@ const AdminPage = () => {
           </Typography>
           <Divider sx={{ mb: 2 }} />
           
-          {/* Add new category */}
-          <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-            <Typography variant="subtitle1" gutterBottom>新しいカテゴリーを追加</Typography>
-            <Grid container spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="カテゴリー名"
-                  value={newCategory.name}
-                  onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={newCategory.visible}
-                      onChange={(e) => setNewCategory({...newCategory, visible: e.target.checked})}
-                    />
-                  }
-                  label="表示する"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="説明"
-                  value={newCategory.description}
-                  onChange={(e) => setNewCategory({...newCategory, description: e.target.value})}
-                  fullWidth
-                  size="small"
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={handleCreateCategory}
-              disabled={createCategoryMutation.isPending}
-            >
-              {createCategoryMutation.isPending ? '作成中...' : 'カテゴリー追加'}
-            </Button>
-          </Box>
 
           {/* Categories list */}
           <List>
@@ -535,8 +491,17 @@ const AdminPage = () => {
                       size="small"
                       multiline
                       rows={2}
-                      sx={{ mb: 2 }}
+                      sx={{ mb: 1 }}
                       placeholder="説明"
+                    />
+                    <TextField
+                      value={editingCategory.imageUrl || ''}
+                      onChange={(e) => setEditingCategory({...editingCategory, imageUrl: e.target.value})}
+                      fullWidth
+                      size="small"
+                      sx={{ mb: 2 }}
+                      placeholder="画像URL"
+                      label="画像URL"
                     />
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                       <IconButton onClick={handleUpdateCategory} color="primary" size="large">
@@ -594,51 +559,6 @@ const AdminPage = () => {
           </Typography>
           <Divider sx={{ mb: 2 }} />
           
-          {/* Add new blend */}
-          <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-            <Typography variant="subtitle1" gutterBottom>新しいブレンドを追加</Typography>
-            <Grid container spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="ブレンド名"
-                  value={newBlend.name}
-                  onChange={(e) => setNewBlend({...newBlend, name: e.target.value})}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={newBlend.isActive}
-                      onChange={(e) => setNewBlend({...newBlend, isActive: e.target.checked})}
-                    />
-                  }
-                  label="表示する"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="説明"
-                  value={newBlend.description}
-                  onChange={(e) => setNewBlend({...newBlend, description: e.target.value})}
-                  fullWidth
-                  size="small"
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={handleCreateBlend}
-              disabled={createBlendMutation.isPending}
-            >
-              {createBlendMutation.isPending ? '作成中...' : 'ブレンド追加'}
-            </Button>
-          </Box>
 
           {/* Blends list */}
           <List>
@@ -772,7 +692,14 @@ const AdminPage = () => {
             管理者ページ
           </Typography>
 
-          <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)} sx={{ mb: 3 }}>
+          <Tabs 
+            value={tabValue} 
+            onChange={(_, newValue) => setTabValue(newValue)} 
+            sx={{ mb: 3 }}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+          >
             <Tab label="メニュー管理" />
             <Tab label="カテゴリー管理" />
             <Tab label="ブレンド管理" />
@@ -819,6 +746,304 @@ const AdminPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Floating Action Button - shows different button based on selected tab */}
+      {tabValue >= 0 && tabValue <= 2 && (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.3, type: 'spring', stiffness: 260, damping: 20 }}
+        >
+          <Fab
+            color="primary"
+            aria-label="add"
+            sx={{
+              position: 'fixed',
+              bottom: 80,
+              right: 16,
+              zIndex: 1000,
+            }}
+            onClick={() => {
+              if (tabValue === 0) setAddItemDrawerOpen(true);
+              else if (tabValue === 1) setAddCategoryDrawerOpen(true);
+              else if (tabValue === 2) setAddBlendDrawerOpen(true);
+            }}
+          >
+            {tabValue === 0 && <Restaurant />}
+            {tabValue === 1 && <Category />}
+            {tabValue === 2 && <LocalBar />}
+          </Fab>
+        </motion.div>
+      )}
+
+      {/* Add Menu Item Drawer */}
+      <Drawer
+        anchor="right"
+        open={addItemDrawerOpen}
+        onClose={() => setAddItemDrawerOpen(false)}
+        PaperProps={{
+          sx: { width: { xs: '100%', sm: 400 } },
+        }}
+      >
+        <Box sx={{ p: 3 }}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+            新しいメニューアイテムを追加
+          </Typography>
+          <Divider sx={{ mb: 3 }} />
+          
+          <Grid container spacing={2} sx={{ mb: 2 }}>
+            <Grid item xs={12}>
+              <TextField
+                label="メニュー名 *"
+                value={newItem.name}
+                onChange={(e) => setNewItem({...newItem, name: e.target.value})}
+                fullWidth
+                size="small"
+                required
+                error={!newItem.name}
+                helperText={!newItem.name ? '必須項目です' : ''}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="価格 *"
+                type="number"
+                value={newItem.price}
+                onChange={(e) => setNewItem({...newItem, price: Number(e.target.value)})}
+                fullWidth
+                size="small"
+                required
+                error={newItem.price <= 0}
+                helperText={newItem.price <= 0 ? '0より大きい値を入力してください' : ''}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small" required error={!newItem.categoryId}>
+                <InputLabel>カテゴリー *</InputLabel>
+                <Select
+                  value={newItem.categoryId}
+                  onChange={(e) => setNewItem({...newItem, categoryId: e.target.value})}
+                >
+                  {categories?.map(cat => (
+                    <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                  ))}
+                </Select>
+                {!newItem.categoryId && (
+                  <Typography variant="caption" color="error" sx={{ ml: 2, mt: 0.5 }}>
+                    必須項目です
+                  </Typography>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="説明"
+                value={newItem.description}
+                onChange={(e) => setNewItem({...newItem, description: e.target.value})}
+                fullWidth
+                size="small"
+                multiline
+                rows={3}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="レシピ・作り方"
+                value={newItem.recipe}
+                onChange={(e) => setNewItem({...newItem, recipe: e.target.value})}
+                fullWidth
+                size="small"
+                multiline
+                rows={3}
+                placeholder="例: ウイスキー30ml、炭酸水適量、レモン1切れ"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small">
+                <InputLabel>ブレンド（任意）</InputLabel>
+                <Select
+                  multiple
+                  value={newItem.availableBlends}
+                  onChange={(e) => setNewItem({...newItem, availableBlends: typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value})}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map((value) => {
+                        const blend = blends?.find(b => b.id === value);
+                        return (
+                          <Chip key={value} label={blend?.name || value} size="small" />
+                        );
+                      })}
+                    </Box>
+                  )}
+                >
+                  {blends?.filter(blend => blend.isActive).map((blend) => (
+                    <MenuItem key={blend.id} value={blend.id}>
+                      {blend.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+          
+          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', mt: 3 }}>
+            <Button onClick={() => setAddItemDrawerOpen(false)}>
+              キャンセル
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateItem}
+              disabled={createItemMutation.isPending}
+            >
+              {createItemMutation.isPending ? '作成中...' : '追加'}
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
+
+      {/* Add Category Drawer */}
+      <Drawer
+        anchor="right"
+        open={addCategoryDrawerOpen}
+        onClose={() => setAddCategoryDrawerOpen(false)}
+        PaperProps={{
+          sx: { width: { xs: '100%', sm: 400 } },
+        }}
+      >
+        <Box sx={{ p: 3 }}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+            新しいカテゴリーを追加
+          </Typography>
+          <Divider sx={{ mb: 3 }} />
+          
+          <Grid container spacing={2} sx={{ mb: 2 }}>
+            <Grid item xs={12}>
+              <TextField
+                label="カテゴリー名 *"
+                value={newCategory.name}
+                onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
+                fullWidth
+                size="small"
+                required
+                error={!newCategory.name}
+                helperText={!newCategory.name ? '必須項目です' : ''}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={newCategory.visible}
+                    onChange={(e) => setNewCategory({...newCategory, visible: e.target.checked})}
+                  />
+                }
+                label="表示する"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="説明"
+                value={newCategory.description}
+                onChange={(e) => setNewCategory({...newCategory, description: e.target.value})}
+                fullWidth
+                size="small"
+                multiline
+                rows={3}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="画像URL"
+                value={newCategory.imageUrl}
+                onChange={(e) => setNewCategory({...newCategory, imageUrl: e.target.value})}
+                fullWidth
+                size="small"
+                placeholder="https://example.com/image.jpg"
+              />
+            </Grid>
+          </Grid>
+          
+          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', mt: 3 }}>
+            <Button onClick={() => setAddCategoryDrawerOpen(false)}>
+              キャンセル
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateCategory}
+              disabled={createCategoryMutation.isPending}
+            >
+              {createCategoryMutation.isPending ? '作成中...' : '追加'}
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
+
+      {/* Add Blend Drawer */}
+      <Drawer
+        anchor="right"
+        open={addBlendDrawerOpen}
+        onClose={() => setAddBlendDrawerOpen(false)}
+        PaperProps={{
+          sx: { width: { xs: '100%', sm: 400 } },
+        }}
+      >
+        <Box sx={{ p: 3 }}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+            新しいブレンドを追加
+          </Typography>
+          <Divider sx={{ mb: 3 }} />
+          
+          <Grid container spacing={2} sx={{ mb: 2 }}>
+            <Grid item xs={12}>
+              <TextField
+                label="ブレンド名 *"
+                value={newBlend.name}
+                onChange={(e) => setNewBlend({...newBlend, name: e.target.value})}
+                fullWidth
+                size="small"
+                required
+                error={!newBlend.name}
+                helperText={!newBlend.name ? '必須項目です' : ''}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={newBlend.isActive}
+                    onChange={(e) => setNewBlend({...newBlend, isActive: e.target.checked})}
+                  />
+                }
+                label="表示する"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="説明"
+                value={newBlend.description}
+                onChange={(e) => setNewBlend({...newBlend, description: e.target.value})}
+                fullWidth
+                size="small"
+                multiline
+                rows={3}
+              />
+            </Grid>
+          </Grid>
+          
+          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', mt: 3 }}>
+            <Button onClick={() => setAddBlendDrawerOpen(false)}>
+              キャンセル
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateBlend}
+              disabled={createBlendMutation.isPending}
+            >
+              {createBlendMutation.isPending ? '作成中...' : '追加'}
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
     </motion.div>
   );
 };

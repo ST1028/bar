@@ -204,13 +204,21 @@ const sendSlackNotification = async (orderData) => {
           text += `\n  🍯 ブレンド: ${item.blendName}`;
         }
         if (item.recipe && item.recipe.trim()) {
-          // Normalize line endings to \n only
-          const normalizedRecipe = item.recipe.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+          // Normalize line endings to \n only - handle both actual \r\n and escaped \\r\\n
+          const normalizedRecipe = item.recipe
+            .replace(/\\r\\n/g, '\n')
+            .replace(/\\n/g, '\n')
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n');
           text += `\n  📋 レシピ: ${normalizedRecipe}`;
         }
         if (item.remarks && item.remarks.trim()) {
-          // Normalize line endings to \n only
-          const normalizedRemarks = item.remarks.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+          // Normalize line endings to \n only - handle both actual \r\n and escaped \\r\\n
+          const normalizedRemarks = item.remarks
+            .replace(/\\r\\n/g, '\n')
+            .replace(/\\n/g, '\n')
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n');
           text += `\n  💬 備考: ${normalizedRemarks}`;
         }
         return text;
@@ -232,15 +240,7 @@ const sendSlackNotification = async (orderData) => {
           fields: [
             {
               type: 'mrkdwn',
-              text: `*注文ID:*\n${orderData.orderId}`,
-            },
-            {
-              type: 'mrkdwn',
               text: `*注文者:*\n${orderData.patronName}`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `*ユーザー:*\n${orderData.userEmail}`,
             },
             {
               type: 'mrkdwn',

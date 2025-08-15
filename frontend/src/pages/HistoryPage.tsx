@@ -218,8 +218,21 @@ const HistoryPage = () => {
                                 {order.items.map((item, itemIndex) => (
                                   <ListItem key={itemIndex} sx={{ py: 0.5, pl: 0 }}>
                                     <ListItemText
-                                      primary={`${item.name} × ${item.quantity}`}
-                                      secondary={item.remarks ? `備考: ${item.remarks}` : undefined}
+                                      primary={item.name}
+                                      secondary={
+                                        <Box>
+                                          {item.blendName && (
+                                            <Typography variant="caption" color="primary" sx={{ display: 'block' }}>
+                                              ブレンド: {item.blendName}
+                                            </Typography>
+                                          )}
+                                          {item.remarks && (
+                                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                              備考: {item.remarks}
+                                            </Typography>
+                                          )}
+                                        </Box>
+                                      }
                                     />
                                     <Typography variant="body2" color="text.secondary">
                                       ¥{item.subtotal.toLocaleString()}

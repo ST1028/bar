@@ -158,6 +158,8 @@ export const orderAPI = {
       menuId: item.menuId,
       quantity: item.quantity,
       remarks: item.remarks || '',
+      blendId: item.blendId || '',
+      blendName: item.blendName || '',
     }));
     
     const response = await apiClient.post<{ order: Order }>('/orders', {

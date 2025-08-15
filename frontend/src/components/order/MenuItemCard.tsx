@@ -11,13 +11,20 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem as MuiMenuItem,
+  Chip,
 } from '@mui/material';
 import { AddShoppingCart } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
 
 import type { MenuItem } from '../../types';
 import { useCartStore } from '../../stores/cart';
+import { blendAPI } from '../../services/api';
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -26,11 +33,27 @@ interface MenuItemCardProps {
 const MenuItemCard = ({ item }: MenuItemCardProps) => {
   const quantity = 1; // Fixed at 1
   const [remarks, setRemarks] = useState('');
+  const [selectedBlendId, setSelectedBlendId] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const { addItem } = useCartStore();
 
+  const { data: blends } = useQuery({
+    queryKey: ['blends'],
+    queryFn: blendAPI.getBlends,
+  });
+
+  const availableBlends = blends?.filter(blend => 
+    blend.isActive && item.availableBlends?.includes(blend.id)
+  ) || [];
+  const hasBlendOptions = availableBlends.length > 0;
+
   const handleAddToCart = () => {
     if (item.isRemarksRequired && !remarks.trim()) {
+      setDialogOpen(true);
+      return;
+    }
+    
+    if (hasBlendOptions && !selectedBlendId) {
       setDialogOpen(true);
       return;
     }
@@ -39,17 +62,22 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
   };
 
   const addToCart = () => {
+    const selectedBlend = selectedBlendId ? availableBlends.find(b => b.id === selectedBlendId) : undefined;
+    
     addItem({
       menuId: item.id,
       name: item.name,
       price: item.price,
       quantity,
       remarks: remarks.trim(),
+      blendId: selectedBlendId || undefined,
+      blendName: selectedBlend?.name || undefined,
     });
 
-    toast.success(`${item.name} をカートに追加しました`);
-    // quantity is now fixed at 1
+    const blendText = selectedBlend ? ` (${selectedBlend.name})` : '';
+    toast.success(`${item.name}${blendText} をカートに追加しました`);
     setRemarks('');
+    setSelectedBlendId('');
     setDialogOpen(false);
   };
 
@@ -94,16 +122,35 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
-                      mt: 0.5
+                      mt: 0.5,
+                      whiteSpace: 'pre-line'
                     }}
                   >
-                    {item.description}
+                    {item.description.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
                   </Typography>
                 )}
                 {item.isRemarksRequired && (
                   <Typography variant="caption" color="warning.main" sx={{ display: 'block', mt: 0.5 }}>
                     ※要備考
                   </Typography>
+                )}
+                {hasBlendOptions && (
+                  <Box sx={{ mt: 0.5 }}>
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                      選択可能なブレンド:
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.25 }}>
+                      {availableBlends.map((blend) => (
+                        <Chip 
+                          key={blend.id} 
+                          label={blend.name} 
+                          size="small" 
+                          variant="outlined"
+                          sx={{ fontSize: '0.65rem', height: '16px' }}
+                        />
+                      ))}
+                    </Box>
+                  </Box>
                 )}
               </Box>
             </Box>
@@ -134,25 +181,75 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
       </motion.div>
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>{item.name} - 備考入力</DialogTitle>
+        <DialogTitle>
+          {item.name} - 
+          {hasBlendOptions && item.isRemarksRequired ? ' ブレンド・備考選択' : 
+           hasBlendOptions ? ' ブレンド選択' : ' 備考入力'}
+        </DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="備考・注文内容"
-            fullWidth
-            multiline
-            rows={3}
-            variant="outlined"
-            value={remarks}
-            onChange={(e) => setRemarks(e.target.value)}
-            placeholder="例: 氷少なめ、レモン多めなど"
-            sx={{ mt: 2 }}
-          />
+          {hasBlendOptions && (
+            <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
+              <InputLabel>ブレンド選択 *</InputLabel>
+              <Select
+                value={selectedBlendId}
+                onChange={(e) => setSelectedBlendId(e.target.value)}
+                label="ブレンド選択 *"
+              >
+                {availableBlends.map((blend) => (
+                  <MuiMenuItem key={blend.id} value={blend.id}>
+                    {blend.name}
+                    {blend.description && (
+                      <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                        - {blend.description}
+                      </Typography>
+                    )}
+                  </MuiMenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          
+          {item.isRemarksRequired && (
+            <TextField
+              autoFocus={!hasBlendOptions}
+              margin="dense"
+              label="備考・注文内容 *"
+              fullWidth
+              multiline
+              rows={3}
+              variant="outlined"
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              placeholder="例: 氷少なめ、レモン多めなど"
+              sx={{ mt: 2 }}
+            />
+          )}
+          
+          {!item.isRemarksRequired && (
+            <TextField
+              margin="dense"
+              label="備考・注文内容（任意）"
+              fullWidth
+              multiline
+              rows={2}
+              variant="outlined"
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              placeholder="例: 氷少なめ、レモン多めなど"
+              sx={{ mt: 2 }}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>キャンセル</Button>
-          <Button onClick={addToCart} variant="contained" disabled={!remarks.trim()}>
+          <Button 
+            onClick={addToCart} 
+            variant="contained" 
+            disabled={
+              (item.isRemarksRequired && !remarks.trim()) || 
+              (hasBlendOptions && !selectedBlendId)
+            }
+          >
             カートに追加
           </Button>
         </DialogActions>

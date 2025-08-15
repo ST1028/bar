@@ -1,5 +1,5 @@
 import { Box, Typography, IconButton, TextField } from '@mui/material';
-import { Add, Remove, Delete } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
 import type { CartItem } from '../../types';
@@ -10,15 +10,7 @@ interface CartItemCardProps {
 }
 
 const CartItemCard = ({ item }: CartItemCardProps) => {
-  const { updateQuantity, removeItem, updateRemarks } = useCartStore();
-
-  const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeItem(item.menuId);
-    } else {
-      updateQuantity(item.menuId, newQuantity);
-    }
-  };
+  const { removeItem, updateRemarks } = useCartStore();
 
   return (
     <motion.div
@@ -54,31 +46,23 @@ const CartItemCard = ({ item }: CartItemCardProps) => {
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
           <Typography variant="body2" color="text.secondary">
-            ¥{item.price.toLocaleString()} × {item.quantity}
+            ¥{item.price.toLocaleString()}
           </Typography>
           <Typography variant="subtitle1" color="primary" fontWeight={600}>
-            ¥{(item.price * item.quantity).toLocaleString()}
+            ¥{item.price.toLocaleString()}
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <IconButton
-            size="small"
-            onClick={() => handleQuantityChange(item.quantity - 1)}
-          >
-            <Remove />
-          </IconButton>
-          <Typography sx={{ mx: 2, minWidth: '30px', textAlign: 'center' }}>
-            {item.quantity}
-          </Typography>
-          <IconButton
-            size="small"
-            onClick={() => handleQuantityChange(item.quantity + 1)}
-            disabled={item.quantity >= 10}
-          >
-            <Add />
-          </IconButton>
-        </Box>
+        {item.blendName && (
+          <Box sx={{ mb: 1 }}>
+            <Typography variant="caption" color="text.secondary">
+              ブレンド:
+            </Typography>
+            <Typography variant="body2" color="primary" sx={{ ml: 1, fontWeight: 500 }}>
+              {item.blendName}
+            </Typography>
+          </Box>
+        )}
 
         <TextField
           label="備考"
