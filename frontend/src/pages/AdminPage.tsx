@@ -389,17 +389,39 @@ const AdminPage = () => {
                     <ListItemText
                       primary={item.name}
                       secondary={
-                        <Box>
+                        <Box sx={{ pr: 10 }}>
                           <Typography variant="body2" color="text.secondary">
                             ¥{item.price.toLocaleString()} - {categories?.find(c => c.id === item.categoryId)?.name}
                           </Typography>
                           {item.description && (
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, whiteSpace: 'pre-line' }}>
+                            <Typography 
+                              variant="body2" 
+                              color="text.secondary" 
+                              sx={{ 
+                                mt: 0.5, 
+                                whiteSpace: 'pre-line',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 3,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden'
+                              }}
+                            >
                               説明: {item.description.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
                             </Typography>
                           )}
                           {item.recipe && (
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, whiteSpace: 'pre-line' }}>
+                            <Typography 
+                              variant="body2" 
+                              color="text.secondary" 
+                              sx={{ 
+                                mt: 0.5, 
+                                whiteSpace: 'pre-line',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 3,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden'
+                              }}
+                            >
                               レシピ: {item.recipe.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
                             </Typography>
                           )}

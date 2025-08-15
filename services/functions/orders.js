@@ -203,7 +203,7 @@ const sendSlackNotification = async (orderData) => {
         if (item.blendName && item.blendName.trim()) {
           text += `\n  🍯 ブレンド: ${item.blendName}`;
         }
-        if (item.recipe && item.recipe.trim()) {
+        if (item.recipe && item.recipe.trim() && item.recipe !== 'NULL' && item.recipe !== 'null') {
           // Normalize line endings to \n only - handle both actual \r\n and escaped \\r\\n
           const normalizedRecipe = item.recipe
             .replace(/\\r\\n/g, '\n')
@@ -226,7 +226,7 @@ const sendSlackNotification = async (orderData) => {
       .join('\n');
 
     const message = {
-      text: `🍺 新しい注文が入りました！`,
+      text: `🍺 新しい注文が入りました！ <!channel>`,
       blocks: [
         {
           type: 'header',

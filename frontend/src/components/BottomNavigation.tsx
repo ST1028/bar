@@ -12,17 +12,15 @@ const BottomNavigation = () => {
   const isAdmin = user?.groups?.includes('admin') || user?.email === 'admin@example.com';
 
   const getValueFromPath = (pathname: string): number => {
-    switch (pathname) {
-      case '/':
-        return 0;
-      case '/patrons':
-        return 1;
-      case '/history':
-        return 2;
-      case '/admin':
-        return 3;
-      default:
-        return 0;
+    if (pathname.startsWith('/patrons')) {
+      return 1;
+    } else if (pathname.startsWith('/history')) {
+      return 2;
+    } else if (pathname.startsWith('/admin')) {
+      return 3;
+    } else {
+      // Default to Order (index 0) for root path and any other paths
+      return 0;
     }
   };
 

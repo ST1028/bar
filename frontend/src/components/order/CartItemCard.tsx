@@ -44,10 +44,7 @@ const CartItemCard = ({ item }: CartItemCardProps) => {
           </IconButton>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-          <Typography variant="body2" color="text.secondary">
-            ¥{item.price.toLocaleString()}
-          </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 1 }}>
           <Typography variant="subtitle1" color="primary" fontWeight={600}>
             ¥{item.price.toLocaleString()}
           </Typography>

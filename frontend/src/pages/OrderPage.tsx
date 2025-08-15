@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Container, Fab, Badge, Typography, Divider, Chip } from '@mui/material';
+import { Box, Container, Fab, Badge, Typography, Divider, Chip, Card, CardContent, Button } from '@mui/material';
 import { ShoppingCart, LocalBar } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -37,11 +37,7 @@ const OrderPage = () => {
     queryFn: patronAPI.getPatrons,
   });
 
-  useEffect(() => {
-    if (!selectedPatronId && patrons && patrons.length > 0 && getItemCount() > 0) {
-      setPatronSelectorOpen(true);
-    }
-  }, [selectedPatronId, patrons, getItemCount]);
+  // Removed automatic patron selector opening to allow manual selection
 
   if (menusLoading || patronsLoading) {
     return <LoadingSkeleton />;
@@ -65,15 +61,9 @@ const OrderPage = () => {
             <Typography variant="h4" component="h1" gutterBottom sx={{ 
               fontWeight: 700, 
               color: 'primary.main',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 1
+              textAlign: 'center'
             }}>
-              <LocalBar /> Menu
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Tap to add items to your order
+              Menu
             </Typography>
           </Box>
 

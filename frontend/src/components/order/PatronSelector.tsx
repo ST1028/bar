@@ -36,7 +36,6 @@ const PatronSelector = ({ open, onClose, patrons }: PatronSelectorProps) => {
       <DialogContent sx={{ px: 0 }}>
         {patrons.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4, px: 3 }}>
-            <PersonAdd sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
             <Button
               variant="contained"
               startIcon={<PersonAdd />}
