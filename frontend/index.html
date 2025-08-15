@@ -1,10 +1,43 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="https://bar-app-assets-611829065744-us-east-1.s3.amazonaws.com/sf-bar-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Bar</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Theme color -->
+    <meta name="theme-color" content="#1976d2" />
+    <meta name="msapplication-TileColor" content="#1976d2" />
+    
+    <!-- iOS specific meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="BarOrder" />
+    
+    <!-- iOS splash screens -->
+    <meta name="apple-touch-fullscreen" content="yes" />
+    
+    <!-- iOS icons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/icon-96x96.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/icon-128x128.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/icon-128x128.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+    
+    <!-- Microsoft tiles -->
+    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
+    
+    <!-- Description -->
+    <meta name="description" content="バー注文システム - 簡単にドリンクを注文できます" />
+    
+    <title>Bar Order System</title>
   </head>
   <body>
     <div id="root"></div>

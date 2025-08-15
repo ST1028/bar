@@ -13,6 +13,7 @@ import { useAuthStore } from './stores/auth';
 import AuthenticatedApp from './components/AuthenticatedApp';
 import LoginPage from './pages/LoginPage';
 import LoadingScreen from './components/LoadingScreen';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 
 Amplify.configure(amplifyConfig);
 
@@ -74,6 +75,7 @@ function App() {
 
   useEffect(() => {
     checkAuthState();
+    registerServiceWorker();
 
     // Listen to Amplify Hub events for authentication changes
     const hubListenerCancelToken = Hub.listen('auth', (data) => {
@@ -102,6 +104,30 @@ function App() {
       hubListenerCancelToken();
     };
   }, []);
+
+  const registerServiceWorker = async () => {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        console.log('✅ Service Worker registered:', registration);
+        
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('🔄 New content available! Please refresh.');
+                // You could show a notification here
+              }
+            });
+          }
+        });
+      } catch (error) {
+        console.log('❌ Service Worker registration failed:', error);
+      }
+    }
+  };
 
   const checkAuthState = async () => {
     console.log('🔍 Checking authentication state...');
@@ -160,6 +186,7 @@ function App() {
             },
           }}
         />
+        <PWAInstallPrompt />
       </ThemeProvider>
     </QueryClientProvider>
   );
