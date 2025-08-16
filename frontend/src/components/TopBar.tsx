@@ -44,7 +44,7 @@ const TopBar = () => {
             }}
           />
           <Typography variant="h6" component="div">
-            Bar
+            SF BAR
           </Typography>
         </Box>
         <div>
