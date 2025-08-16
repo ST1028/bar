@@ -34,8 +34,8 @@ const TopBar = () => {
       <Toolbar>
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
           <Avatar 
-            src="https://bar-app-assets-611829065744-us-east-1.s3.amazonaws.com/sf-bar-logo.png"
-            alt="Bar Logo"
+            src="https://bar-file.s3.ap-northeast-1.amazonaws.com/bar-icon.png"
+            alt="SF BAR Logo"
             sx={{ 
               width: 32, 
               height: 32, 
