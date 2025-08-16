@@ -7,14 +7,16 @@ import {
   Divider,
   Button,
   IconButton,
+  Avatar,
 } from '@mui/material';
-import { Close, Person, ShoppingCart } from '@mui/icons-material';
+import { Close, ShoppingCart } from '@mui/icons-material';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 import { useCartStore } from '../../stores/cart';
 import { orderAPI, patronAPI } from '../../services/api';
+import { getAvatarUrl } from '../../utils/avatar';
 import CartItemCard from './CartItemCard';
 
 interface CartDrawerProps {
@@ -111,8 +113,16 @@ const CartDrawer = ({ open, onClose, onPatronSelect }: CartDrawerProps) => {
               color: 'primary.contrastText'
             }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Person />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Avatar 
+                    src={getAvatarUrl(selectedPatron.id)}
+                    alt={selectedPatron.name}
+                    sx={{ 
+                      width: 48, 
+                      height: 48,
+                      border: '2px solid white'
+                    }}
+                  />
                   <Box>
                     <Typography variant="caption" sx={{ display: 'block' }}>
                       注文者

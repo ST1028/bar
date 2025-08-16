@@ -9,12 +9,14 @@ import {
   ListItemIcon,
   Button,
   Box,
+  Avatar,
 } from '@mui/material';
-import { Person, PersonAdd } from '@mui/icons-material';
+import { PersonAdd } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
 import type { Patron } from '../../types';
 import { useCartStore } from '../../stores/cart';
+import { getAvatarUrl } from '../../utils/avatar';
 
 interface PatronSelectorProps {
   open: boolean;
@@ -72,7 +74,15 @@ const PatronSelector = ({ open, onClose, patrons }: PatronSelectorProps) => {
                     }}
                   >
                     <ListItemIcon>
-                      <Person color={selectedPatronId === patron.id ? 'inherit' : 'primary'} />
+                      <Avatar 
+                        src={getAvatarUrl(patron.id)}
+                        alt={patron.name}
+                        sx={{ 
+                          width: 40, 
+                          height: 40,
+                          border: selectedPatronId === patron.id ? '2px solid white' : '2px solid transparent'
+                        }}
+                      />
                     </ListItemIcon>
                     <ListItemText
                       primary={patron.name}
