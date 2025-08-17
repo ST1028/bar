@@ -343,9 +343,10 @@ const AdminPage = () => {
                 sx={{
                   opacity: item.isActive === false ? 0.5 : 1,
                   bgcolor: item.isActive === false ? 'action.hover' : 'inherit',
-                  minHeight: 120,
+                  display: 'flex',
                   alignItems: 'flex-start',
-                  py: 2
+                  py: 2,
+                  pr: 0
                 }}
               >
                 {editingItem?.id === item.id ? (
@@ -442,7 +443,7 @@ const AdminPage = () => {
                     <ListItemText
                       primary={item.name}
                       secondary={
-                        <Box sx={{ pr: 6 }}>
+                        <Box sx={{ flex: 1 }}>
                           <Typography variant="body2" color="text.secondary">
                             ¥{item.price.toLocaleString()} - {categories?.find(c => c.id === item.categoryId)?.name}
                           </Typography>
@@ -498,8 +499,15 @@ const AdminPage = () => {
                         </Box>
                       }
                     />
-                    <ListItemSecondaryAction sx={{ top: '20px', right: '8px' }}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, alignItems: 'center' }}>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      gap: 1, 
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      minWidth: '48px',
+                      ml: 0
+                    }}>
                         <IconButton 
                           onClick={() => {
                             if (visibilityIconRefs.current[`item-${item.id}`]) {
@@ -513,6 +521,11 @@ const AdminPage = () => {
                           size="small"
                           color={item.isActive ? "primary" : "default"}
                           title={item.isActive ? "メニューを非表示にする" : "メニューを表示する"}
+                          sx={{ 
+                            width: 40, 
+                            height: 40, 
+                            padding: '8px'
+                          }}
                         >
                           <Player
                             ref={(ref) => {
@@ -531,6 +544,11 @@ const AdminPage = () => {
                             setEditingItem(item);
                           }} 
                           size="small"
+                          sx={{ 
+                            width: 40, 
+                            height: 40, 
+                            padding: '8px'
+                          }}
                         >
                           <Player
                             ref={(ref) => {
@@ -550,6 +568,11 @@ const AdminPage = () => {
                           }} 
                           size="small" 
                           color="error"
+                          sx={{ 
+                            width: 40, 
+                            height: 40, 
+                            padding: '8px'
+                          }}
                         >
                           <Player
                             ref={(ref) => {
@@ -560,8 +583,7 @@ const AdminPage = () => {
                             colorize="#f44336"
                           />
                         </IconButton>
-                      </Box>
-                    </ListItemSecondaryAction>
+                    </Box>
                   </>
                 )}
               </ListItem>

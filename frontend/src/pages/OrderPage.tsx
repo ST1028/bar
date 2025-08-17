@@ -141,14 +141,17 @@ const OrderPage = () => {
                             variant="h3"
                             sx={{
                               color: 'white',
-                              fontWeight: 800,
+                              fontWeight: 700,
                               textAlign: 'center',
                               textShadow: '3px 3px 6px rgba(0,0,0,0.8)',
-                              letterSpacing: '0.5px',
-                              mb: 1
+                              letterSpacing: '1px',
+                              mb: 1,
+                              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                              lineHeight: 1.2
                             }}
                           >
-                            {category.nameEn || category.name}
+                            {category.nameEn && category.nameEn.trim() ? category.nameEn : category.name}
                           </Typography>
                           {category.description && (
                             <Typography
