@@ -61,7 +61,7 @@ const AdminPage = () => {
   const [addItemDrawerOpen, setAddItemDrawerOpen] = useState(false);
   const [addCategoryDrawerOpen, setAddCategoryDrawerOpen] = useState(false);
   const [addBlendDrawerOpen, setAddBlendDrawerOpen] = useState(false);
-  const [newItem, setNewItem] = useState({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] as string[] });
+  const [newItem, setNewItem] = useState({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] as string[], isActive: true });
   const [newCategory, setNewCategory] = useState({ name: '', description: '', imageUrl: '', visible: true });
   const [newBlend, setNewBlend] = useState({ name: '', description: '', isActive: true });
   const { user } = useAuthStore();
@@ -100,7 +100,7 @@ const AdminPage = () => {
     mutationFn: (item: any) => menuAPI.createMenuItem(item),
     onSuccess: () => {
       toast.success('メニューアイテムを作成しました');
-      setNewItem({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] });
+      setNewItem({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [], isActive: true });
       setAddItemDrawerOpen(false);
       queryClient.invalidateQueries({ queryKey: ['menu-items'] });
     },
@@ -294,7 +294,14 @@ const AdminPage = () => {
           {/* Menu items list */}
           <List>
             {menuItems?.map((item) => (
-              <ListItem key={item.id} divider>
+              <ListItem 
+                key={item.id} 
+                divider
+                sx={{
+                  opacity: item.isActive === false ? 0.5 : 1,
+                  bgcolor: item.isActive === false ? 'action.hover' : 'inherit'
+                }}
+              >
                 {editingItem?.id === item.id ? (
                   <Box sx={{ width: '100%' }}>
                     <Grid container spacing={2} sx={{ mb: 1 }}>
@@ -446,6 +453,17 @@ const AdminPage = () => {
                       }
                     />
                     <ListItemSecondaryAction>
+                      <IconButton 
+                        onClick={() => updateItemMutation.mutate({ 
+                          id: item.id, 
+                          isActive: !item.isActive 
+                        })} 
+                        size="small"
+                        color={item.isActive ? "primary" : "default"}
+                        title={item.isActive ? "メニューを非表示にする" : "メニューを表示する"}
+                      >
+                        {item.isActive ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
                       <IconButton onClick={() => setEditingItem(item)} size="small">
                         <Edit />
                       </IconButton>
