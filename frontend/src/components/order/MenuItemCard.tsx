@@ -17,14 +17,15 @@ import {
   MenuItem as MuiMenuItem,
   Chip,
 } from '@mui/material';
-import { AddShoppingCart } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
+import Lottie from 'lottie-react';
 
 import type { MenuItem } from '../../types';
 import { useCartStore } from '../../stores/cart';
 import { blendAPI } from '../../services/api';
+import plusIconAnimation from '../../../public/icons/wired-outline-2158-plus-math-hover-draw.json';
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -35,6 +36,7 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
   const [remarks, setRemarks] = useState('');
   const [selectedBlendId, setSelectedBlendId] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const { addItem } = useCartStore();
 
   const { data: blends } = useQuery({
@@ -63,6 +65,10 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
 
   const addToCart = () => {
     const selectedBlend = selectedBlendId ? availableBlends.find(b => b.id === selectedBlendId) : undefined;
+    
+    // アニメーションをトリガー
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 1000);
     
     addItem({
       menuId: item.id,
@@ -170,10 +176,22 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
                   minWidth: 48,
                   width: 48,
                   height: 36,
-                  p: 0
+                  p: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                <AddShoppingCart />
+                <Lottie
+                  animationData={plusIconAnimation}
+                  loop={false}
+                  autoplay={isAnimating}
+                  style={{ 
+                    width: 24, 
+                    height: 24,
+                    filter: 'invert(1)' // Make icon white to match button
+                  }}
+                />
               </Button>
             </Box>
           </CardContent>
