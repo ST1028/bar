@@ -1,13 +1,27 @@
+import { useRef } from 'react';
 import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
-import { Restaurant, People, History, AdminPanelSettings } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Player } from '@lordicon/react';
 import { useAuthStore } from '../stores/auth';
+
+import orderAnimation from '../icons/wired-outline-502-two-glasses-pint-beer-hover-pinch.json';
+import orderAnimationBold from '../icons/wired-outline-502-two-glasses-pint-beer-hover-pinch-bold.json';
+import patronAnimation from '../icons/wired-outline-313-two-avatar-icon-calm-hover-jumping.json';
+import patronAnimationBold from '../icons/wired-outline-313-two-avatar-icon-calm-hover-jumping-bold.json';
+import historyAnimation from '../icons/wired-outline-1334-order-history-hover-pinch.json';
+import historyAnimationBold from '../icons/wired-outline-1334-order-history-hover-pinch-bold.json';
+import adminAnimation from '../icons/wired-outline-1004-management-team-hover-smooth.json';
+import adminAnimationBold from '../icons/wired-outline-1004-management-team-hover-smooth-bold.json';
 
 const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthStore();
+  const orderIconBoldRef = useRef<Player>(null);
+  const patronIconBoldRef = useRef<Player>(null);
+  const historyIconBoldRef = useRef<Player>(null);
+  const adminIconBoldRef = useRef<Player>(null);
 
   const isAdmin = user?.groups?.includes('admin') || user?.email === 'admin@example.com';
 
@@ -27,6 +41,23 @@ const BottomNavigation = () => {
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     const basePaths = ['/', '/patrons', '/history'];
     const paths = isAdmin ? [...basePaths, '/admin'] : basePaths;
+    
+    // Trigger animation for the selected tab
+    switch (newValue) {
+      case 0:
+        orderIconBoldRef.current?.playFromBeginning();
+        break;
+      case 1:
+        patronIconBoldRef.current?.playFromBeginning();
+        break;
+      case 2:
+        historyIconBoldRef.current?.playFromBeginning();
+        break;
+      case 3:
+        adminIconBoldRef.current?.playFromBeginning();
+        break;
+    }
+    
     navigate(paths[newValue]);
   };
 
@@ -59,20 +90,48 @@ const BottomNavigation = () => {
       >
         <BottomNavigationAction
           label="Order"
-          icon={<Restaurant />}
+          icon={
+            <Player
+              ref={orderIconBoldRef}
+              icon={orderAnimationBold}
+              size={24}
+              colorize={getValueFromPath(location.pathname) === 0 ? "#81C784" : "#666666"}
+            />
+          }
         />
         <BottomNavigationAction
           label="Patrons"
-          icon={<People />}
+          icon={
+            <Player
+              ref={patronIconBoldRef}
+              icon={patronAnimationBold}
+              size={24}
+              colorize={getValueFromPath(location.pathname) === 1 ? "#81C784" : "#666666"}
+            />
+          }
         />
         <BottomNavigationAction
           label="History"
-          icon={<History />}
+          icon={
+            <Player
+              ref={historyIconBoldRef}
+              icon={historyAnimationBold}
+              size={24}
+              colorize={getValueFromPath(location.pathname) === 2 ? "#81C784" : "#666666"}
+            />
+          }
         />
         {isAdmin && (
           <BottomNavigationAction
             label="Admin"
-            icon={<AdminPanelSettings />}
+            icon={
+              <Player
+                ref={adminIconBoldRef}
+                icon={adminAnimationBold}
+                size={24}
+                colorize={getValueFromPath(location.pathname) === 3 ? "#81C784" : "#666666"}
+              />
+            }
           />
         )}
       </MuiBottomNavigation>

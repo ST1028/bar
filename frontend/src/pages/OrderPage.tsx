@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, Container, Fab, Badge, Typography, Divider, Chip } from '@mui/material';
-import { ShoppingCart } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Player } from '@lordicon/react';
 
 import { menuAPI, patronAPI } from '../services/api';
 import { useCartStore } from '../stores/cart';
@@ -12,10 +12,31 @@ import PatronSelector from '../components/order/PatronSelector';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import ErrorMessage from '../components/ErrorMessage';
 
+import cartIconAnimation from '../icons/wired-outline-146-trolley-hover-jump.json';
+import ConfettiAnimation from '../components/ConfettiAnimation';
+
 const OrderPage = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [patronSelectorOpen, setPatronSelectorOpen] = useState(false);
-  const { getItemCount } = useCartStore();
+  const [showConfetti, setShowConfetti] = useState(false);
+  const cartIconRef = useRef<Player>(null);
+  const { getItemCount, setOnItemAdded } = useCartStore();
+
+  // Set up cart animation callback
+  useEffect(() => {
+    const handleItemAdded = () => {
+      if (cartIconRef.current) {
+        cartIconRef.current.playFromBeginning();
+      }
+    };
+    
+    setOnItemAdded(handleItemAdded);
+    
+    // Clean up
+    return () => {
+      setOnItemAdded(() => {});
+    };
+  }, [setOnItemAdded]);
 
   const { data: categories, isLoading: menusLoading, error: menusError } = useQuery({
     queryKey: ['menus'],
@@ -202,45 +223,61 @@ const OrderPage = () => {
         </Container>
       </Box>
 
-      <AnimatePresence>
-        {getItemCount() > 0 && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            transition={{ duration: 0.3, type: 'spring', stiffness: 260, damping: 20 }}
-          >
-            <Fab
-              color="primary"
-              aria-label="cart"
-              sx={{
-                position: 'fixed',
-                bottom: 80,
-                right: 16,
-                zIndex: 1000,
-                width: 64,
-                height: 64
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3, type: 'spring', stiffness: 260, damping: 20 }}
+      >
+        <Fab
+          color="primary"
+          aria-label="cart"
+          sx={{
+            position: 'fixed',
+            bottom: 80,
+            right: 16,
+            zIndex: 1000
+          }}
+          onClick={() => setCartOpen(true)}
+        >
+          <Badge badgeContent={getItemCount() > 0 ? getItemCount() : undefined} color="error">
+            <motion.div
+              animate={{
+                scale: [1, 1.3, 1],
+                rotate: [0, -10, 10, 0]
               }}
-              onClick={() => setCartOpen(true)}
+              transition={{
+                duration: 0.6,
+                ease: "easeInOut"
+              }}
+              key={getItemCount()}
             >
-              <Badge badgeContent={getItemCount()} color="error">
-                <ShoppingCart sx={{ fontSize: '1.5rem' }} />
-              </Badge>
-            </Fab>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <Player
+                ref={cartIconRef}
+                icon={cartIconAnimation}
+                size={24}
+                colorize="#ffffff"
+              />
+            </motion.div>
+          </Badge>
+        </Fab>
+      </motion.div>
 
       <CartDrawer
         open={cartOpen}
         onClose={() => setCartOpen(false)}
         onPatronSelect={() => setPatronSelectorOpen(true)}
+        onOrderSuccess={() => setShowConfetti(true)}
       />
 
       <PatronSelector
         open={patronSelectorOpen}
         onClose={() => setPatronSelectorOpen(false)}
         patrons={patrons || []}
+      />
+      
+      <ConfettiAnimation 
+        open={showConfetti} 
+        onClose={() => setShowConfetti(false)} 
       />
     </motion.div>
   );

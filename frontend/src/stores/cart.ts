@@ -4,12 +4,14 @@ import type { CartItem } from '../types';
 interface CartState {
   items: CartItem[];
   selectedPatronId: string | null;
+  onItemAdded?: () => void;
   addItem: (item: CartItem) => void;
   removeItem: (menuId: string) => void;
   updateQuantity: (menuId: string, quantity: number) => void;
   updateRemarks: (menuId: string, remarks: string) => void;
   clearCart: () => void;
   setSelectedPatronId: (patronId: string | null) => void;
+  setOnItemAdded: (callback: () => void) => void;
   getTotalAmount: () => number;
   getItemCount: () => number;
 }
@@ -17,6 +19,7 @@ interface CartState {
 export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   selectedPatronId: null,
+  onItemAdded: undefined,
   
   addItem: (newItem) =>
     set((state) => {
@@ -24,13 +27,20 @@ export const useCartStore = create<CartState>((set, get) => ({
         (item) => item.menuId === newItem.menuId
       );
       
+      let updatedItems;
       if (existingItemIndex >= 0) {
-        const updatedItems = [...state.items];
+        updatedItems = [...state.items];
         updatedItems[existingItemIndex].quantity += newItem.quantity;
-        return { items: updatedItems };
+      } else {
+        updatedItems = [...state.items, newItem];
       }
       
-      return { items: [...state.items, newItem] };
+      // Trigger animation callback if set
+      if (state.onItemAdded) {
+        state.onItemAdded();
+      }
+      
+      return { items: updatedItems };
     }),
   
   removeItem: (menuId) =>
@@ -55,6 +65,8 @@ export const useCartStore = create<CartState>((set, get) => ({
   clearCart: () => set({ items: [], selectedPatronId: null }),
   
   setSelectedPatronId: (patronId) => set({ selectedPatronId: patronId }),
+  
+  setOnItemAdded: (callback) => set({ onItemAdded: callback }),
   
   getTotalAmount: () => {
     const { items } = get();

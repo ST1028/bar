@@ -1,6 +1,10 @@
-import { Box, Typography, IconButton, TextField } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { useRef } from 'react';
+import { Box, Typography, IconButton, TextField, ButtonGroup, Button } from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { Player } from '@lordicon/react';
+
+import trashAnimation from '../../icons/wired-outline-185-trash-bin-hover-empty.json';
 
 import type { CartItem } from '../../types';
 import { useCartStore } from '../../stores/cart';
@@ -10,7 +14,8 @@ interface CartItemCardProps {
 }
 
 const CartItemCard = ({ item }: CartItemCardProps) => {
-  const { removeItem, updateRemarks } = useCartStore();
+  const { removeItem, updateRemarks, updateQuantity } = useCartStore();
+  const deleteIconRef = useRef<Player>(null);
 
   return (
     <motion.div
@@ -38,15 +43,58 @@ const CartItemCard = ({ item }: CartItemCardProps) => {
           <IconButton
             size="small"
             color="error"
-            onClick={() => removeItem(item.menuId)}
+            onClick={() => {
+              if (deleteIconRef.current) {
+                deleteIconRef.current.playFromBeginning();
+              }
+              removeItem(item.menuId);
+            }}
           >
-            <Delete />
+            <Player
+              ref={deleteIconRef}
+              icon={trashAnimation}
+              size={20}
+              colorize="#f44336"
+            />
           </IconButton>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="caption" color="text.secondary">
+              個数:
+            </Typography>
+            <ButtonGroup size="small" variant="outlined">
+              <Button
+                onClick={() => updateQuantity(item.menuId, Math.max(1, item.quantity - 1))}
+                disabled={item.quantity <= 1}
+                sx={{ minWidth: '32px', padding: '4px' }}
+              >
+                <Remove fontSize="small" />
+              </Button>
+              <Button
+                disabled
+                sx={{ 
+                  minWidth: '40px', 
+                  padding: '4px 8px',
+                  '&.Mui-disabled': { 
+                    color: 'text.primary',
+                    borderColor: 'divider'
+                  }
+                }}
+              >
+                {item.quantity}
+              </Button>
+              <Button
+                onClick={() => updateQuantity(item.menuId, item.quantity + 1)}
+                sx={{ minWidth: '32px', padding: '4px' }}
+              >
+                <Add fontSize="small" />
+              </Button>
+            </ButtonGroup>
+          </Box>
           <Typography variant="subtitle1" color="primary" fontWeight={600}>
-            ¥{item.price.toLocaleString()}
+            ¥{(item.price * item.quantity).toLocaleString()}
           </Typography>
         </Box>
 

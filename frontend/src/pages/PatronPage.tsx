@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Container,
   Box,
@@ -16,21 +16,27 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { Edit, PersonAdd } from '@mui/icons-material';
+import { Edit } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { Player } from '@lordicon/react';
 
 import { patronAPI } from '../services/api';
 import type { Patron } from '../types';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import ErrorMessage from '../components/ErrorMessage';
+import avatarPlusAnimation from '../icons/wired-outline-307-avatar-icon-calm-plus-hover-click.json';
+import editAnimation from '../icons/wired-outline-35-edit-hover-line.json';
 
 const PatronPage = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPatron, setEditingPatron] = useState<Patron | null>(null);
   const [patronName, setPatronName] = useState('');
   const queryClient = useQueryClient();
+  const fabIconRef = useRef<Player>(null);
+  const emptyStateIconRef = useRef<Player>(null);
+  const editIconRefs = useRef<Record<string, Player | null>>({});
 
   const { data: patrons, isLoading, error } = useQuery({
     queryKey: ['patrons'],
@@ -69,6 +75,13 @@ const PatronPage = () => {
     } else {
       setEditingPatron(null);
       setPatronName('');
+      // Trigger animation when opening add dialog
+      if (fabIconRef.current) {
+        fabIconRef.current.playFromBeginning();
+      }
+      if (emptyStateIconRef.current) {
+        emptyStateIconRef.current.playFromBeginning();
+      }
     }
     setDialogOpen(true);
   };
@@ -110,7 +123,12 @@ const PatronPage = () => {
 
           {!patrons || patrons.length === 0 ? (
             <Box sx={{ textAlign: 'center', py: 6 }}>
-              <PersonAdd sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
+              <Player
+                ref={emptyStateIconRef}
+                icon={avatarPlusAnimation}
+                size={64}
+                colorize="#9e9e9e"
+              />
               <Typography variant="h6" color="text.secondary" gutterBottom>
                 注文者がいません
               </Typography>
@@ -119,7 +137,13 @@ const PatronPage = () => {
               </Typography>
               <Button
                 variant="contained"
-                startIcon={<PersonAdd />}
+                startIcon={
+                  <Player
+                    icon={avatarPlusAnimation}
+                    size={20}
+                    colorize="#ffffff"
+                  />
+                }
                 onClick={() => handleOpenDialog()}
                 size="large"
               >
@@ -145,9 +169,21 @@ const PatronPage = () => {
                       <ListItemSecondaryAction>
                         <IconButton
                           edge="end"
-                          onClick={() => handleOpenDialog(patron)}
+                          onClick={() => {
+                            if (editIconRefs.current[patron.id]) {
+                              editIconRefs.current[patron.id]?.playFromBeginning();
+                            }
+                            handleOpenDialog(patron);
+                          }}
                         >
-                          <Edit />
+                          <Player
+                            ref={(ref) => {
+                              if (ref) editIconRefs.current[patron.id] = ref;
+                            }}
+                            icon={editAnimation}
+                            size={20}
+                            colorize="#666666"
+                          />
                         </IconButton>
                       </ListItemSecondaryAction>
                     </ListItem>
@@ -172,7 +208,12 @@ const PatronPage = () => {
               }}
               onClick={() => handleOpenDialog()}
             >
-              <PersonAdd />
+              <Player
+                ref={fabIconRef}
+                icon={avatarPlusAnimation}
+                size={24}
+                colorize="#ffffff"
+              />
             </Fab>
           </motion.div>
         </Container>

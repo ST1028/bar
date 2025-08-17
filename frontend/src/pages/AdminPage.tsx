@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Container,
   Box,
@@ -34,19 +34,21 @@ import {
   AdminPanelSettings,
   DeleteSweep,
   Warning,
-  Edit,
   Delete,
   Save,
   Cancel,
   Category,
   Restaurant,
-  Visibility,
-  VisibilityOff,
   LocalBar,
 } from '@mui/icons-material';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { Player } from '@lordicon/react';
+
+import editAnimation from '../icons/wired-outline-35-edit-hover-line.json';
+import eyeAnimation from '../icons/wired-outline-69-eye-hover-blink.json';
+import trashAnimation from '../icons/wired-outline-185-trash-bin-hover-empty.json';
 
 import { adminAPI, menuAPI, blendAPI } from '../services/api';
 import type { MenuItem as MenuItemType, MenuCategory, Blend } from '../types';
@@ -64,8 +66,15 @@ const AdminPage = () => {
   const [newItem, setNewItem] = useState({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] as string[], isActive: true });
   const [newCategory, setNewCategory] = useState({ name: '', nameEn: '', description: '', imageUrl: '', visible: true });
   const [newBlend, setNewBlend] = useState({ name: '', description: '', isActive: true });
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{type: 'item' | 'category' | 'blend', id: string, name: string} | null>(null);
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
+  
+  // Refs for animations
+  const editIconRefs = useRef<Record<string, Player | null>>({});
+  const visibilityIconRefs = useRef<Record<string, Player | null>>({});
+  const deleteIconRefs = useRef<Record<string, Player | null>>({});
 
   // Queries
   const { data: menuItems } = useQuery({
@@ -143,6 +152,7 @@ const AdminPage = () => {
       toast.success('カテゴリーを更新しました');
       setEditingCategory(null);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['menus'] });
     },
     onError: () => toast.error('更新に失敗しました'),
   });
@@ -230,6 +240,7 @@ const AdminPage = () => {
     updateCategoryMutation.mutate({
       id: editingCategory.id,
       name: editingCategory.name,
+      nameEn: editingCategory.nameEn,
       description: editingCategory.description,
       imageUrl: editingCategory.imageUrl,
       visible: editingCategory.visible,
@@ -254,6 +265,35 @@ const AdminPage = () => {
       isActive: editingBlend.isActive,
       order: editingBlend.order
     });
+  };
+
+  const handleDeleteConfirm = (type: 'item' | 'category' | 'blend', id: string, name: string) => {
+    setItemToDelete({ type, id, name });
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteExecute = () => {
+    if (!itemToDelete) return;
+    
+    switch (itemToDelete.type) {
+      case 'item':
+        deleteItemMutation.mutate(itemToDelete.id);
+        break;
+      case 'category':
+        deleteCategoryMutation.mutate(itemToDelete.id);
+        break;
+      case 'blend':
+        deleteBlendMutation.mutate(itemToDelete.id);
+        break;
+    }
+    
+    setDeleteConfirmOpen(false);
+    setItemToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmOpen(false);
+    setItemToDelete(null);
   };
 
   // Check if user is admin (basic check)
@@ -303,7 +343,10 @@ const AdminPage = () => {
                 divider
                 sx={{
                   opacity: item.isActive === false ? 0.5 : 1,
-                  bgcolor: item.isActive === false ? 'action.hover' : 'inherit'
+                  bgcolor: item.isActive === false ? 'action.hover' : 'inherit',
+                  minHeight: 120,
+                  alignItems: 'flex-start',
+                  py: 2
                 }}
               >
                 {editingItem?.id === item.id ? (
@@ -400,7 +443,7 @@ const AdminPage = () => {
                     <ListItemText
                       primary={item.name}
                       secondary={
-                        <Box sx={{ pr: 10 }}>
+                        <Box sx={{ pr: 6 }}>
                           <Typography variant="body2" color="text.secondary">
                             ¥{item.price.toLocaleString()} - {categories?.find(c => c.id === item.categoryId)?.name}
                           </Typography>
@@ -456,28 +499,69 @@ const AdminPage = () => {
                         </Box>
                       }
                     />
-                    <ListItemSecondaryAction>
-                      <IconButton 
-                        onClick={() => updateItemMutation.mutate({ 
-                          id: item.id, 
-                          isActive: !item.isActive 
-                        })} 
-                        size="small"
-                        color={item.isActive ? "primary" : "default"}
-                        title={item.isActive ? "メニューを非表示にする" : "メニューを表示する"}
-                      >
-                        {item.isActive ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                      <IconButton onClick={() => setEditingItem(item)} size="small">
-                        <Edit />
-                      </IconButton>
-                      <IconButton 
-                        onClick={() => deleteItemMutation.mutate(item.id)} 
-                        size="small" 
-                        color="error"
-                      >
-                        <Delete />
-                      </IconButton>
+                    <ListItemSecondaryAction sx={{ top: '20px', right: '8px' }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, alignItems: 'center' }}>
+                        <IconButton 
+                          onClick={() => {
+                            if (visibilityIconRefs.current[`item-${item.id}`]) {
+                              visibilityIconRefs.current[`item-${item.id}`]?.playFromBeginning();
+                            }
+                            updateItemMutation.mutate({ 
+                              id: item.id, 
+                              isActive: !item.isActive 
+                            });
+                          }} 
+                          size="small"
+                          color={item.isActive ? "primary" : "default"}
+                          title={item.isActive ? "メニューを非表示にする" : "メニューを表示する"}
+                        >
+                          <Player
+                            ref={(ref) => {
+                              if (ref) visibilityIconRefs.current[`item-${item.id}`] = ref;
+                            }}
+                            icon={eyeAnimation}
+                            size={16}
+                            colorize={item.isActive ? "#81C784" : "#666666"}
+                          />
+                        </IconButton>
+                        <IconButton 
+                          onClick={() => {
+                            if (editIconRefs.current[`item-${item.id}`]) {
+                              editIconRefs.current[`item-${item.id}`]?.playFromBeginning();
+                            }
+                            setEditingItem(item);
+                          }} 
+                          size="small"
+                        >
+                          <Player
+                            ref={(ref) => {
+                              if (ref) editIconRefs.current[`item-${item.id}`] = ref;
+                            }}
+                            icon={editAnimation}
+                            size={16}
+                            colorize="#666666"
+                          />
+                        </IconButton>
+                        <IconButton 
+                          onClick={() => {
+                            if (deleteIconRefs.current[`item-${item.id}`]) {
+                              deleteIconRefs.current[`item-${item.id}`]?.playFromBeginning();
+                            }
+                            handleDeleteConfirm('item', item.id, item.name);
+                          }} 
+                          size="small" 
+                          color="error"
+                        >
+                          <Player
+                            ref={(ref) => {
+                              if (ref) deleteIconRefs.current[`item-${item.id}`] = ref;
+                            }}
+                            icon={trashAnimation}
+                            size={16}
+                            colorize="#f44336"
+                          />
+                        </IconButton>
+                      </Box>
                     </ListItemSecondaryAction>
                   </>
                 )}
@@ -572,26 +656,68 @@ const AdminPage = () => {
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           {category.name}
                           <Chip
-                            icon={category.visible !== false ? <Visibility /> : <VisibilityOff />}
+                            icon={
+                              <Box sx={{ ml: 0.5 }}>
+                                <Player
+                                  icon={eyeAnimation}
+                                  size={16}
+                                  colorize={category.visible !== false ? "#4caf50" : "#666666"}
+                                />
+                              </Box>
+                            }
                             label={category.visible !== false ? '表示' : '非表示'}
                             size="small"
                             color={category.visible !== false ? 'success' : 'default'}
+                            sx={{
+                              '& .MuiChip-icon': {
+                                marginLeft: '8px'
+                              }
+                            }}
                           />
                         </Box>
                       }
                       secondary={category.description || '説明なし'}
                     />
                     <ListItemSecondaryAction>
-                      <IconButton onClick={() => setEditingCategory(category)} size="small">
-                        <Edit />
-                      </IconButton>
-                      <IconButton 
-                        onClick={() => deleteCategoryMutation.mutate(category.id)} 
-                        size="small" 
-                        color="error"
-                      >
-                        <Delete />
-                      </IconButton>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        <IconButton 
+                          onClick={() => {
+                            if (editIconRefs.current[`category-${category.id}`]) {
+                              editIconRefs.current[`category-${category.id}`]?.playFromBeginning();
+                            }
+                            setEditingCategory(category);
+                          }} 
+                          size="small"
+                        >
+                          <Player
+                            ref={(ref) => {
+                              if (ref) editIconRefs.current[`category-${category.id}`] = ref;
+                            }}
+                            icon={editAnimation}
+                            size={18}
+                            colorize="#666666"
+                          />
+                        </IconButton>
+                        <IconButton 
+                          onClick={() => {
+                            if (deleteIconRefs.current[`category-${category.id}`]) {
+                              deleteIconRefs.current[`category-${category.id}`]?.playFromBeginning();
+                            }
+                            handleDeleteConfirm('category', category.id, category.name);
+                          }} 
+                          size="small" 
+                          color="error"
+                        >
+                          <Player
+                            ref={(ref) => {
+                              if (ref) deleteIconRefs.current[`category-${category.id}`] = ref;
+                            }}
+                            icon={trashAnimation}
+                            size={18}
+                            colorize="#f44336"
+                          />
+                        </IconButton>
+                      </Box>
                     </ListItemSecondaryAction>
                   </>
                 )}
@@ -666,26 +792,69 @@ const AdminPage = () => {
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           {blend.name}
                           <Chip
-                            icon={blend.isActive ? <Visibility /> : <VisibilityOff />}
+                            icon={
+                              <Box sx={{ ml: 0.5 }}>
+                                <Player
+                                  icon={eyeAnimation}
+                                  size={16}
+                                  colorize={blend.isActive ? "#4caf50" : "#666666"}
+                                />
+                              </Box>
+                            }
                             label={blend.isActive ? '表示' : '非表示'}
                             size="small"
                             color={blend.isActive ? 'success' : 'default'}
+                            sx={{
+                              '& .MuiChip-icon': {
+                                marginLeft: '8px',
+                                marginRight: '4px'
+                              }
+                            }}
                           />
                         </Box>
                       }
                       secondary={blend.description || '説明なし'}
                     />
                     <ListItemSecondaryAction>
-                      <IconButton onClick={() => setEditingBlend(blend)} size="small">
-                        <Edit />
-                      </IconButton>
-                      <IconButton 
-                        onClick={() => deleteBlendMutation.mutate(blend.id)} 
-                        size="small" 
-                        color="error"
-                      >
-                        <Delete />
-                      </IconButton>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        <IconButton 
+                          onClick={() => {
+                            if (editIconRefs.current[`blend-${blend.id}`]) {
+                              editIconRefs.current[`blend-${blend.id}`]?.playFromBeginning();
+                            }
+                            setEditingBlend(blend);
+                          }} 
+                          size="small"
+                        >
+                          <Player
+                            ref={(ref) => {
+                              if (ref) editIconRefs.current[`blend-${blend.id}`] = ref;
+                            }}
+                            icon={editAnimation}
+                            size={18}
+                            colorize="#666666"
+                          />
+                        </IconButton>
+                        <IconButton 
+                          onClick={() => {
+                            if (deleteIconRefs.current[`blend-${blend.id}`]) {
+                              deleteIconRefs.current[`blend-${blend.id}`]?.playFromBeginning();
+                            }
+                            handleDeleteConfirm('blend', blend.id, blend.name);
+                          }} 
+                          size="small" 
+                          color="error"
+                        >
+                          <Player
+                            ref={(ref) => {
+                              if (ref) deleteIconRefs.current[`blend-${blend.id}`] = ref;
+                            }}
+                            icon={trashAnimation}
+                            size={18}
+                            colorize="#f44336"
+                          />
+                        </IconButton>
+                      </Box>
                     </ListItemSecondaryAction>
                   </>
                 )}
@@ -796,6 +965,44 @@ const AdminPage = () => {
             disabled={resetAllMutation.isPending}
           >
             {resetAllMutation.isPending ? 'リセット中...' : 'リセット実行'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete confirmation dialog */}
+      <Dialog
+        open={deleteConfirmOpen}
+        onClose={handleDeleteCancel}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ color: 'error.main', fontWeight: 600 }}>
+          <Warning sx={{ mr: 1, verticalAlign: 'middle' }} />
+          削除の確認
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            「{itemToDelete?.name}」を削除します。
+          </Typography>
+          <Typography variant="body2" color="error.main" sx={{ fontWeight: 600 }}>
+            この操作は取り消すことができません。本当に削除しますか？
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>
+            キャンセル
+          </Button>
+          <Button
+            onClick={handleDeleteExecute}
+            color="error"
+            variant="contained"
+            disabled={
+              deleteItemMutation.isPending || 
+              deleteCategoryMutation.isPending || 
+              deleteBlendMutation.isPending
+            }
+          >
+            削除
           </Button>
         </DialogActions>
       </Dialog>

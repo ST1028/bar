@@ -177,7 +177,7 @@ function App() {
           </Routes>
         </Router>
         <Toaster
-          position="bottom-center"
+          position="top-center"
           toastOptions={{
             duration: 4000,
             style: {

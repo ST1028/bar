@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Drawer,
   Box,
@@ -12,7 +13,6 @@ import {
 import { Close, ShoppingCart } from '@mui/icons-material';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
 
 import { useCartStore } from '../../stores/cart';
 import { orderAPI, patronAPI } from '../../services/api';
@@ -23,9 +23,10 @@ interface CartDrawerProps {
   open: boolean;
   onClose: () => void;
   onPatronSelect: () => void;
+  onOrderSuccess: () => void;
 }
 
-const CartDrawer = ({ open, onClose, onPatronSelect }: CartDrawerProps) => {
+const CartDrawer = ({ open, onClose, onPatronSelect, onOrderSuccess }: CartDrawerProps) => {
   const { items, selectedPatronId, getTotalAmount, clearCart } = useCartStore();
   const queryClient = useQueryClient();
 
@@ -40,13 +41,17 @@ const CartDrawer = ({ open, onClose, onPatronSelect }: CartDrawerProps) => {
     mutationFn: ({ patronId, items }: { patronId: string; items: any[] }) =>
       orderAPI.createOrder(patronId, items),
     onSuccess: () => {
-      toast.success('注文を送信しました！');
+      onOrderSuccess();
       clearCart();
       onClose();
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || '注文の送信に失敗しました');
+      console.error('Order submission failed:', error);
+      // Keep error toast for errors
+      import('react-hot-toast').then(({ default: toast }) => {
+        toast.error(error.response?.data?.message || '注文の送信に失敗しました');
+      });
     },
   });
 

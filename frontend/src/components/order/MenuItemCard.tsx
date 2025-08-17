@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -20,12 +20,12 @@ import {
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
-import Lottie from 'lottie-react';
+import { Player } from '@lordicon/react';
 
 import type { MenuItem } from '../../types';
 import { useCartStore } from '../../stores/cart';
 import { blendAPI } from '../../services/api';
-import plusIconAnimation from '../../../public/icons/wired-outline-2158-plus-math-hover-draw.json';
+import plusIconAnimation from '../../icons/wired-outline-2158-plus-math-hover-draw.json';
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -36,7 +36,7 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
   const [remarks, setRemarks] = useState('');
   const [selectedBlendId, setSelectedBlendId] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const playerRef = useRef<Player>(null);
   const { addItem } = useCartStore();
 
   const { data: blends } = useQuery({
@@ -67,8 +67,9 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
     const selectedBlend = selectedBlendId ? availableBlends.find(b => b.id === selectedBlendId) : undefined;
     
     // アニメーションをトリガー
-    setIsAnimating(true);
-    setTimeout(() => setIsAnimating(false), 1000);
+    if (playerRef.current) {
+      playerRef.current.playFromBeginning();
+    }
     
     addItem({
       menuId: item.id,
@@ -182,15 +183,11 @@ const MenuItemCard = ({ item }: MenuItemCardProps) => {
                   justifyContent: 'center'
                 }}
               >
-                <Lottie
-                  animationData={plusIconAnimation}
-                  loop={false}
-                  autoplay={isAnimating}
-                  style={{ 
-                    width: 24, 
-                    height: 24,
-                    filter: 'invert(1)' // Make icon white to match button
-                  }}
+                <Player
+                  ref={playerRef}
+                  icon={plusIconAnimation}
+                  size={24}
+                  colorize="#ffffff"
                 />
               </Button>
             </Box>
