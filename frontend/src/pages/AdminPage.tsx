@@ -62,7 +62,7 @@ const AdminPage = () => {
   const [addCategoryDrawerOpen, setAddCategoryDrawerOpen] = useState(false);
   const [addBlendDrawerOpen, setAddBlendDrawerOpen] = useState(false);
   const [newItem, setNewItem] = useState({ name: '', description: '', recipe: '', price: 0, categoryId: '', availableBlends: [] as string[], isActive: true });
-  const [newCategory, setNewCategory] = useState({ name: '', description: '', imageUrl: '', visible: true });
+  const [newCategory, setNewCategory] = useState({ name: '', nameEn: '', description: '', imageUrl: '', visible: true });
   const [newBlend, setNewBlend] = useState({ name: '', description: '', isActive: true });
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
@@ -130,7 +130,7 @@ const AdminPage = () => {
     mutationFn: (category: any) => menuAPI.createCategory(category),
     onSuccess: () => {
       toast.success('カテゴリーを作成しました');
-      setNewCategory({ name: '', description: '', imageUrl: '', visible: true });
+      setNewCategory({ name: '', nameEn: '', description: '', imageUrl: '', visible: true });
       setAddCategoryDrawerOpen(false);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
@@ -215,7 +215,11 @@ const AdminPage = () => {
 
   const handleCreateCategory = () => {
     if (!newCategory.name) {
-      toast.error('カテゴリー名を入力してください');
+      toast.error('カテゴリー名（日本語）を入力してください');
+      return;
+    }
+    if (!newCategory.nameEn) {
+      toast.error('カテゴリー名（英語）を入力してください');
       return;
     }
     createCategoryMutation.mutate(newCategory);
@@ -503,15 +507,25 @@ const AdminPage = () => {
                 {editingCategory?.id === category.id ? (
                   <Box sx={{ width: '100%' }}>
                     <Grid container spacing={2} sx={{ mb: 1 }}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={3}>
                         <TextField
                           value={editingCategory.name}
                           onChange={(e) => setEditingCategory({...editingCategory, name: e.target.value})}
                           fullWidth
                           size="small"
+                          placeholder="日本語名"
                         />
                       </Grid>
                       <Grid item xs={12} sm={3}>
+                        <TextField
+                          value={editingCategory.nameEn || ''}
+                          onChange={(e) => setEditingCategory({...editingCategory, nameEn: e.target.value})}
+                          fullWidth
+                          size="small"
+                          placeholder="英語名"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
                         <FormControlLabel
                           control={
                             <Switch
@@ -956,9 +970,9 @@ const AdminPage = () => {
           <Divider sx={{ mb: 3 }} />
           
           <Grid container spacing={2} sx={{ mb: 2 }}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
-                label="カテゴリー名 *"
+                label="カテゴリー名（日本語） *"
                 value={newCategory.name}
                 onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
                 fullWidth
@@ -966,6 +980,19 @@ const AdminPage = () => {
                 required
                 error={!newCategory.name}
                 helperText={!newCategory.name ? '必須項目です' : ''}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="カテゴリー名（英語） *"
+                value={newCategory.nameEn}
+                onChange={(e) => setNewCategory({...newCategory, nameEn: e.target.value})}
+                fullWidth
+                size="small"
+                required
+                error={!newCategory.nameEn}
+                helperText={!newCategory.nameEn ? '必須項目です' : ''}
+                placeholder="BEER, COCKTAIL, etc."
               />
             </Grid>
             <Grid item xs={12}>

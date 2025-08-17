@@ -14,6 +14,7 @@ export interface MenuItem {
 export interface MenuCategory {
   id: string;
   name: string;
+  nameEn: string; // 英語表記（必須）
   order: number;
   thumbnail?: string;
   imageUrl?: string;

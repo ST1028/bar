@@ -127,7 +127,7 @@ const OrderPage = () => {
                               mb: 1
                             }}
                           >
-                            {category.name}
+                            {category.nameEn || category.name}
                           </Typography>
                           {category.description && (
                             <Typography
@@ -174,7 +174,7 @@ const OrderPage = () => {
                     )}
                     {!category.imageUrl && (
                       <Chip
-                        label={category.name}
+                        label={category.nameEn || category.name}
                         sx={{
                           fontSize: '1rem',
                           fontWeight: 600,
