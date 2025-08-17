@@ -392,7 +392,6 @@ const getCategories = async () => {
     const items = categories.map(cat => ({
       id: cat.categoryId,
       name: cat.name,
-      nameEn: cat.nameEn || '',
       description: cat.description,
       imageUrl: cat.imageUrl,
       visible: cat.isActive !== false,
@@ -409,14 +408,10 @@ const getCategories = async () => {
 const createCategory = async (event) => {
   try {
     const body = JSON.parse(event.body || '{}');
-    const { name, nameEn, description, visible, imageUrl } = body;
+    const { name, description, visible, imageUrl } = body;
 
     if (!name) {
       return errorResponse(400, 'Name is required');
-    }
-
-    if (!nameEn) {
-      return errorResponse(400, 'English name is required');
     }
 
     const categoryId = uuidv4();
@@ -436,7 +431,6 @@ const createCategory = async (event) => {
       sk: `CATEGORY#${categoryId}`,
       categoryId,
       name,
-      nameEn,
       description: description || '',
       imageUrl: imageUrl || '',
       isActive: visible !== false,
@@ -451,7 +445,6 @@ const createCategory = async (event) => {
       category: {
         id: categoryId,
         name,
-        nameEn,
         description: description || '',
         imageUrl: imageUrl || '',
         visible: visible !== false,
@@ -473,7 +466,7 @@ const updateCategory = async (event) => {
 
     const body = JSON.parse(event.body || '{}');
     console.log('Update category request body:', JSON.stringify(body, null, 2));
-    const { name, nameEn, description, visible, order, imageUrl } = body;
+    const { name, description, visible, order, imageUrl } = body;
 
     const updateExpression = [];
     const expressionAttributeNames = {};
@@ -483,12 +476,6 @@ const updateCategory = async (event) => {
       updateExpression.push('#name = :name');
       expressionAttributeNames['#name'] = 'name';
       expressionAttributeValues[':name'] = name;
-    }
-
-    if (nameEn !== undefined) {
-      updateExpression.push('#nameEn = :nameEn');
-      expressionAttributeNames['#nameEn'] = 'nameEn';
-      expressionAttributeValues[':nameEn'] = nameEn;
     }
 
     if (description !== undefined) {
@@ -542,7 +529,6 @@ const updateCategory = async (event) => {
       category: {
         id: categoryId,
         name,
-        nameEn,
         description,
         imageUrl,
         visible,

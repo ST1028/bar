@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Box, Container, Fab, Badge, Typography, Divider, Chip } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Player } from '@lordicon/react';
 
 import { menuAPI, patronAPI } from '../services/api';

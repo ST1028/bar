@@ -5,13 +5,9 @@ import { motion } from 'framer-motion';
 import { Player } from '@lordicon/react';
 import { useAuthStore } from '../stores/auth';
 
-import orderAnimation from '../icons/wired-outline-502-two-glasses-pint-beer-hover-pinch.json';
 import orderAnimationBold from '../icons/wired-outline-502-two-glasses-pint-beer-hover-pinch-bold.json';
-import patronAnimation from '../icons/wired-outline-313-two-avatar-icon-calm-hover-jumping.json';
 import patronAnimationBold from '../icons/wired-outline-313-two-avatar-icon-calm-hover-jumping-bold.json';
-import historyAnimation from '../icons/wired-outline-1334-order-history-hover-pinch.json';
 import historyAnimationBold from '../icons/wired-outline-1334-order-history-hover-pinch-bold.json';
-import adminAnimation from '../icons/wired-outline-1004-management-team-hover-smooth.json';
 import adminAnimationBold from '../icons/wired-outline-1004-management-team-hover-smooth-bold.json';
 
 const BottomNavigation = () => {
