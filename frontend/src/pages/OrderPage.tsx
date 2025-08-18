@@ -48,10 +48,8 @@ const OrderPage = () => {
   }, [selectedCategory]);
 
   const handleBack = () => {
-    // Ensure the grid's target position is in view before switching
-    window.scrollTo({ top: 0, behavior: 'auto' });
-    // Let the scroll apply, then switch the view
-    requestAnimationFrame(() => setSelectedCategory(null));
+    // Avoid forced scrolls during shared element animation
+    setSelectedCategory(null);
   };
 
   const { data: categories, isLoading: menusLoading, error: menusError } = useQuery({
@@ -96,7 +94,7 @@ const OrderPage = () => {
       >
         <Box sx={{ pt: 8, pb: 10 }}>
           <Container maxWidth="lg" sx={{ px: 2 }}>
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout">
               {!selectedCategory ? (
                 <motion.div
                   key="categories"
@@ -132,7 +130,7 @@ const OrderPage = () => {
                         layoutId={`category-card-${category.id}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: index * 0.1 }}
+                        transition={{ duration: 0.35, delay: index * 0.05, type: 'spring', stiffness: 260, damping: 28 }}
                         whileHover={{ y: -8 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedCategory(category.id)}
@@ -263,6 +261,7 @@ const OrderPage = () => {
                     <Box
                       component={motion.div}
                       layoutId={`category-card-${selectedCategory}`}
+                      transition={{ type: 'spring', stiffness: 260, damping: 28 }}
                       sx={{
                         position: 'relative',
                         borderRadius: 4,
