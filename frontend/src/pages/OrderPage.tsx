@@ -40,6 +40,13 @@ const OrderPage = () => {
     };
   }, [setOnItemAdded]);
 
+  // Scroll to top when a category is selected
+  useEffect(() => {
+    if (selectedCategory) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [selectedCategory]);
+
   const { data: categories, isLoading: menusLoading, error: menusError } = useQuery({
     queryKey: ['menus'],
     queryFn: menuAPI.getMenus,
