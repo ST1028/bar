@@ -50,6 +50,7 @@ const getMenus = async () => {
     const menusByCategory = categories.map(category => ({
       id: category.categoryId,
       name: category.name,
+      nameEn: category.nameEn,
       order: category.order,
       thumbnail: category.thumbnail,
       imageUrl: category.imageUrl,

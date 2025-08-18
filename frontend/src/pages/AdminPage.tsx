@@ -339,14 +339,17 @@ const AdminPage = () => {
             {menuItems?.map((item) => (
               <ListItem 
                 key={item.id} 
-                divider
                 sx={{
                   opacity: item.isActive === false ? 0.5 : 1,
                   bgcolor: item.isActive === false ? 'action.hover' : 'inherit',
                   display: 'flex',
                   alignItems: 'flex-start',
                   py: 2,
-                  pr: 0
+                  pr: 0,
+                  borderBottom: '1px solid #f0f0f0',
+                  '&:last-child': {
+                    borderBottom: 'none'
+                  }
                 }}
               >
                 {editingItem?.id === item.id ? (
@@ -439,152 +442,179 @@ const AdminPage = () => {
                     </Box>
                   </Box>
                 ) : (
-                  <>
-                    <ListItemText
-                      primary={item.name}
-                      secondary={
-                        <Box sx={{ flex: 1 }}>
-                          <Typography variant="body2" color="text.secondary">
-                            ¥{item.price.toLocaleString()} - {categories?.find(c => c.id === item.categoryId)?.name}
-                          </Typography>
-                          {item.description && (
-                            <Typography 
-                              variant="body2" 
-                              color="text.secondary" 
-                              sx={{ 
-                                mt: 0.5, 
-                                whiteSpace: 'pre-line',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 3,
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden'
-                              }}
-                            >
-                              説明: {item.description.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
-                            </Typography>
-                          )}
-                          {item.recipe && (
-                            <Typography 
-                              variant="body2" 
-                              color="text.secondary" 
-                              sx={{ 
-                                mt: 0.5, 
-                                whiteSpace: 'pre-line',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 3,
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden'
-                              }}
-                            >
-                              レシピ: {item.recipe.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
-                            </Typography>
-                          )}
-                          {item.availableBlends && item.availableBlends.length > 0 && (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
-                              <Typography variant="caption" color="text.secondary">ブレンド: </Typography>
-                              {item.availableBlends.map((blendId) => {
-                                const blend = blends?.find(b => b.id === blendId);
-                                return (
-                                  <Chip 
-                                    key={blendId} 
-                                    label={blend?.name || 'Unknown'} 
-                                    size="small" 
-                                    variant="outlined"
-                                    sx={{ fontSize: '0.7rem', height: '18px' }}
-                                  />
-                                );
-                              })}
-                            </Box>
-                          )}
-                        </Box>
-                      }
-                    />
-                    <Box sx={{ 
-                      display: 'flex', 
-                      flexDirection: 'column', 
-                      gap: 1, 
+                  <Box sx={{ position: 'relative', width: '100%' }}>
+                    {/* Action buttons - always rendered but positioned behind */}
+                    <Box sx={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 120,
+                      display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'flex-start',
-                      minWidth: '48px',
-                      ml: 0
+                      justifyContent: 'space-evenly',
+                      bgcolor: '#f8f9fa',
+                      borderLeft: '1px solid #e0e0e0'
                     }}>
-                        <IconButton 
-                          onClick={() => {
-                            if (visibilityIconRefs.current[`item-${item.id}`]) {
-                              visibilityIconRefs.current[`item-${item.id}`]?.playFromBeginning();
-                            }
-                            updateItemMutation.mutate({ 
-                              id: item.id, 
-                              isActive: !item.isActive 
-                            });
-                          }} 
-                          size="small"
-                          color={item.isActive ? "primary" : "default"}
-                          title={item.isActive ? "メニューを非表示にする" : "メニューを表示する"}
-                          sx={{ 
-                            width: 40, 
-                            height: 40, 
-                            padding: '8px'
+                      <IconButton 
+                        onClick={() => {
+                          if (visibilityIconRefs.current[`item-${item.id}`]) {
+                            visibilityIconRefs.current[`item-${item.id}`]?.playFromBeginning();
+                          }
+                          updateItemMutation.mutate({ 
+                            id: item.id, 
+                            isActive: !item.isActive 
+                          });
+                        }} 
+                        size="small"
+                        color={item.isActive ? "primary" : "default"}
+                        title={item.isActive ? "メニューを非表示にする" : "メニューを表示する"}
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) visibilityIconRefs.current[`item-${item.id}`] = ref;
                           }}
-                        >
-                          <Player
-                            ref={(ref) => {
-                              if (ref) visibilityIconRefs.current[`item-${item.id}`] = ref;
-                            }}
-                            icon={eyeAnimation}
-                            size={16}
-                            colorize={item.isActive ? "#81C784" : "#666666"}
-                          />
-                        </IconButton>
-                        <IconButton 
-                          onClick={() => {
-                            if (editIconRefs.current[`item-${item.id}`]) {
-                              editIconRefs.current[`item-${item.id}`]?.playFromBeginning();
-                            }
-                            setEditingItem(item);
-                          }} 
-                          size="small"
-                          sx={{ 
-                            width: 40, 
-                            height: 40, 
-                            padding: '8px'
+                          icon={eyeAnimation}
+                          size={16}
+                          colorize={item.isActive ? "#81C784" : "#666666"}
+                        />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => {
+                          if (editIconRefs.current[`item-${item.id}`]) {
+                            editIconRefs.current[`item-${item.id}`]?.playFromBeginning();
+                          }
+                          setEditingItem(item);
+                        }} 
+                        size="small"
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) editIconRefs.current[`item-${item.id}`] = ref;
                           }}
-                        >
-                          <Player
-                            ref={(ref) => {
-                              if (ref) editIconRefs.current[`item-${item.id}`] = ref;
-                            }}
-                            icon={editAnimation}
-                            size={16}
-                            colorize="#666666"
-                          />
-                        </IconButton>
-                        <IconButton 
-                          onClick={() => {
-                            if (deleteIconRefs.current[`item-${item.id}`]) {
-                              deleteIconRefs.current[`item-${item.id}`]?.playFromBeginning();
-                            }
-                            handleDeleteConfirm('item', item.id, item.name);
-                          }} 
-                          size="small" 
-                          color="error"
-                          sx={{ 
-                            width: 40, 
-                            height: 40, 
-                            padding: '8px'
+                          icon={editAnimation}
+                          size={16}
+                          colorize="#666666"
+                        />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => {
+                          if (deleteIconRefs.current[`item-${item.id}`]) {
+                            deleteIconRefs.current[`item-${item.id}`]?.playFromBeginning();
+                          }
+                          handleDeleteConfirm('item', item.id, item.name);
+                        }} 
+                        size="small" 
+                        color="error"
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) deleteIconRefs.current[`item-${item.id}`] = ref;
                           }}
-                        >
-                          <Player
-                            ref={(ref) => {
-                              if (ref) deleteIconRefs.current[`item-${item.id}`] = ref;
-                            }}
-                            icon={trashAnimation}
-                            size={16}
-                            colorize="#f44336"
-                          />
-                        </IconButton>
+                          icon={trashAnimation}
+                          size={16}
+                          colorize="#f44336"
+                        />
+                      </IconButton>
                     </Box>
-                  </>
+
+                    {/* Main content - draggable overlay */}
+                    <motion.div
+                      style={{ 
+                        width: '100%', 
+                        position: 'relative',
+                        backgroundColor: item.isActive === false ? '#f5f5f5' : '#ffffff'
+                      }}
+                      drag="x"
+                      dragConstraints={{ left: -120, right: 0 }}
+                      dragElastic={0.1}
+                    >
+                      <Box sx={{ 
+                        bgcolor: item.isActive === false ? '#f5f5f5' : 'background.paper', 
+                        width: '100%',
+                        px: 2,
+                        py: 1
+                      }}>
+                        <ListItemText
+                          primary={item.name}
+                          secondary={
+                            <Box sx={{ flex: 1 }}>
+                              <Typography variant="body2" color="text.secondary">
+                                ¥{item.price.toLocaleString()} - {categories?.find(c => c.id === item.categoryId)?.name}
+                              </Typography>
+                              {item.description && (
+                                <Typography 
+                                  variant="body2" 
+                                  color="text.secondary" 
+                                  sx={{ 
+                                    mt: 0.5, 
+                                    whiteSpace: 'pre-line',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden'
+                                  }}
+                                >
+                                  説明: {item.description.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
+                                </Typography>
+                              )}
+                              {item.recipe && (
+                                <Typography 
+                                  variant="body2" 
+                                  color="text.secondary" 
+                                  sx={{ 
+                                    mt: 0.5, 
+                                    whiteSpace: 'pre-line',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden'
+                                  }}
+                                >
+                                  レシピ: {item.recipe.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')}
+                                </Typography>
+                              )}
+                              {item.availableBlends && item.availableBlends.length > 0 && (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                                  <Typography variant="caption" color="text.secondary">ブレンド: </Typography>
+                                  {item.availableBlends.map((blendId) => {
+                                    const blend = blends?.find(b => b.id === blendId);
+                                    return (
+                                      <Chip 
+                                        key={blendId} 
+                                        label={blend?.name || 'Unknown'} 
+                                        size="small" 
+                                        variant="outlined"
+                                        sx={{ fontSize: '0.7rem', height: '18px' }}
+                                      />
+                                    );
+                                  })}
+                                </Box>
+                              )}
+                            </Box>
+                          }
+                        />
+                      </Box>
+                    </motion.div>
+                  </Box>
                 )}
               </ListItem>
             ))}
@@ -671,76 +701,147 @@ const AdminPage = () => {
                     </Box>
                   </Box>
                 ) : (
-                  <>
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {category.name}
-                          <Chip
-                            icon={
-                              <Box sx={{ ml: 0.5 }}>
-                                <Player
-                                  icon={eyeAnimation}
-                                  size={16}
-                                  colorize={category.visible !== false ? "#4caf50" : "#666666"}
-                                />
-                              </Box>
-                            }
-                            label={category.visible !== false ? '表示' : '非表示'}
-                            size="small"
-                            color={category.visible !== false ? 'success' : 'default'}
-                            sx={{
-                              '& .MuiChip-icon': {
-                                marginLeft: '8px'
-                              }
-                            }}
-                          />
-                        </Box>
-                      }
-                      secondary={category.description || '説明なし'}
-                    />
-                    <ListItemSecondaryAction>
-                      <Box sx={{ display: 'flex', gap: 0.5 }}>
-                        <IconButton 
-                          onClick={() => {
-                            if (editIconRefs.current[`category-${category.id}`]) {
-                              editIconRefs.current[`category-${category.id}`]?.playFromBeginning();
-                            }
-                            setEditingCategory(category);
-                          }} 
-                          size="small"
-                        >
-                          <Player
-                            ref={(ref) => {
-                              if (ref) editIconRefs.current[`category-${category.id}`] = ref;
-                            }}
-                            icon={editAnimation}
-                            size={18}
-                            colorize="#666666"
-                          />
-                        </IconButton>
-                        <IconButton 
-                          onClick={() => {
-                            if (deleteIconRefs.current[`category-${category.id}`]) {
-                              deleteIconRefs.current[`category-${category.id}`]?.playFromBeginning();
-                            }
-                            handleDeleteConfirm('category', category.id, category.name);
-                          }} 
-                          size="small" 
-                          color="error"
-                        >
-                          <Player
-                            ref={(ref) => {
-                              if (ref) deleteIconRefs.current[`category-${category.id}`] = ref;
-                            }}
-                            icon={trashAnimation}
-                            size={18}
-                            colorize="#f44336"
-                          />
-                        </IconButton>
+                  <Box sx={{ position: 'relative', width: '100%' }}>
+                    {/* Action buttons - always rendered but positioned behind */}
+                    <Box sx={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 120,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-evenly',
+                      bgcolor: '#f8f9fa',
+                      borderLeft: '1px solid #e0e0e0'
+                    }}>
+                      <IconButton 
+                        onClick={() => {
+                          if (visibilityIconRefs.current[`category-${category.id}`]) {
+                            visibilityIconRefs.current[`category-${category.id}`]?.playFromBeginning();
+                          }
+                          updateCategoryMutation.mutate({ 
+                            id: category.id, 
+                            visible: !category.visible 
+                          });
+                        }} 
+                        size="small"
+                        color={category.visible !== false ? "primary" : "default"}
+                        title={category.visible !== false ? "カテゴリーを非表示にする" : "カテゴリーを表示する"}
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) visibilityIconRefs.current[`category-${category.id}`] = ref;
+                          }}
+                          icon={eyeAnimation}
+                          size={16}
+                          colorize={category.visible !== false ? "#81C784" : "#666666"}
+                        />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => {
+                          if (editIconRefs.current[`category-${category.id}`]) {
+                            editIconRefs.current[`category-${category.id}`]?.playFromBeginning();
+                          }
+                          setEditingCategory(category);
+                        }} 
+                        size="small"
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) editIconRefs.current[`category-${category.id}`] = ref;
+                          }}
+                          icon={editAnimation}
+                          size={16}
+                          colorize="#666666"
+                        />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => {
+                          if (deleteIconRefs.current[`category-${category.id}`]) {
+                            deleteIconRefs.current[`category-${category.id}`]?.playFromBeginning();
+                          }
+                          handleDeleteConfirm('category', category.id, category.name);
+                        }} 
+                        size="small" 
+                        color="error"
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) deleteIconRefs.current[`category-${category.id}`] = ref;
+                          }}
+                          icon={trashAnimation}
+                          size={16}
+                          colorize="#f44336"
+                        />
+                      </IconButton>
+                    </Box>
+
+                    {/* Main content - draggable overlay */}
+                    <motion.div
+                      style={{ 
+                        width: '100%', 
+                        position: 'relative',
+                        backgroundColor: category.visible === false ? '#f5f5f5' : '#ffffff'
+                      }}
+                      drag="x"
+                      dragConstraints={{ left: -120, right: 0 }}
+                      dragElastic={0.1}
+                    >
+                      <Box sx={{ 
+                        bgcolor: category.visible === false ? '#f5f5f5' : 'background.paper', 
+                        width: '100%',
+                        px: 2,
+                        py: 1
+                      }}>
+                        <ListItemText
+                          primary={
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              {category.name}
+                              <Chip
+                                icon={
+                                  <Box sx={{ ml: 0.5 }}>
+                                    <Player
+                                      icon={eyeAnimation}
+                                      size={16}
+                                      colorize={category.visible !== false ? "#4caf50" : "#666666"}
+                                    />
+                                  </Box>
+                                }
+                                label={category.visible !== false ? '表示' : '非表示'}
+                                size="small"
+                                color={category.visible !== false ? 'success' : 'default'}
+                                sx={{
+                                  '& .MuiChip-icon': {
+                                    marginLeft: '8px'
+                                  }
+                                }}
+                              />
+                            </Box>
+                          }
+                          secondary={category.description || '説明なし'}
+                        />
                       </Box>
-                    </ListItemSecondaryAction>
-                  </>
+                    </motion.div>
+                  </Box>
                 )}
               </ListItem>
             ))}
@@ -807,77 +908,148 @@ const AdminPage = () => {
                     </Box>
                   </Box>
                 ) : (
-                  <>
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {blend.name}
-                          <Chip
-                            icon={
-                              <Box sx={{ ml: 0.5 }}>
-                                <Player
-                                  icon={eyeAnimation}
-                                  size={16}
-                                  colorize={blend.isActive ? "#4caf50" : "#666666"}
-                                />
-                              </Box>
-                            }
-                            label={blend.isActive ? '表示' : '非表示'}
-                            size="small"
-                            color={blend.isActive ? 'success' : 'default'}
-                            sx={{
-                              '& .MuiChip-icon': {
-                                marginLeft: '8px',
-                                marginRight: '4px'
-                              }
-                            }}
-                          />
-                        </Box>
-                      }
-                      secondary={blend.description || '説明なし'}
-                    />
-                    <ListItemSecondaryAction>
-                      <Box sx={{ display: 'flex', gap: 0.5 }}>
-                        <IconButton 
-                          onClick={() => {
-                            if (editIconRefs.current[`blend-${blend.id}`]) {
-                              editIconRefs.current[`blend-${blend.id}`]?.playFromBeginning();
-                            }
-                            setEditingBlend(blend);
-                          }} 
-                          size="small"
-                        >
-                          <Player
-                            ref={(ref) => {
-                              if (ref) editIconRefs.current[`blend-${blend.id}`] = ref;
-                            }}
-                            icon={editAnimation}
-                            size={18}
-                            colorize="#666666"
-                          />
-                        </IconButton>
-                        <IconButton 
-                          onClick={() => {
-                            if (deleteIconRefs.current[`blend-${blend.id}`]) {
-                              deleteIconRefs.current[`blend-${blend.id}`]?.playFromBeginning();
-                            }
-                            handleDeleteConfirm('blend', blend.id, blend.name);
-                          }} 
-                          size="small" 
-                          color="error"
-                        >
-                          <Player
-                            ref={(ref) => {
-                              if (ref) deleteIconRefs.current[`blend-${blend.id}`] = ref;
-                            }}
-                            icon={trashAnimation}
-                            size={18}
-                            colorize="#f44336"
-                          />
-                        </IconButton>
+                  <Box sx={{ position: 'relative', width: '100%' }}>
+                    {/* Action buttons - always rendered but positioned behind */}
+                    <Box sx={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 120,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-evenly',
+                      bgcolor: '#f8f9fa',
+                      borderLeft: '1px solid #e0e0e0'
+                    }}>
+                      <IconButton 
+                        onClick={() => {
+                          if (visibilityIconRefs.current[`blend-${blend.id}`]) {
+                            visibilityIconRefs.current[`blend-${blend.id}`]?.playFromBeginning();
+                          }
+                          updateBlendMutation.mutate({ 
+                            id: blend.id, 
+                            isActive: !blend.isActive 
+                          });
+                        }} 
+                        size="small"
+                        color={blend.isActive ? "primary" : "default"}
+                        title={blend.isActive ? "ブレンドを非表示にする" : "ブレンドを表示する"}
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) visibilityIconRefs.current[`blend-${blend.id}`] = ref;
+                          }}
+                          icon={eyeAnimation}
+                          size={16}
+                          colorize={blend.isActive ? "#81C784" : "#666666"}
+                        />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => {
+                          if (editIconRefs.current[`blend-${blend.id}`]) {
+                            editIconRefs.current[`blend-${blend.id}`]?.playFromBeginning();
+                          }
+                          setEditingBlend(blend);
+                        }} 
+                        size="small"
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) editIconRefs.current[`blend-${blend.id}`] = ref;
+                          }}
+                          icon={editAnimation}
+                          size={16}
+                          colorize="#666666"
+                        />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => {
+                          if (deleteIconRefs.current[`blend-${blend.id}`]) {
+                            deleteIconRefs.current[`blend-${blend.id}`]?.playFromBeginning();
+                          }
+                          handleDeleteConfirm('blend', blend.id, blend.name);
+                        }} 
+                        size="small" 
+                        color="error"
+                        sx={{ 
+                          width: 36, 
+                          height: 36, 
+                          padding: '6px',
+                          minWidth: 'unset'
+                        }}
+                      >
+                        <Player
+                          ref={(ref) => {
+                            if (ref) deleteIconRefs.current[`blend-${blend.id}`] = ref;
+                          }}
+                          icon={trashAnimation}
+                          size={16}
+                          colorize="#f44336"
+                        />
+                      </IconButton>
+                    </Box>
+
+                    {/* Main content - draggable overlay */}
+                    <motion.div
+                      style={{ 
+                        width: '100%', 
+                        position: 'relative',
+                        backgroundColor: blend.isActive === false ? '#f5f5f5' : '#ffffff'
+                      }}
+                      drag="x"
+                      dragConstraints={{ left: -120, right: 0 }}
+                      dragElastic={0.1}
+                    >
+                      <Box sx={{ 
+                        bgcolor: blend.isActive === false ? '#f5f5f5' : 'background.paper', 
+                        width: '100%',
+                        px: 2,
+                        py: 1
+                      }}>
+                        <ListItemText
+                          primary={
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              {blend.name}
+                              <Chip
+                                icon={
+                                  <Box sx={{ ml: 0.5 }}>
+                                    <Player
+                                      icon={eyeAnimation}
+                                      size={16}
+                                      colorize={blend.isActive ? "#4caf50" : "#666666"}
+                                    />
+                                  </Box>
+                                }
+                                label={blend.isActive ? '表示' : '非表示'}
+                                size="small"
+                                color={blend.isActive ? 'success' : 'default'}
+                                sx={{
+                                  '& .MuiChip-icon': {
+                                    marginLeft: '8px',
+                                    marginRight: '4px'
+                                  }
+                                }}
+                              />
+                            </Box>
+                          }
+                          secondary={blend.description || '説明なし'}
+                        />
                       </Box>
-                    </ListItemSecondaryAction>
-                  </>
+                    </motion.div>
+                  </Box>
                 )}
               </ListItem>
             ))}

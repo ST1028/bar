@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, Container, Fab, Badge, Typography, Divider, Chip } from '@mui/material';
+import { Box, Container, Fab, Badge, Typography, Divider, Chip, IconButton } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { Player } from '@lordicon/react';
 
 import { menuAPI, patronAPI } from '../services/api';
@@ -19,6 +20,7 @@ const OrderPage = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [patronSelectorOpen, setPatronSelectorOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const cartIconRef = useRef<Player>(null);
   const { getItemCount, setOnItemAdded } = useCartStore();
 
@@ -68,221 +70,305 @@ const OrderPage = () => {
     return <ErrorMessage message="メニューの読み込みに失敗しました" />;
   }
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-    >
-      <Box sx={{ pt: 8, pb: 10 }}>
-        <Container maxWidth="md" sx={{ px: 2 }}>
-          {/* Header */}
-          <Box sx={{ mb: 3, textAlign: 'center' }}>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ 
-              fontWeight: 700, 
-              color: 'primary.main',
-              textAlign: 'center'
-            }}>
-              Menu
-            </Typography>
-          </Box>
+  const selectedCategoryData = categories?.find(cat => cat.id === selectedCategory);
 
-          {/* Menu Items */}
-          {categories && categories.map((category) => (
-            <motion.div
-              key={category.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              {(category.items?.length || 0) > 0 && (
-                <>
-                  <Box sx={{ mb: 3, mt: 4 }}>
-                    {category.imageUrl && category.imageUrl.trim() && (
-                      <Box 
-                        sx={{ 
-                          position: 'relative', 
-                          borderRadius: 3, 
-                          overflow: 'hidden', 
-                          mb: 3,
-                          height: 240,
-                          background: `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%), url(${category.imageUrl})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          border: '2px solid',
-                          borderColor: 'primary.main',
-                          cursor: 'pointer',
-                          transition: 'all 0.3s ease-in-out',
-                          '&:hover': {
-                            transform: 'translateY(-4px)',
-                            boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
-                            borderColor: 'primary.light',
-                          }
+  return (
+    <LayoutGroup>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Box sx={{ pt: 8, pb: 10 }}>
+          <Container maxWidth="lg" sx={{ px: 2 }}>
+            <AnimatePresence mode="wait">
+              {!selectedCategory ? (
+                <motion.div
+                  key="categories"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Header */}
+                  <Box sx={{ mb: 4, textAlign: 'center' }}>
+                    <Typography variant="h4" component="h1" gutterBottom sx={{ 
+                      fontWeight: 700, 
+                      color: 'text.primary',
+                      textAlign: 'center',
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                      fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
+                    }}>
+                      Menu
+                    </Typography>
+                  </Box>
+
+                  {/* Category Grid */}
+                  <Box sx={{ 
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr 1fr', sm: '1fr 1fr', md: '1fr 1fr' },
+                    gap: 2,
+                    mb: 4
+                  }}>
+                    {categories?.filter(category => (category.items?.length || 0) > 0).map((category, index) => (
+                      <motion.div
+                        key={category.id}
+                        layoutId={`category-${category.id}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ 
+                          duration: 0.4,
+                          delay: index * 0.1
                         }}
+                        whileHover={{ y: -8 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        {/* Glass overlay effect */}
                         <Box
+                          onClick={() => setSelectedCategory(category.id)}
                           sx={{
+                            position: 'relative',
+                            borderRadius: 4,
+                            overflow: 'hidden',
+                            height: { xs: 280, sm: 320, md: 360 },
+                            background: category.imageUrl 
+                              ? `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), url(${category.imageUrl})`
+                              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                            transition: 'all 0.3s ease-in-out',
+                            '&:hover': {
+                              boxShadow: '0 12px 40px rgba(0,0,0,0.2)',
+                            }
+                          }}
+                        >
+                          {/* Glass overlay effect */}
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.1) 100%)',
+                              backdropFilter: 'blur(1px)',
+                            }}
+                          />
+                          
+                          {/* Content */}
+                          <Box sx={{ 
                             position: 'absolute',
-                            top: 0,
+                            bottom: 0,
                             left: 0,
                             right: 0,
-                            bottom: 0,
-                            background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.1) 100%)',
-                          }}
-                        />
-                        
-                        <Box sx={{ position: 'relative', textAlign: 'center', zIndex: 2 }}>
-                          <Typography
-                            variant="h3"
-                            sx={{
-                              color: 'white',
-                              fontWeight: 700,
-                              textAlign: 'center',
-                              textShadow: '3px 3px 6px rgba(0,0,0,0.8)',
-                              letterSpacing: '1px',
-                              mb: 1,
-                              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-                              lineHeight: 1.2
-                            }}
-                          >
-                            {category.nameEn && category.nameEn.trim() ? category.nameEn : category.name}
-                          </Typography>
-                          {category.description && (
+                            p: 3,
+                            background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                            color: 'white'
+                          }}>
                             <Typography
-                              variant="subtitle1"
+                              variant="h5"
                               sx={{
-                                color: 'rgba(255,255,255,0.9)',
+                                fontWeight: 700,
                                 textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                                fontWeight: 500,
-                                maxWidth: 300,
-                                mx: 'auto'
+                                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                                fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' },
+                                lineHeight: 1.2,
+                                mb: 0.5
                               }}
                             >
-                              {category.description}
+{category.nameEn || category.name}
                             </Typography>
-                          )}
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'rgba(255,255,255,0.8)',
+                                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                                fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                                fontWeight: 400
+                              }}
+                            >
+                              {category.items?.length || 0} items
+                            </Typography>
+                          </Box>
+
+                          {/* Item count badge */}
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 16,
+                              right: 16,
+                              bgcolor: 'rgba(255,255,255,0.9)',
+                              color: 'text.primary',
+                              px: 2,
+                              py: 0.5,
+                              borderRadius: 2,
+                              fontSize: '0.875rem',
+                              fontWeight: 600,
+                              backdropFilter: 'blur(10px)',
+                              border: '1px solid rgba(255,255,255,0.2)'
+                            }}
+                          >
+                            {category.items?.length || 0}
+                          </Box>
                         </Box>
-                        
-                        {/* Decorative corner elements */}
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            top: 16,
-                            right: 16,
-                            width: 32,
-                            height: 32,
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%)',
-                            backdropFilter: 'blur(10px)',
-                          }}
-                        />
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            bottom: 16,
-                            left: 16,
-                            width: 24,
-                            height: 24,
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%)',
-                            backdropFilter: 'blur(10px)',
-                          }}
-                        />
-                      </Box>
-                    )}
-                    {!category.imageUrl && (
-                      <Chip
-                        label={category.nameEn || category.name}
-                        sx={{
-                          fontSize: '1rem',
-                          fontWeight: 600,
-                          height: 40,
-                          px: 2,
-                          bgcolor: 'primary.main',
-                          color: 'white',
-                          '&:hover': {
-                            bgcolor: 'primary.dark',
-                          }
-                        }}
-                      />
-                    )}
+                      </motion.div>
+                    ))}
                   </Box>
-                  
-                  {category.items?.map((item) => (
-                    <MenuItemCard key={item.id} item={item} />
-                  ))}
-                  
-                  <Divider sx={{ my: 2, bgcolor: 'divider' }} />
-                </>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="menu-detail"
+                  layoutId={`category-${selectedCategory}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Back Button and Header */}
+                  <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <IconButton
+                      onClick={() => setSelectedCategory(null)}
+                      sx={{ 
+                        bgcolor: 'background.paper',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        '&:hover': {
+                          bgcolor: 'grey.100'
+                        }
+                      }}
+                    >
+                      <ArrowBack />
+                    </IconButton>
+                    <Typography variant="h4" component="h1" sx={{ 
+                      fontWeight: 700, 
+                      color: 'text.primary',
+                      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                      fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }
+                    }}>
+                      {selectedCategoryData?.nameEn && selectedCategoryData.nameEn.trim() 
+                        ? selectedCategoryData.nameEn 
+                        : selectedCategoryData?.name}
+                    </Typography>
+                  </Box>
+
+                  {/* Category Header Image */}
+                  {selectedCategoryData?.imageUrl && (
+                    <Box
+                      sx={{
+                        position: 'relative',
+                        borderRadius: 4,
+                        overflow: 'hidden',
+                        mb: 4,
+                        height: 200,
+                        background: `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), url(${selectedCategoryData.imageUrl})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {selectedCategoryData.description && (
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: 'white',
+                            textAlign: 'center',
+                            textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+                            fontWeight: 400,
+                            maxWidth: 400,
+                            px: 3
+                          }}
+                        >
+                          {selectedCategoryData.description}
+                        </Typography>
+                      )}
+                    </Box>
+                  )}
+
+                  {/* Menu Items */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {selectedCategoryData?.items?.map((item, index) => (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ 
+                          duration: 0.3,
+                          delay: index * 0.1
+                        }}
+                      >
+                        <MenuItemCard item={item} />
+                      </motion.div>
+                    ))}
+                  </Box>
+                </motion.div>
               )}
-            </motion.div>
-          ))}
-        </Container>
-      </Box>
+            </AnimatePresence>
+          </Container>
+        </Box>
 
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.3, type: 'spring', stiffness: 260, damping: 20 }}
-      >
-        <Fab
-          color="primary"
-          aria-label="cart"
-          sx={{
-            position: 'fixed',
-            bottom: 80,
-            right: 16,
-            zIndex: 1000
-          }}
-          onClick={() => setCartOpen(true)}
+        {/* Cart FAB */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.3, type: 'spring', stiffness: 260, damping: 20 }}
         >
-          <Badge badgeContent={getItemCount() > 0 ? getItemCount() : undefined} color="error">
-            <motion.div
-              animate={{
-                scale: [1, 1.3, 1],
-                rotate: [0, -10, 10, 0]
-              }}
-              transition={{
-                duration: 0.6,
-                ease: "easeInOut"
-              }}
-              key={getItemCount()}
-            >
-              <Player
-                ref={cartIconRef}
-                icon={cartIconAnimation}
-                size={24}
-                colorize="#ffffff"
-              />
-            </motion.div>
-          </Badge>
-        </Fab>
+          <Fab
+            color="primary"
+            aria-label="cart"
+            sx={{
+              position: 'fixed',
+              bottom: 80,
+              right: 16,
+              zIndex: 1000
+            }}
+            onClick={() => setCartOpen(true)}
+          >
+            <Badge badgeContent={getItemCount() > 0 ? getItemCount() : undefined} color="error">
+              <motion.div
+                animate={{
+                  scale: [1, 1.3, 1],
+                  rotate: [0, -10, 10, 0]
+                }}
+                transition={{
+                  duration: 0.6,
+                  ease: "easeInOut"
+                }}
+                key={getItemCount()}
+              >
+                <Player
+                  ref={cartIconRef}
+                  icon={cartIconAnimation}
+                  size={24}
+                  colorize="#ffffff"
+                />
+              </motion.div>
+            </Badge>
+          </Fab>
+        </motion.div>
+
+        {/* Dialogs and Overlays */}
+        <CartDrawer
+          open={cartOpen}
+          onClose={() => setCartOpen(false)}
+          onPatronSelect={() => setPatronSelectorOpen(true)}
+          onOrderSuccess={() => setShowConfetti(true)}
+        />
+
+        <PatronSelector
+          open={patronSelectorOpen}
+          onClose={() => setPatronSelectorOpen(false)}
+          patrons={patrons || []}
+        />
+        
+        <ConfettiAnimation 
+          open={showConfetti} 
+          onClose={() => setShowConfetti(false)} 
+        />
       </motion.div>
-
-      <CartDrawer
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        onPatronSelect={() => setPatronSelectorOpen(true)}
-        onOrderSuccess={() => setShowConfetti(true)}
-      />
-
-      <PatronSelector
-        open={patronSelectorOpen}
-        onClose={() => setPatronSelectorOpen(false)}
-        patrons={patrons || []}
-      />
-      
-      <ConfettiAnimation 
-        open={showConfetti} 
-        onClose={() => setShowConfetti(false)} 
-      />
-    </motion.div>
+    </LayoutGroup>
   );
 };
 

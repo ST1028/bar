@@ -25,6 +25,8 @@ const ConfettiAnimation = ({ open, onClose }: ConfettiAnimationProps) => {
     }
   }, [open, onClose]);
 
+  if (!open) return null;
+
   return (
     <AnimatePresence>
       {open && (
@@ -68,43 +70,43 @@ const ConfettiAnimation = ({ open, onClose }: ConfettiAnimationProps) => {
               }}
               onClick={(e) => e.stopPropagation()}
             >
-            <motion.div
-              animate={{
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
-              }}
-              transition={{
-                duration: 0.8,
-                ease: "easeInOut",
-                repeat: 1
-              }}
-            >
-              <Player
-                ref={playerRef}
-                icon={confettiAnimation}
-                size={120}
-                colorize="#81C784"
-              />
-            </motion.div>
-            
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                mt: 2, 
-                fontWeight: 600, 
-                color: 'primary.main' 
-              }}
-            >
-              注文完了！
-            </Typography>
-            
-            <Typography 
-              variant="body1" 
-              color="text.secondary" 
-              sx={{ mt: 1 }}
-            >
-              ご注文を受け付けました
-            </Typography>
+              <motion.div
+                animate={{
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{
+                  duration: 0.8,
+                  ease: "easeInOut",
+                  repeat: 1
+                }}
+              >
+                <Player
+                  ref={playerRef}
+                  icon={confettiAnimation}
+                  size={120}
+                  colorize="#81C784"
+                />
+              </motion.div>
+              
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  mt: 2, 
+                  fontWeight: 600, 
+                  color: 'primary.main' 
+                }}
+              >
+                注文完了！
+              </Typography>
+              
+              <Typography 
+                variant="body1" 
+                color="text.secondary" 
+                sx={{ mt: 1 }}
+              >
+                ご注文を受け付けました
+              </Typography>
             </Box>
           </motion.div>
         </div>
