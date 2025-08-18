@@ -101,7 +101,7 @@ const OrderPage = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.18 }}
                 >
                   {/* Header */}
                   <Box sx={{ mb: 4, textAlign: 'center' }}>
@@ -128,9 +128,9 @@ const OrderPage = () => {
                         key={category.id}
                         component={motion.div}
                         layoutId={`category-card-${category.id}`}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.35, delay: index * 0.05, type: 'spring', stiffness: 260, damping: 28 }}
+                        transition={{ duration: 0.18, delay: index * 0.04, type: 'spring', stiffness: 900, damping: 60 }}
                         whileHover={{ y: -8 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedCategory(category.id)}
@@ -228,7 +228,7 @@ const OrderPage = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.18 }}
                 >
                   {/* Back Button and Header */}
                   <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -261,7 +261,7 @@ const OrderPage = () => {
                     <Box
                       component={motion.div}
                       layoutId={`category-card-${selectedCategory}`}
-                      transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+                      transition={{ type: 'spring', stiffness: 900, damping: 60 }}
                       sx={{
                         position: 'relative',
                         borderRadius: 4,
