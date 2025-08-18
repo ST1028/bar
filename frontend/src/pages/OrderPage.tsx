@@ -26,6 +26,7 @@ const OrderPage = () => {
   const cartIconRef = useRef<Player>(null);
   const { getItemCount, setOnItemAdded } = useCartStore();
   const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const categoryPositionsRef = useRef<Record<string, number>>({});
 
   // Set up cart animation callback
   useEffect(() => {
@@ -53,10 +54,11 @@ const OrderPage = () => {
   const handleBack = () => {
     // Snap background list to the tapped category's top before closing overlay
     if (selectedCategory) {
-      const el = categoryRefs.current[selectedCategory];
-      if (el) {
-        const y = el.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({ top: y, behavior: 'auto' });
+      const savedPosition = categoryPositionsRef.current[selectedCategory];
+      if (savedPosition !== undefined) {
+        // Adjust for header height (pt: 8 = 64px)
+        const headerHeight = 64;
+        window.scrollTo({ top: Math.max(0, savedPosition - headerHeight), behavior: 'auto' });
       }
     }
     setSelectedCategory(null);
@@ -141,10 +143,16 @@ const OrderPage = () => {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.14, delay: index * 0.04, type: 'tween', ease: 'easeOut' }}
-                        whileHover={{ y: -8 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        whileTap={{ scale: 0.96 }}
                         onClick={() => {
+                          // Save current scroll position and category element position
                           listScrollYRef.current = window.scrollY;
+                          const el = categoryRefs.current[category.id];
+                          if (el) {
+                            const rect = el.getBoundingClientRect();
+                            categoryPositionsRef.current[category.id] = rect.top + window.scrollY;
+                          }
                           setSelectedCategory(category.id);
                         }}
                         sx={{
@@ -241,10 +249,15 @@ const OrderPage = () => {
               {selectedCategory && (
                 <motion.div
                   key="menu-detail"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.12 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ 
+                    duration: 0.3,
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 30
+                  }}
                   style={{ position: 'fixed', inset: 0, zIndex: 1100, background: 'var(--mui-palette-background-default, #fff)' }}
                 >
                   <Box ref={detailScrollRef} sx={{ position: 'absolute', inset: 0, overflowY: 'auto' }}>
@@ -280,7 +293,12 @@ const OrderPage = () => {
                     <Box
                       component={motion.div}
                       layoutId={`category-card-${selectedCategory}`}
-                      transition={{ type: 'tween', duration: 0.14, ease: 'easeOut' }}
+                      transition={{ 
+                        type: 'spring', 
+                        stiffness: 300, 
+                        damping: 30,
+                        duration: 0.5
+                      }}
                       sx={{
                         position: 'relative',
                         borderRadius: 4,
@@ -318,11 +336,14 @@ const OrderPage = () => {
                     {selectedCategoryData?.items?.map((item, index) => (
                       <motion.div
                         key={item.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ 
-                          duration: 0.3,
-                          delay: index * 0.1
+                          duration: 0.4,
+                          delay: index * 0.08,
+                          type: 'spring',
+                          stiffness: 300,
+                          damping: 30
                         }}
                       >
                         <MenuItemCard item={item} />
