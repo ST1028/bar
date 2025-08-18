@@ -25,6 +25,7 @@ const OrderPage = () => {
   const detailScrollRef = useRef<HTMLDivElement | null>(null);
   const cartIconRef = useRef<Player>(null);
   const { getItemCount, setOnItemAdded } = useCartStore();
+  const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Set up cart animation callback
   useEffect(() => {
@@ -50,7 +51,14 @@ const OrderPage = () => {
   }, [selectedCategory]);
 
   const handleBack = () => {
-    // Avoid forced scrolls during shared element animation
+    // Snap background list to the tapped category's top before closing overlay
+    if (selectedCategory) {
+      const el = categoryRefs.current[selectedCategory];
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: y, behavior: 'auto' });
+      }
+    }
     setSelectedCategory(null);
   };
 
@@ -129,9 +137,10 @@ const OrderPage = () => {
                         key={category.id}
                         component={motion.div}
                         layoutId={`category-card-${category.id}`}
+                        ref={(el: HTMLDivElement | null) => { categoryRefs.current[category.id] = el; }}
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.18, delay: index * 0.04, type: 'spring', stiffness: 900, damping: 60 }}
+                        transition={{ duration: 0.14, delay: index * 0.04, type: 'tween', ease: 'easeOut' }}
                         whileHover={{ y: -8 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
@@ -235,7 +244,7 @@ const OrderPage = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18 }}
+                  transition={{ duration: 0.12 }}
                   style={{ position: 'fixed', inset: 0, zIndex: 1100, background: 'var(--mui-palette-background-default, #fff)' }}
                 >
                   <Box ref={detailScrollRef} sx={{ position: 'absolute', inset: 0, overflowY: 'auto' }}>
@@ -271,7 +280,7 @@ const OrderPage = () => {
                     <Box
                       component={motion.div}
                       layoutId={`category-card-${selectedCategory}`}
-                      transition={{ type: 'spring', stiffness: 900, damping: 60 }}
+                      transition={{ type: 'tween', duration: 0.14, ease: 'easeOut' }}
                       sx={{
                         position: 'relative',
                         borderRadius: 4,
