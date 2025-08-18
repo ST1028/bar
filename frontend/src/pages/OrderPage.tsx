@@ -47,6 +47,13 @@ const OrderPage = () => {
     }
   }, [selectedCategory]);
 
+  const handleBack = () => {
+    // Ensure the grid's target position is in view before switching
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    // Let the scroll apply, then switch the view
+    requestAnimationFrame(() => setSelectedCategory(null));
+  };
+
   const { data: categories, isLoading: menusLoading, error: menusError } = useQuery({
     queryKey: ['menus'],
     queryFn: menuAPI.getMenus,
@@ -119,38 +126,32 @@ const OrderPage = () => {
                     mb: 4
                   }}>
                     {categories?.filter(category => (category.items?.length || 0) > 0).map((category, index) => (
-                      <motion.div
+                      <Box
                         key={category.id}
-                        layoutId={`category-${category.id}`}
+                        component={motion.div}
+                        layoutId={`category-card-${category.id}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ 
-                          duration: 0.4,
-                          delay: index * 0.1
-                        }}
+                        transition={{ duration: 0.4, delay: index * 0.1 }}
                         whileHover={{ y: -8 }}
                         whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedCategory(category.id)}
+                        sx={{
+                          position: 'relative',
+                          borderRadius: 4,
+                          overflow: 'hidden',
+                          height: { xs: 280, sm: 320, md: 360 },
+                          background: category.imageUrl 
+                            ? `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), url(${category.imageUrl})`
+                            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                          cursor: 'pointer',
+                          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': { boxShadow: '0 12px 40px rgba(0,0,0,0.2)' }
+                        }}
                       >
-                        <Box
-                          onClick={() => setSelectedCategory(category.id)}
-                          sx={{
-                            position: 'relative',
-                            borderRadius: 4,
-                            overflow: 'hidden',
-                            height: { xs: 280, sm: 320, md: 360 },
-                            background: category.imageUrl 
-                              ? `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), url(${category.imageUrl})`
-                              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            cursor: 'pointer',
-                            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                            transition: 'all 0.3s ease-in-out',
-                            '&:hover': {
-                              boxShadow: '0 12px 40px rgba(0,0,0,0.2)',
-                            }
-                          }}
-                        >
                           {/* Glass overlay effect */}
                           <Box
                             sx={{
@@ -219,15 +220,13 @@ const OrderPage = () => {
                           >
                             {category.items?.length || 0}
                           </Box>
-                        </Box>
-                      </motion.div>
+                      </Box>
                     ))}
                   </Box>
                 </motion.div>
               ) : (
                 <motion.div
                   key="menu-detail"
-                  layoutId={`category-${selectedCategory}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -236,7 +235,7 @@ const OrderPage = () => {
                   {/* Back Button and Header */}
                   <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
                     <IconButton
-                      onClick={() => setSelectedCategory(null)}
+                      onClick={handleBack}
                       sx={{ 
                         bgcolor: 'background.paper',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -262,6 +261,8 @@ const OrderPage = () => {
                   {/* Category Header Image */}
                   {selectedCategoryData?.imageUrl && (
                     <Box
+                      component={motion.div}
+                      layoutId={`category-card-${selectedCategory}`}
                       sx={{
                         position: 'relative',
                         borderRadius: 4,
