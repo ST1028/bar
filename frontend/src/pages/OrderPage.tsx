@@ -8,6 +8,7 @@ import { Player } from '@lordicon/react';
 import { menuAPI, patronAPI } from '../services/api';
 import { useCartStore } from '../stores/cart';
 import MenuItemCard from '../components/order/MenuItemCard';
+import CategoryCard from '../components/order/CategoryCard';
 import CartDrawer from '../components/order/CartDrawer';
 import PatronSelector from '../components/order/PatronSelector';
 import LoadingSkeleton from '../components/LoadingSkeleton';
@@ -135,128 +136,46 @@ const OrderPage = () => {
                     mb: 4
                   }}>
                     {categories?.filter(category => (category.items?.length || 0) > 0).map((category, index) => (
-                      <Box
+                      <motion.div
                         key={category.id}
-                        component={motion.div}
-                        layoutId={`category-card-${category.id}`}
                         ref={(el: HTMLDivElement | null) => { categoryRefs.current[category.id] = el; }}
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.14, delay: index * 0.04, type: 'tween', ease: 'easeOut' }}
-                        whileHover={{ y: -8, scale: 1.02 }}
-                        whileTap={{ scale: 0.96 }}
-                        onClick={() => {
-                          // Save current scroll position and category element position
-                          listScrollYRef.current = window.scrollY;
-                          const el = categoryRefs.current[category.id];
-                          if (el) {
-                            const rect = el.getBoundingClientRect();
-                            categoryPositionsRef.current[category.id] = rect.top + window.scrollY;
-                          }
-                          setSelectedCategory(category.id);
-                        }}
-                        sx={{
-                          position: 'relative',
-                          borderRadius: 4,
-                          overflow: 'hidden',
-                          height: { xs: 280, sm: 320, md: 360 },
-                          background: category.imageUrl 
-                            ? `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), url(${category.imageUrl})`
-                            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          cursor: 'pointer',
-                          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                          transition: 'all 0.3s ease-in-out',
-                          '&:hover': { boxShadow: '0 12px 40px rgba(0,0,0,0.2)' }
-                        }}
                       >
-                          {/* Glass overlay effect */}
-                          <Box
-                            sx={{
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.1) 100%)',
-                              backdropFilter: 'blur(1px)',
-                            }}
-                          />
-                          
-                          {/* Content */}
-                          <Box sx={{ 
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            p: 3,
-                            background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-                            color: 'white'
-                          }}>
-                            <Typography
-                              variant="h5"
-                              sx={{
-                                fontWeight: 700,
-                                textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                                fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' },
-                                lineHeight: 1.2,
-                                mb: 0.5
-                              }}
-                            >
-{category.nameEn || category.name}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: 'rgba(255,255,255,0.8)',
-                                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                                fontSize: { xs: '0.8rem', sm: '0.9rem' },
-                                fontWeight: 400
-                              }}
-                            >
-                              {category.items?.length || 0} items
-                            </Typography>
-                          </Box>
-
-                          {/* Item count badge */}
-                          <Box
-                            sx={{
-                              position: 'absolute',
-                              top: 16,
-                              right: 16,
-                              bgcolor: 'rgba(255,255,255,0.9)',
-                              color: 'text.primary',
-                              px: 2,
-                              py: 0.5,
-                              borderRadius: 2,
-                              fontSize: '0.875rem',
-                              fontWeight: 600,
-                              backdropFilter: 'blur(10px)',
-                              border: '1px solid rgba(255,255,255,0.2)'
-                            }}
-                          >
-                            {category.items?.length || 0}
-                          </Box>
-                      </Box>
+                        <CategoryCard
+                          category={category}
+                          layoutId={`category-card-${category.id}`}
+                          onClick={() => {
+                            // Save current scroll position and category element position
+                            listScrollYRef.current = window.scrollY;
+                            const el = categoryRefs.current[category.id];
+                            if (el) {
+                              const rect = el.getBoundingClientRect();
+                              categoryPositionsRef.current[category.id] = rect.top + window.scrollY;
+                            }
+                            setSelectedCategory(category.id);
+                          }}
+                        />
+                      </motion.div>
                     ))}
                   </Box>
             </motion.div>
 
             {/* Detail overlay renders on top; fixed so background scroll stays */}
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="wait">
               {selectedCategory && (
                 <motion.div
                   key="menu-detail"
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ 
-                    duration: 0.3,
+                    duration: 0.25,
                     type: 'spring',
-                    stiffness: 300,
-                    damping: 30
+                    stiffness: 400,
+                    damping: 30,
+                    mass: 0.8
                   }}
                   style={{ position: 'fixed', inset: 0, zIndex: 1100, background: 'var(--mui-palette-background-default, #fff)' }}
                 >
@@ -288,47 +207,13 @@ const OrderPage = () => {
                     </Typography>
                   </Box>
 
-                  {/* Category Header Image */}
-                  {selectedCategoryData?.imageUrl && (
-                    <Box
-                      component={motion.div}
+                  {/* Category Header with Shared Layout Animation */}
+                  {selectedCategoryData && (
+                    <CategoryCard
+                      category={selectedCategoryData}
+                      isSelected={true}
                       layoutId={`category-card-${selectedCategory}`}
-                      transition={{ 
-                        type: 'spring', 
-                        stiffness: 300, 
-                        damping: 30,
-                        duration: 0.5
-                      }}
-                      sx={{
-                        position: 'relative',
-                        borderRadius: 4,
-                        overflow: 'hidden',
-                        mb: 4,
-                        height: 200,
-                        background: `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), url(${selectedCategoryData.imageUrl})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
-                    >
-                      {selectedCategoryData.description && (
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            color: 'white',
-                            textAlign: 'center',
-                            textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                            fontWeight: 400,
-                            maxWidth: 400,
-                            px: 3
-                          }}
-                        >
-                          {selectedCategoryData.description}
-                        </Typography>
-                      )}
-                    </Box>
+                    />
                   )}
 
                   {/* Menu Items */}
@@ -336,14 +221,15 @@ const OrderPage = () => {
                     {selectedCategoryData?.items?.map((item, index) => (
                       <motion.div
                         key={item.id}
-                        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                        initial={{ opacity: 0, y: 20, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ 
-                          duration: 0.4,
-                          delay: index * 0.08,
+                          duration: 0.3,
+                          delay: Math.min(index * 0.05, 0.3),
                           type: 'spring',
-                          stiffness: 300,
-                          damping: 30
+                          stiffness: 400,
+                          damping: 30,
+                          mass: 0.8
                         }}
                       >
                         <MenuItemCard item={item} />
