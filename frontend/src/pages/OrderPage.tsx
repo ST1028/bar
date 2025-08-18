@@ -21,6 +21,8 @@ const OrderPage = () => {
   const [patronSelectorOpen, setPatronSelectorOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const listScrollYRef = useRef(0);
+  const detailScrollRef = useRef<HTMLDivElement | null>(null);
   const cartIconRef = useRef<Player>(null);
   const { getItemCount, setOnItemAdded } = useCartStore();
 
@@ -40,10 +42,10 @@ const OrderPage = () => {
     };
   }, [setOnItemAdded]);
 
-  // Scroll to top when a category is selected
+  // When opening detail, ensure its scroll starts at top (overlay container)
   useEffect(() => {
-    if (selectedCategory) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (selectedCategory && detailScrollRef.current) {
+      detailScrollRef.current.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, [selectedCategory]);
 
@@ -94,15 +96,14 @@ const OrderPage = () => {
       >
         <Box sx={{ pt: 8, pb: 10 }}>
           <Container maxWidth="lg" sx={{ px: 2 }}>
-            <AnimatePresence mode="popLayout">
-              {!selectedCategory ? (
-                <motion.div
-                  key="categories"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18 }}
-                >
+            {/* Category List stays mounted to preserve scroll/positions */}
+            <motion.div
+              key="categories"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.18 }}
+              aria-hidden={!!selectedCategory}
+            >
                   {/* Header */}
                   <Box sx={{ mb: 4, textAlign: 'center' }}>
                     <Typography variant="h4" component="h1" gutterBottom sx={{ 
@@ -133,7 +134,10 @@ const OrderPage = () => {
                         transition={{ duration: 0.18, delay: index * 0.04, type: 'spring', stiffness: 900, damping: 60 }}
                         whileHover={{ y: -8 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => setSelectedCategory(category.id)}
+                        onClick={() => {
+                          listScrollYRef.current = window.scrollY;
+                          setSelectedCategory(category.id);
+                        }}
                         sx={{
                           position: 'relative',
                           borderRadius: 4,
@@ -221,15 +225,21 @@ const OrderPage = () => {
                       </Box>
                     ))}
                   </Box>
-                </motion.div>
-              ) : (
+            </motion.div>
+
+            {/* Detail overlay renders on top; fixed so background scroll stays */}
+            <AnimatePresence mode="popLayout">
+              {selectedCategory && (
                 <motion.div
                   key="menu-detail"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.18 }}
+                  style={{ position: 'fixed', inset: 0, zIndex: 1100, background: 'var(--mui-palette-background-default, #fff)' }}
                 >
+                  <Box ref={detailScrollRef} sx={{ position: 'absolute', inset: 0, overflowY: 'auto' }}>
+                    <Container maxWidth="lg" sx={{ px: 2, pt: 8, pb: 10 }}>
                   {/* Back Button and Header */}
                   <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
                     <IconButton
@@ -309,6 +319,8 @@ const OrderPage = () => {
                         <MenuItemCard item={item} />
                       </motion.div>
                     ))}
+                  </Box>
+                    </Container>
                   </Box>
                 </motion.div>
               )}
