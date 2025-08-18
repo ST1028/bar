@@ -1,0 +1,10 @@
+## Node and build artifacts
+node_modules/
+dist/
+
+## AWS CDK synth outputs
+cdk.out/
+
+## OS/editor noise
+.DS_Store
+
