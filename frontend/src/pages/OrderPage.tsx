@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, Container, Fab, Badge, Typography, Divider, Chip, IconButton } from '@mui/material';
+import { Box, Container, Fab, Badge, Typography, IconButton } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
