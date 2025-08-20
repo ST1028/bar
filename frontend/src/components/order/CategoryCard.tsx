@@ -30,7 +30,7 @@ const CategoryCard = ({ category, isSelected = false, onClick, layoutId }: Categ
       transition={transition}
       sx={{
         position: 'relative',
-        borderRadius: 4,
+        borderRadius: 2, // 丸みを半分に（4 -> 2）
         overflow: 'hidden',
         height: isSelected ? 200 : { xs: 280, sm: 320, md: 360 },
         background: category.imageUrl 
@@ -99,11 +99,11 @@ const CategoryCard = ({ category, isSelected = false, onClick, layoutId }: Categ
               <Typography
                 variant="h5"
                 sx={{
-                  fontWeight: 700,
+                  fontWeight: 300,
                   textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                  fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' },
-                  lineHeight: 1.2,
+                  letterSpacing: '-0.005em',
+                  fontSize: { xs: '1.3rem', sm: '1.5rem', md: '1.7rem' },
+                  lineHeight: 1.3,
                   mb: 0.5
                 }}
               >

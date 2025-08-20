@@ -32,36 +32,53 @@ const TopBar = () => {
   return (
     <AppBar position="fixed" sx={{ 
       zIndex: (theme) => theme.zIndex.drawer + 1,
-      bgcolor: 'white',
+      bgcolor: 'rgba(255, 255, 255, 0.95)',
       color: 'black',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+      backdropFilter: 'saturate(180%) blur(20px)',
+      height: 44, // iOS App風の高さに調整
+      minHeight: 44
     }}>
-      <Toolbar>
-        <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+      <Toolbar sx={{ 
+        minHeight: '44px !important',
+        height: 44,
+        px: 2
+      }}>
+        {/* 左側のスペーサー */}
+        <Box sx={{ display: 'flex', alignItems: 'center', width: 48 }}>
           <Avatar 
             src="https://bar-file.s3.ap-northeast-1.amazonaws.com/bar-icon.png"
             alt="SF BAR Logo"
             sx={{ 
-              width: 32, 
-              height: 32, 
-              mr: 1.5,
+              width: 24, 
+              height: 24, 
               bgcolor: 'primary.light'
             }}
           />
-          <Typography variant="h6" component="div">
+        </Box>
+        
+        {/* 中央のブランド名 */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{
+            fontWeight: 300,
+            letterSpacing: '0.05em',
+            fontSize: '18px'
+          }}>
             SF BAR
           </Typography>
         </Box>
-        <div>
+        
+        {/* 右側のユーザーメニュー */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: 48 }}>
           <IconButton
-            size="large"
+            size="small"
             aria-label="account of current user"
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleMenu}
             color="inherit"
           >
-            <AccountCircle />
+            <AccountCircle sx={{ fontSize: 24 }} />
           </IconButton>
           <Menu
             id="menu-appbar"
@@ -86,7 +103,7 @@ const TopBar = () => {
               ログアウト
             </MenuItem>
           </Menu>
-        </div>
+        </Box>
       </Toolbar>
     </AppBar>
   );

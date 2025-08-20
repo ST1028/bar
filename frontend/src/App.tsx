@@ -57,12 +57,51 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Noto Sans JP", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif',
+    h1: {
+      fontWeight: 300,
+      letterSpacing: '-0.02em',
+      lineHeight: 1.2,
+    },
+    h2: {
+      fontWeight: 300,
+      letterSpacing: '-0.01em',
+      lineHeight: 1.3,
+    },
+    h3: {
+      fontWeight: 400,
+      letterSpacing: '-0.01em',
+      lineHeight: 1.3,
+    },
     h4: {
-      fontWeight: 600,
+      fontWeight: 300,
+      letterSpacing: '-0.005em',
+      lineHeight: 1.4,
     },
     h5: {
-      fontWeight: 600,
+      fontWeight: 400,
+      letterSpacing: 0,
+      lineHeight: 1.4,
+    },
+    h6: {
+      fontWeight: 500,
+      letterSpacing: 0,
+      lineHeight: 1.5,
+    },
+    body1: {
+      fontWeight: 400,
+      letterSpacing: 0,
+      lineHeight: 1.6,
+    },
+    body2: {
+      fontWeight: 400,
+      letterSpacing: 0,
+      lineHeight: 1.5,
+    },
+    button: {
+      fontWeight: 500,
+      letterSpacing: '0.02em',
+      textTransform: 'none',
     },
   },
   shape: {

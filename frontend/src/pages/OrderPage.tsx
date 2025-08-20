@@ -105,7 +105,7 @@ const OrderPage = () => {
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
       >
-        <Box sx={{ pt: 8, pb: 10 }}>
+        <Box sx={{ pt: 'calc(44px + 16px)', pb: 10 }}> {/* ヘッダー44px + 余白16px */}
           <Container maxWidth="lg" sx={{ px: 2 }}>
             {/* Category List stays mounted to preserve scroll/positions */}
             <motion.div
@@ -117,12 +117,13 @@ const OrderPage = () => {
             >
                   {/* Header */}
                   <Box sx={{ mb: 4, textAlign: 'center' }}>
-                    <Typography variant="h4" component="h1" gutterBottom sx={{ 
-                      fontWeight: 700, 
+                    <Typography variant="h1" component="h1" gutterBottom sx={{ 
+                      fontWeight: 300, 
                       color: 'text.primary',
                       textAlign: 'center',
-                      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                      fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
+                      letterSpacing: '-0.02em',
+                      fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem' },
+                      lineHeight: 1.2
                     }}>
                       Menu
                     </Typography>
@@ -131,8 +132,8 @@ const OrderPage = () => {
                   {/* Category Grid */}
                   <Box sx={{ 
                     display: 'grid',
-                    gridTemplateColumns: { xs: '1fr 1fr', sm: '1fr 1fr', md: '1fr 1fr' },
-                    gap: 2,
+                    gridTemplateColumns: '1fr', // 1列に変更
+                    gap: 2, // 縦方向の余白を追加
                     mb: 4
                   }}>
                     {categories?.filter(category => (category.items?.length || 0) > 0).map((category, index) => (
@@ -167,20 +168,38 @@ const OrderPage = () => {
               {selectedCategory && (
                 <motion.div
                   key="menu-detail"
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ 
-                    duration: 0.25,
-                    type: 'spring',
-                    stiffness: 400,
-                    damping: 30,
-                    mass: 0.8
+                  initial={{ 
+                    opacity: 0,
+                    scale: 0.92,
+                    y: 20
                   }}
-                  style={{ position: 'fixed', inset: 0, zIndex: 1100, background: 'var(--mui-palette-background-default, #fff)' }}
+                  animate={{ 
+                    opacity: 1,
+                    scale: 1,
+                    y: 0
+                  }}
+                  exit={{ 
+                    opacity: 0,
+                    scale: 0.96,
+                    y: -10
+                  }}
+                  transition={{ 
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 30,
+                    mass: 0.8,
+                    velocity: 2
+                  }}
+                  style={{ 
+                    position: 'fixed', 
+                    inset: 0, 
+                    zIndex: 1100, 
+                    background: '#ffffff',
+                    backdropFilter: 'blur(20px)'
+                  }}
                 >
                   <Box ref={detailScrollRef} sx={{ position: 'absolute', inset: 0, overflowY: 'auto' }}>
-                    <Container maxWidth="lg" sx={{ px: 2, pt: 8, pb: 10 }}>
+                    <Container maxWidth="lg" sx={{ px: 2, pt: 'calc(44px + 24px)', pb: 10 }}> {/* ヘッダー44px + 余白24px */}
                   {/* Back Button and Header */}
                   <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
                     <IconButton
@@ -195,11 +214,12 @@ const OrderPage = () => {
                     >
                       <ArrowBack />
                     </IconButton>
-                    <Typography variant="h4" component="h1" sx={{ 
-                      fontWeight: 700, 
+                    <Typography variant="h2" component="h1" sx={{ 
+                      fontWeight: 300, 
                       color: 'text.primary',
-                      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                      fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }
+                      letterSpacing: '-0.01em',
+                      fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.8rem' },
+                      lineHeight: 1.3
                     }}>
                       {selectedCategoryData?.nameEn && selectedCategoryData.nameEn.trim() 
                         ? selectedCategoryData.nameEn 
@@ -217,25 +237,30 @@ const OrderPage = () => {
                   )}
 
                   {/* Menu Items */}
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {selectedCategoryData?.items?.map((item, index) => (
-                      <motion.div
-                        key={item.id}
-                        initial={{ opacity: 0, y: 20, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ 
-                          duration: 0.3,
-                          delay: Math.min(index * 0.05, 0.3),
-                          type: 'spring',
-                          stiffness: 400,
-                          damping: 30,
-                          mass: 0.8
-                        }}
-                      >
-                        <MenuItemCard item={item} />
-                      </motion.div>
-                    ))}
-                  </Box>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.3 }}
+                  >
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      {selectedCategoryData?.items?.map((item, index) => (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ 
+                            type: 'spring',
+                            stiffness: 350,
+                            damping: 25,
+                            mass: 0.8,
+                            delay: Math.min(index * 0.08, 0.4)
+                          }}
+                        >
+                          <MenuItemCard item={item} />
+                        </motion.div>
+                      ))}
+                    </Box>
+                  </motion.div>
                     </Container>
                   </Box>
                 </motion.div>
@@ -257,7 +282,7 @@ const OrderPage = () => {
               position: 'fixed',
               bottom: 80,
               right: 16,
-              zIndex: 1000
+              zIndex: 1200 // 詳細画面(1100)より高く設定
             }}
             onClick={() => setCartOpen(true)}
           >
