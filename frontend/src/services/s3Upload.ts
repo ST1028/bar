@@ -1,4 +1,5 @@
 import { uploadData } from 'aws-amplify/storage';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 /**
  * Upload a file to S3 using AWS Amplify Storage
@@ -8,12 +9,25 @@ import { uploadData } from 'aws-amplify/storage';
  */
 export const uploadFile = async (file: File, folder?: string): Promise<string> => {
   try {
+    // Ensure we have valid credentials before attempting upload
+    console.log('🔐 Checking authentication session for S3 upload...');
+    const session = await fetchAuthSession();
+    console.log('📋 Session status:', {
+      hasCredentials: !!session.credentials,
+      hasIdentityId: !!session.identityId,
+      hasTokens: !!session.tokens
+    });
+
+    if (!session.credentials) {
+      throw new Error('認証情報が見つかりません。ログインし直してください。');
+    }
+
     // Generate unique filename with timestamp
     const timestamp = Date.now();
     const fileExtension = file.name.split('.').pop();
     const fileName = `${timestamp}-${Math.random().toString(36).substring(2)}.${fileExtension}`;
     
-    // Construct the full path
+    // Construct the full path for public access
     const path = folder ? `${folder}/${fileName}` : fileName;
     
     console.log('🔄 Starting S3 upload:', { fileName, path, size: file.size });
@@ -41,7 +55,19 @@ export const uploadFile = async (file: File, folder?: string): Promise<string> =
     return publicUrl;
   } catch (error) {
     console.error('❌ S3 upload failed:', error);
-    throw new Error(error instanceof Error ? error.message : 'ファイルのアップロードに失敗しました');
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('Credentials')) {
+        throw new Error('認証情報が無効です。ログインし直してください。');
+      }
+      if (error.message.includes('Access Denied')) {
+        throw new Error('S3へのアクセス権限がありません。管理者にお問い合わせください。');
+      }
+      throw new Error(error.message);
+    }
+    
+    throw new Error('ファイルのアップロードに失敗しました');
   }
 };
 

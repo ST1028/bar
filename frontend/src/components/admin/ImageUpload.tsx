@@ -95,37 +95,62 @@ const ImageUpload = ({
       {value ? (
         <Card elevation={2} sx={{ mb: 2 }}>
           <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box
-                component="img"
-                src={value}
-                alt="プレビュー"
-                sx={{
-                  width: 80,
-                  height: 80,
-                  objectFit: 'cover',
-                  borderRadius: 1,
-                  border: '1px solid #e0e0e0'
-                }}
-                onError={(e) => {
-                  // Handle broken image
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                }}
-              />
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="body2" color="text.secondary" noWrap>
-                  {value}
-                </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: { xs: 1, sm: 2 },
+              flexDirection: { xs: 'column', sm: 'row' }
+            }}>
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: { xs: 1, sm: 2 },
+                width: '100%'
+              }}>
+                <Box
+                  component="img"
+                  src={value}
+                  alt="プレビュー"
+                  sx={{
+                    width: { xs: 60, sm: 80 },
+                    height: { xs: 60, sm: 80 },
+                    objectFit: 'cover',
+                    borderRadius: 1,
+                    border: '1px solid #e0e0e0',
+                    flexShrink: 0
+                  }}
+                  onError={(e) => {
+                    // Handle broken image
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
+                <Box sx={{ flex: 1, minWidth: 0, mr: 1 }}>
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary" 
+                    sx={{
+                      wordBreak: 'break-all',
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                    }}
+                  >
+                    {value}
+                  </Typography>
+                </Box>
+                <IconButton
+                  onClick={handleRemove}
+                  color="error"
+                  size="small"
+                  disabled={uploading}
+                  sx={{
+                    flexShrink: 0,
+                    width: { xs: 32, sm: 40 },
+                    height: { xs: 32, sm: 40 }
+                  }}
+                >
+                  <Delete sx={{ fontSize: { xs: 16, sm: 20 } }} />
+                </IconButton>
               </Box>
-              <IconButton
-                onClick={handleRemove}
-                color="error"
-                size="small"
-                disabled={uploading}
-              >
-                <Delete />
-              </IconButton>
             </Box>
           </CardContent>
         </Card>
@@ -134,7 +159,7 @@ const ImageUpload = ({
           sx={{
             border: '2px dashed #e0e0e0',
             borderRadius: 2,
-            p: 3,
+            p: { xs: 2, sm: 3 },
             textAlign: 'center',
             bgcolor: 'grey.50',
             cursor: uploading ? 'default' : 'pointer',
@@ -151,18 +176,30 @@ const ImageUpload = ({
         >
           {uploading ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-              <CircularProgress size={32} />
-              <Typography variant="body2" color="text.secondary">
+              <CircularProgress size={28} />
+              <Typography 
+                variant="body2" 
+                color="text.secondary"
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 アップロード中...
               </Typography>
             </Box>
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-              <Image sx={{ fontSize: 48, color: 'text.secondary' }} />
-              <Typography variant="body2" color="text.secondary">
+              <Image sx={{ fontSize: { xs: 32, sm: 48 }, color: 'text.secondary' }} />
+              <Typography 
+                variant="body2" 
+                color="text.secondary"
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 画像ファイルをクリックして選択
               </Typography>
-              <Typography variant="caption" color="text.disabled">
+              <Typography 
+                variant="caption" 
+                color="text.disabled"
+                sx={{ fontSize: { xs: '0.625rem', sm: '0.75rem' } }}
+              >
                 最大{maxSizeMB}MB、JPEG/PNG/WebP/GIF対応
               </Typography>
             </Box>
@@ -173,11 +210,15 @@ const ImageUpload = ({
       {!value && (
         <Button
           variant="outlined"
-          startIcon={<CloudUpload />}
+          startIcon={<CloudUpload sx={{ fontSize: { xs: 16, sm: 20 } }} />}
           onClick={handleFileSelect}
           disabled={uploading}
           fullWidth
-          sx={{ mt: 1 }}
+          sx={{ 
+            mt: 1,
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            py: { xs: 1, sm: 1.5 }
+          }}
         >
           ファイルを選択
         </Button>
