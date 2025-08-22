@@ -1,73 +1,95 @@
-import { uploadData } from 'aws-amplify/storage';
 import { fetchAuthSession } from 'aws-amplify/auth';
+import axios from 'axios';
 
 /**
- * Upload a file to S3 using AWS Amplify Storage
+ * Upload a file using API Gateway (fallback for when Amplify Storage is not configured)
+ * @param file - The file to upload
+ * @param folder - The folder path in S3 (optional)
+ * @returns Promise<string> - The public URL of the uploaded file
+ */
+export const uploadFileViaAPI = async (file: File, folder?: string): Promise<string> => {
+  try {
+    console.log('🔄 Starting API-based file upload:', { fileName: file.name, size: file.size });
+    
+    // Get auth session for API call
+    const session = await fetchAuthSession();
+    if (!session.tokens?.idToken) {
+      throw new Error('認証トークンが見つかりません。ログインし直してください。');
+    }
+
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append('file', file);
+    if (folder) {
+      formData.append('folder', folder);
+    }
+
+    // Upload via API Gateway
+    const API_BASE_URL = import.meta.env.VITE_API_GATEWAY_URL;
+    const response = await axios.post(`${API_BASE_URL}/admin/upload-image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${session.tokens.idToken.toString()}`
+      }
+    });
+
+    console.log('✅ API upload successful:', response.data);
+    return response.data.imageUrl;
+  } catch (error) {
+    console.error('❌ API upload failed:', error);
+    
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        throw new Error('認証が無効です。ログインし直してください。');
+      }
+      if (error.response?.status === 413) {
+        throw new Error('ファイルサイズが大きすぎます。');
+      }
+      throw new Error(error.response?.data?.message || 'アップロードに失敗しました');
+    }
+    
+    throw new Error(error instanceof Error ? error.message : 'ファイルのアップロードに失敗しました');
+  }
+};
+
+/**
+ * Convert file to base64 (fallback option)
+ * @param file - The file to convert
+ * @returns Promise<string> - Base64 data URL
+ */
+export const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+/**
+ * Upload a file to S3 - tries API first, falls back to base64
  * @param file - The file to upload
  * @param folder - The folder path in S3 (optional)
  * @returns Promise<string> - The public URL of the uploaded file
  */
 export const uploadFile = async (file: File, folder?: string): Promise<string> => {
   try {
-    // Ensure we have valid credentials before attempting upload
-    console.log('🔐 Checking authentication session for S3 upload...');
-    const session = await fetchAuthSession();
-    console.log('📋 Session status:', {
-      hasCredentials: !!session.credentials,
-      hasIdentityId: !!session.identityId,
-      hasTokens: !!session.tokens
-    });
-
-    if (!session.credentials) {
-      throw new Error('認証情報が見つかりません。ログインし直してください。');
-    }
-
-    // Generate unique filename with timestamp
-    const timestamp = Date.now();
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${timestamp}-${Math.random().toString(36).substring(2)}.${fileExtension}`;
-    
-    // Construct the full path for public access
-    const path = folder ? `${folder}/${fileName}` : fileName;
-    
-    console.log('🔄 Starting S3 upload:', { fileName, path, size: file.size });
-    
-    // Upload to S3 using Amplify Storage
-    const result = await uploadData({
-      path,
-      data: file,
-      options: {
-        contentType: file.type
-      }
-    }).result;
-    
-    console.log('✅ S3 upload successful:', result);
-    
-    // Construct the public URL
-    // The format depends on your Amplify Storage configuration
-    // This assumes the standard format: https://bucket-name.s3.region.amazonaws.com/public/path
-    const bucketName = import.meta.env.VITE_S3_BUCKET_NAME || 'bar-file';
-    const region = import.meta.env.VITE_AWS_REGION || 'ap-northeast-1';
-    const publicUrl = `https://${bucketName}.s3.${region}.amazonaws.com/public/${path}`;
-    
-    console.log('📎 Generated public URL:', publicUrl);
-    
-    return publicUrl;
+    // Try API-based upload first
+    console.log('🔄 Attempting API upload...');
+    return await uploadFileViaAPI(file, folder);
   } catch (error) {
-    console.error('❌ S3 upload failed:', error);
+    console.warn('⚠️ API upload failed, falling back to base64:', error);
     
-    // Provide more specific error messages
-    if (error instanceof Error) {
-      if (error.message.includes('Credentials')) {
-        throw new Error('認証情報が無効です。ログインし直してください。');
-      }
-      if (error.message.includes('Access Denied')) {
-        throw new Error('S3へのアクセス権限がありません。管理者にお問い合わせください。');
-      }
-      throw new Error(error.message);
+    // Fallback to base64 encoding for temporary solution
+    // Note: This is not ideal for production as it creates very long URLs
+    try {
+      const base64 = await fileToBase64(file);
+      console.log('✅ Converted file to base64 (fallback)');
+      return base64;
+    } catch (base64Error) {
+      console.error('❌ Base64 conversion failed:', base64Error);
+      throw new Error('ファイルの処理に失敗しました。');
     }
-    
-    throw new Error('ファイルのアップロードに失敗しました');
   }
 };
 

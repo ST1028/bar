@@ -24,8 +24,8 @@ const ImageUpload = ({
   value, 
   onChange, 
   onError, 
-  maxSizeMB = 5,
-  acceptedFormats = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+  maxSizeMB = 2, // Reduced for base64 fallback
+  acceptedFormats = ['image/jpeg', 'image/png', 'image/webp']
 }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,10 +61,21 @@ const ImageUpload = ({
 
     try {
       setUploading(true);
-      const imageUrl = await uploadFile(file, 'category-images');
-      onChange(imageUrl);
       setError(null);
+      
+      console.log('🎯 Starting file upload process...');
+      const imageUrl = await uploadFile(file, 'category-images');
+      
+      console.log('✅ Upload completed, URL:', imageUrl.substring(0, 100) + '...');
+      onChange(imageUrl);
+      
+      // Show success message for base64 fallback
+      if (imageUrl.startsWith('data:')) {
+        console.log('ℹ️ Using base64 fallback (temporary solution)');
+      }
+      
     } catch (err) {
+      console.error('❌ Upload error:', err);
       const errorMessage = err instanceof Error ? err.message : 'アップロードに失敗しました';
       setError(errorMessage);
       onError?.(errorMessage);
@@ -134,8 +145,20 @@ const ImageUpload = ({
                       fontSize: { xs: '0.75rem', sm: '0.875rem' }
                     }}
                   >
-                    {value}
+                    {value.startsWith('data:') 
+                      ? `Base64画像 (${Math.round(value.length / 1024)}KB)`
+                      : value
+                    }
                   </Typography>
+                  {value.startsWith('data:') && (
+                    <Typography 
+                      variant="caption" 
+                      color="warning.main"
+                      sx={{ fontSize: { xs: '0.625rem', sm: '0.75rem' } }}
+                    >
+                      ※ 一時的なbase64形式です
+                    </Typography>
+                  )}
                 </Box>
                 <IconButton
                   onClick={handleRemove}
