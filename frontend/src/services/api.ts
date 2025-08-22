@@ -94,13 +94,49 @@ export const menuAPI = {
   },
   
   createCategory: async (category: Omit<MenuCategory, 'id' | 'items'>): Promise<MenuCategory> => {
-    const response = await apiClient.post<{ category: MenuCategory }>('/admin/categories', category);
-    return response.data.category;
+    console.log('🔄 Creating category:', category);
+    console.log('📤 Request payload:', JSON.stringify(category, null, 2));
+    
+    try {
+      const response = await apiClient.post<{ category: MenuCategory }>('/admin/categories', category);
+      console.log('✅ Category creation successful:', response.data);
+      return response.data.category;
+    } catch (error) {
+      console.error('❌ Category creation failed:', error);
+      if (error instanceof Error && 'response' in error) {
+        const axiosError = error as any;
+        console.error('📋 Error details:', {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+          headers: axiosError.response?.headers
+        });
+      }
+      throw error;
+    }
   },
   
   updateCategory: async (id: string, category: Partial<MenuCategory>): Promise<MenuCategory> => {
-    const response = await apiClient.patch<{ category: MenuCategory }>(`/admin/categories/${id}`, category);
-    return response.data.category;
+    console.log('🔄 Updating category:', { id, category });
+    console.log('📤 Request payload:', JSON.stringify(category, null, 2));
+    
+    try {
+      const response = await apiClient.patch<{ category: MenuCategory }>(`/admin/categories/${id}`, category);
+      console.log('✅ Category update successful:', response.data);
+      return response.data.category;
+    } catch (error) {
+      console.error('❌ Category update failed:', error);
+      if (error instanceof Error && 'response' in error) {
+        const axiosError = error as any;
+        console.error('📋 Error details:', {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+          headers: axiosError.response?.headers
+        });
+      }
+      throw error;
+    }
   },
   
   deleteCategory: async (id: string): Promise<void> => {

@@ -53,14 +53,60 @@ export const uploadFileViaAPI = async (file: File, folder?: string): Promise<str
 };
 
 /**
- * Convert file to base64 (fallback option)
+ * Compress and convert file to base64 (fallback option)
  * @param file - The file to convert
- * @returns Promise<string> - Base64 data URL
+ * @param maxWidth - Maximum width for compression (default: 800)
+ * @param maxHeight - Maximum height for compression (default: 600)
+ * @param quality - JPEG quality (0-1, default: 0.7)
+ * @returns Promise<string> - Compressed base64 data URL
  */
-export const fileToBase64 = (file: File): Promise<string> => {
+export const fileToBase64 = (
+  file: File, 
+  maxWidth: number = 800, 
+  maxHeight: number = 600, 
+  quality: number = 0.7
+): Promise<string> => {
   return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = () => {
+      // Calculate new dimensions
+      let { width, height } = img;
+      
+      if (width > maxWidth || height > maxHeight) {
+        const ratio = Math.min(maxWidth / width, maxHeight / height);
+        width *= ratio;
+        height *= ratio;
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      // Draw and compress
+      ctx?.drawImage(img, 0, 0, width, height);
+      
+      // Convert to base64 with compression
+      const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+      
+      console.log('🗜️ Image compression:', {
+        originalSize: `${(file.size / 1024).toFixed(1)}KB`,
+        compressedSize: `${(compressedBase64.length * 0.75 / 1024).toFixed(1)}KB`, // Rough estimate
+        dimensions: `${width}x${height}`,
+        compressionRatio: ((file.size / (compressedBase64.length * 0.75)) * 100).toFixed(1) + '%'
+      });
+      
+      resolve(compressedBase64);
+    };
+    
+    img.onerror = reject;
+    
+    // Create object URL for the image
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
+    reader.onload = (e) => {
+      img.src = e.target?.result as string;
+    };
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });

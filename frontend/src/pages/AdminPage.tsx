@@ -142,7 +142,20 @@ const AdminPage = () => {
       setAddCategoryDrawerOpen(false);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
-    onError: () => toast.error('作成に失敗しました'),
+    onError: (error: any) => {
+      console.error('❌ Category creation mutation failed:', error);
+      let errorMessage = '作成に失敗しました';
+      
+      if (error?.response?.status === 500) {
+        errorMessage = 'サーバーエラーが発生しました。ペイロードサイズが大きすぎる可能性があります。';
+      } else if (error?.response?.status === 413) {
+        errorMessage = 'データサイズが大きすぎます。画像を小さくしてください。';
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      
+      toast.error(errorMessage);
+    },
   });
 
   const updateCategoryMutation = useMutation({
@@ -153,7 +166,20 @@ const AdminPage = () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       queryClient.invalidateQueries({ queryKey: ['menus'] });
     },
-    onError: () => toast.error('更新に失敗しました'),
+    onError: (error: any) => {
+      console.error('❌ Category update mutation failed:', error);
+      let errorMessage = '更新に失敗しました';
+      
+      if (error?.response?.status === 500) {
+        errorMessage = 'サーバーエラーが発生しました。ペイロードサイズが大きすぎる可能性があります。';
+      } else if (error?.response?.status === 413) {
+        errorMessage = 'データサイズが大きすぎます。画像を小さくしてください。';
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      
+      toast.error(errorMessage);
+    },
   });
 
   const deleteCategoryMutation = useMutation({
@@ -231,12 +257,31 @@ const AdminPage = () => {
       toast.error('カテゴリー名（英語）を入力してください');
       return;
     }
+
+    // Check payload size for base64 images
+    const payloadString = JSON.stringify(newCategory);
+    const payloadSizeMB = new Blob([payloadString]).size / (1024 * 1024);
+    
+    console.log('📊 Category creation payload size:', {
+      sizeMB: payloadSizeMB.toFixed(2),
+      hasBase64: newCategory.imageUrl?.startsWith('data:') || false,
+      imageUrlLength: newCategory.imageUrl?.length || 0
+    });
+
+    // Warn if payload is large
+    if (payloadSizeMB > 5) {
+      toast.error(`ペイロードサイズが大きすぎます (${payloadSizeMB.toFixed(1)}MB)。画像サイズを小さくしてください。`);
+      return;
+    }
+
     createCategoryMutation.mutate(newCategory);
   };
 
   const handleUpdateCategory = () => {
     if (!editingCategory) return;
-    updateCategoryMutation.mutate({
+
+    // Check payload size for base64 images
+    const payload = {
       id: editingCategory.id,
       name: editingCategory.name,
       nameEn: editingCategory.nameEn,
@@ -244,7 +289,25 @@ const AdminPage = () => {
       imageUrl: editingCategory.imageUrl,
       visible: editingCategory.visible,
       order: editingCategory.order
+    };
+
+    // Calculate payload size
+    const payloadString = JSON.stringify(payload);
+    const payloadSizeMB = new Blob([payloadString]).size / (1024 * 1024);
+    
+    console.log('📊 Category update payload size:', {
+      sizeMB: payloadSizeMB.toFixed(2),
+      hasBase64: payload.imageUrl?.startsWith('data:') || false,
+      imageUrlLength: payload.imageUrl?.length || 0
     });
+
+    // Warn if payload is large
+    if (payloadSizeMB > 5) {
+      toast.error(`ペイロードサイズが大きすぎます (${payloadSizeMB.toFixed(1)}MB)。画像サイズを小さくしてください。`);
+      return;
+    }
+
+    updateCategoryMutation.mutate(payload);
   };
 
   const handleCreateBlend = () => {
