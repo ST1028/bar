@@ -52,6 +52,7 @@ import { adminAPI, menuAPI, blendAPI } from '../services/api';
 import type { MenuItem as MenuItemType, MenuCategory, Blend } from '../types';
 import { useAuthStore } from '../stores/auth';
 import ImageUpload from '../components/admin/ImageUpload';
+import { getNavigationHeight } from '../utils/pwa';
 
 const AdminPage = () => {
   const [tabValue, setTabValue] = useState(0);
@@ -69,6 +70,8 @@ const AdminPage = () => {
   const [itemToDelete, setItemToDelete] = useState<{type: 'item' | 'category' | 'blend', id: string, name: string} | null>(null);
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
+  
+  const navigationHeight = getNavigationHeight();
   
   // Refs for animations
   const editIconRefs = useRef<Record<string, Player | null>>({});
@@ -1276,7 +1279,7 @@ const AdminPage = () => {
             aria-label="add"
             sx={{
               position: 'fixed',
-              bottom: 80,
+              bottom: navigationHeight + 16, // ナビゲーション高さ + 余白16px
               right: 16,
               zIndex: 1000,
             }}
