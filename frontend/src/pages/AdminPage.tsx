@@ -51,6 +51,7 @@ import trashAnimation from '../icons/wired-outline-185-trash-bin-hover-empty.jso
 import { adminAPI, menuAPI, blendAPI } from '../services/api';
 import type { MenuItem as MenuItemType, MenuCategory, Blend } from '../types';
 import { useAuthStore } from '../stores/auth';
+import ImageUpload from '../components/admin/ImageUpload';
 
 const AdminPage = () => {
   const [tabValue, setTabValue] = useState(0);
@@ -681,15 +682,16 @@ const AdminPage = () => {
                       sx={{ mb: 1 }}
                       placeholder="説明"
                     />
-                    <TextField
-                      value={editingCategory.imageUrl || ''}
-                      onChange={(e) => setEditingCategory({...editingCategory, imageUrl: e.target.value})}
-                      fullWidth
-                      size="small"
-                      sx={{ mb: 2 }}
-                      placeholder="画像URL"
-                      label="画像URL"
-                    />
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                        カテゴリー画像
+                      </Typography>
+                      <ImageUpload
+                        value={editingCategory.imageUrl || ''}
+                        onChange={(imageUrl) => setEditingCategory({...editingCategory, imageUrl})}
+                        onError={(error) => toast.error(error)}
+                      />
+                    </Box>
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                       <IconButton onClick={handleUpdateCategory} color="primary" size="large">
                         <Save />
@@ -1417,13 +1419,13 @@ const AdminPage = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                label="画像URL"
+              <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                カテゴリー画像
+              </Typography>
+              <ImageUpload
                 value={newCategory.imageUrl}
-                onChange={(e) => setNewCategory({...newCategory, imageUrl: e.target.value})}
-                fullWidth
-                size="small"
-                placeholder="https://example.com/image.jpg"
+                onChange={(imageUrl) => setNewCategory({...newCategory, imageUrl})}
+                onError={(error) => toast.error(error)}
               />
             </Grid>
           </Grid>

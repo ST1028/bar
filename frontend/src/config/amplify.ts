@@ -14,4 +14,10 @@ export const amplifyConfig = {
       },
     },
   },
+  Storage: {
+    S3: {
+      bucket: import.meta.env.VITE_S3_BUCKET_NAME || 'bar-file',
+      region: import.meta.env.VITE_AWS_REGION || 'ap-northeast-1',
+    },
+  },
 };
