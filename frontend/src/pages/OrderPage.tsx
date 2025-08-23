@@ -13,7 +13,6 @@ import CartDrawer from '../components/order/CartDrawer';
 import PatronSelector from '../components/order/PatronSelector';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import ErrorMessage from '../components/ErrorMessage';
-import { getNavigationHeight } from '../utils/pwa';
 
 import cartIconAnimation from '../icons/wired-outline-146-trolley-hover-jump.json';
 import ConfettiAnimation from '../components/ConfettiAnimation';
@@ -29,8 +28,6 @@ const OrderPage = () => {
   const { getItemCount, setOnItemAdded } = useCartStore();
   const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const categoryPositionsRef = useRef<Record<string, number>>({});
-  
-  const navigationHeight = getNavigationHeight();
 
   // Set up cart animation callback
   useEffect(() => {
@@ -108,7 +105,7 @@ const OrderPage = () => {
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
       >
-        <Box sx={{ pt: 'calc(44px + 16px)', pb: `${navigationHeight + 16}px` }}> {/* ヘッダー44px + 余白16px、ナビゲーション高さ + 余白16px */}
+        <Box className="page-content"> {/* CSS変数でpadding管理 */}
           <Container maxWidth="lg" sx={{ px: 2 }}>
             {/* Category List stays mounted to preserve scroll/positions */}
             <motion.div
@@ -281,12 +278,7 @@ const OrderPage = () => {
           <Fab
             color="primary"
             aria-label="cart"
-            sx={{
-              position: 'fixed',
-              bottom: navigationHeight + 16, // ナビゲーション高さ + 余白16px
-              right: 16,
-              zIndex: 1200 // 詳細画面(1100)より高く設定
-            }}
+            className="app-fab"
             onClick={() => setCartOpen(true)}
           >
             <Badge badgeContent={getItemCount() > 0 ? getItemCount() : undefined} color="error">

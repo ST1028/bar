@@ -1,0 +1,131 @@
+/**
+ * Design Tokens for PWA Layout
+ * 通常表示とPWA表示の完全統一のためのCSS変数
+ */
+
+:root {
+  /* === Layout Heights === */
+  --header-height: 44px;    /* TopBar実測値: iOS App風統一 */
+  --bottom-height: 64px;    /* BottomNav実測値: 通常表示基準 */
+  
+  /* === Safe Area Insets === */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  
+  /* === Color Tokens === */
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --header-backdrop: saturate(180%) blur(20px);
+  --bottom-bg: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --elevation-header: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --elevation-bottom: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  
+  /* === Z-Index Scale === */
+  --z-header: 1100;
+  --z-bottom: 1000;
+  --z-fab: 1200;
+  
+  /* === Content Area === */
+  --content-padding-top: calc(var(--header-height) + 16px);
+  --content-padding-bottom: calc(var(--bottom-height) + 16px);
+  --fab-bottom: calc(var(--bottom-height) + 16px);
+}
+
+/* === Viewport Height 統一 === */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  /* dvh優先、古いiOSは --app-dvh フォールバック */
+  min-height: var(--app-dvh, 100dvh);
+}
+
+/* === App Layout Grid === */
+.app-layout {
+  min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom));
+  display: grid;
+  grid-template-rows:
+    calc(var(--header-height) + var(--safe-top))
+    1fr
+    calc(var(--bottom-height) + var(--safe-bottom));
+  grid-template-areas:
+    "header"
+    "main"
+    "bottom";
+}
+
+.app-header {
+  grid-area: header;
+  height: var(--header-height);
+  padding-top: var(--safe-top);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+  background: var(--header-bg);
+  backdrop-filter: var(--header-backdrop);
+  box-shadow: var(--elevation-header);
+  z-index: var(--z-header);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.app-main {
+  grid-area: main;
+  padding-top: var(--content-padding-top);
+  padding-bottom: var(--content-padding-bottom);
+  overflow-y: auto;
+}
+
+.app-bottom {
+  grid-area: bottom;
+  height: var(--bottom-height);
+  padding-bottom: var(--safe-bottom);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+  background: var(--bottom-bg);
+  box-shadow: var(--elevation-bottom);
+  z-index: var(--z-bottom);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* === PWA表示でも同じ高さを維持（統一化） === */
+@media (display-mode: standalone) {
+  :root {
+    /* 高さは変更しない = 見た目完全統一 */
+    /* Safe Area のみ適用される */
+  }
+}
+
+/* === Legacy iOS対応 === */
+@supports not (height: 100dvh) {
+  #root {
+    min-height: var(--app-dvh, 100vh);
+  }
+  
+  .app-layout {
+    min-height: calc(var(--app-dvh, 100vh) - var(--safe-top) - var(--safe-bottom));
+  }
+}
+
+/* === FAB Position === */
+.app-fab {
+  position: fixed !important;
+  bottom: var(--fab-bottom) !important;
+  right: 16px !important;
+  z-index: var(--z-fab) !important;
+}
+
+/* === Page Content Base === */
+.page-content {
+  padding-top: var(--content-padding-top);
+  padding-bottom: var(--content-padding-bottom);
+}

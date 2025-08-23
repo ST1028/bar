@@ -1,10 +1,9 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Player } from '@lordicon/react';
 import { useAuthStore } from '../stores/auth';
-import { getNavigationHeight, getSafeAreaInsets } from '../utils/pwa';
 
 import orderAnimationBold from '../icons/wired-outline-502-two-glasses-pint-beer-hover-pinch-bold.json';
 import patronAnimationBold from '../icons/wired-outline-313-two-avatar-icon-calm-hover-jumping-bold.json';
@@ -19,33 +18,8 @@ const BottomNavigation = () => {
   const patronIconBoldRef = useRef<Player>(null);
   const historyIconBoldRef = useRef<Player>(null);
   const adminIconBoldRef = useRef<Player>(null);
-  
-  const [navigationHeight, setNavigationHeight] = useState(getNavigationHeight());
-  const [safeAreaInsets, setSafeAreaInsets] = useState(getSafeAreaInsets());
 
   const isAdmin = user?.groups?.includes('admin') || user?.email === 'admin@example.com';
-
-  // Update height when display mode changes (PWA installation/uninstallation)
-  useEffect(() => {
-    const updateNavigationHeight = () => {
-      setNavigationHeight(getNavigationHeight());
-      setSafeAreaInsets(getSafeAreaInsets());
-    };
-
-    // Listen for display mode changes
-    const mediaQuery = window.matchMedia('(display-mode: standalone)');
-    mediaQuery.addEventListener('change', updateNavigationHeight);
-
-    // Listen for orientation changes which might affect PWA status
-    window.addEventListener('orientationchange', updateNavigationHeight);
-    window.addEventListener('resize', updateNavigationHeight);
-
-    return () => {
-      mediaQuery.removeEventListener('change', updateNavigationHeight);
-      window.removeEventListener('orientationchange', updateNavigationHeight);
-      window.removeEventListener('resize', updateNavigationHeight);
-    };
-  }, []);
 
   const getValueFromPath = (pathname: string): number => {
     if (pathname.startsWith('/patrons')) {
@@ -89,30 +63,36 @@ const BottomNavigation = () => {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
+      className="app-bottom"
       sx={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
-        zIndex: (theme) => theme.zIndex.appBar,
-        paddingBottom: safeAreaInsets.bottom,
+        zIndex: 'var(--z-bottom)',
+        paddingBottom: 'var(--safe-bottom)',
+        paddingLeft: 'var(--safe-left)',
+        paddingRight: 'var(--safe-right)',
+        background: 'var(--bottom-bg)',
+        boxShadow: 'var(--elevation-bottom)',
       }}
-      elevation={8}
+      elevation={0}
     >
       <MuiBottomNavigation
         value={getValueFromPath(location.pathname)}
         onChange={handleChange}
         showLabels
         sx={{
-          height: navigationHeight,
-          minHeight: navigationHeight,
+          height: 'var(--bottom-height)',
+          minHeight: 'var(--bottom-height)',
+          backgroundColor: 'transparent',
           '& .MuiBottomNavigationAction-root': {
             minWidth: 'auto',
             maxWidth: 'none',
-            fontSize: navigationHeight === 44 ? '0.75rem' : '0.875rem', // Smaller text for PWA
+            fontSize: '0.875rem',
             '& .MuiBottomNavigationAction-label': {
-              fontSize: navigationHeight === 44 ? '0.625rem' : '0.75rem', // Adjust label size
-              marginTop: navigationHeight === 44 ? '2px' : '4px',
+              fontSize: '0.75rem',
+              marginTop: '4px',
             },
           },
         }}
@@ -123,7 +103,7 @@ const BottomNavigation = () => {
             <Player
               ref={orderIconBoldRef}
               icon={orderAnimationBold}
-              size={navigationHeight === 44 ? 20 : 24}
+              size={24}
               colorize={getValueFromPath(location.pathname) === 0 ? "#81C784" : "#666666"}
             />
           }
@@ -134,7 +114,7 @@ const BottomNavigation = () => {
             <Player
               ref={patronIconBoldRef}
               icon={patronAnimationBold}
-              size={navigationHeight === 44 ? 20 : 24}
+              size={24}
               colorize={getValueFromPath(location.pathname) === 1 ? "#81C784" : "#666666"}
             />
           }
@@ -145,7 +125,7 @@ const BottomNavigation = () => {
             <Player
               ref={historyIconBoldRef}
               icon={historyAnimationBold}
-              size={navigationHeight === 44 ? 20 : 24}
+              size={24}
               colorize={getValueFromPath(location.pathname) === 2 ? "#81C784" : "#666666"}
             />
           }
@@ -157,7 +137,7 @@ const BottomNavigation = () => {
               <Player
                 ref={adminIconBoldRef}
                 icon={adminAnimationBold}
-                size={navigationHeight === 44 ? 20 : 24}
+                size={24}
                 colorize={getValueFromPath(location.pathname) === 3 ? "#81C784" : "#666666"}
               />
             }

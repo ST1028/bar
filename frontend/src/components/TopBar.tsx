@@ -30,18 +30,25 @@ const TopBar = () => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ 
-      zIndex: (theme) => theme.zIndex.drawer + 1,
-      bgcolor: 'rgba(255, 255, 255, 0.95)',
-      color: 'black',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-      backdropFilter: 'saturate(180%) blur(20px)',
-      height: 44, // iOS App風の高さに調整
-      minHeight: 44
-    }}>
+    <AppBar 
+      position="fixed" 
+      className="app-header"
+      sx={{ 
+        zIndex: 'var(--z-header)',
+        bgcolor: 'var(--header-bg)',
+        color: 'black',
+        boxShadow: 'var(--elevation-header)',
+        backdropFilter: 'var(--header-backdrop)',
+        height: 'var(--header-height)',
+        minHeight: 'var(--header-height)',
+        paddingTop: 'var(--safe-top)',
+        paddingLeft: 'var(--safe-left)',
+        paddingRight: 'var(--safe-right)',
+      }}
+    >
       <Toolbar sx={{ 
-        minHeight: '44px !important',
-        height: 44,
+        minHeight: 'var(--header-height) !important',
+        height: 'var(--header-height)',
         px: 2
       }}>
         {/* 左側のスペーサー */}
