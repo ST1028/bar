@@ -15,6 +15,10 @@ import LoginPage from './pages/LoginPage';
 import LoadingScreen from './components/LoadingScreen';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 
+// Design Tokens and Viewport Utilities
+import './styles/design-tokens.css';
+import { bindVisualViewport, debugViewport } from './utils/viewport';
+
 Amplify.configure(amplifyConfig);
 
 const queryClient = new QueryClient({
@@ -115,6 +119,14 @@ function App() {
   useEffect(() => {
     checkAuthState();
     registerServiceWorker();
+    
+    // Initialize viewport utilities for PWA layout consistency
+    bindVisualViewport();
+    
+    // Debug viewport info (development only)
+    if (import.meta.env.DEV) {
+      debugViewport();
+    }
 
     // Listen to Amplify Hub events for authentication changes
     const hubListenerCancelToken = Hub.listen('auth', (data) => {
